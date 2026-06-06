@@ -13,17 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
-
 import clipbird.shared.generated.resources.Res
 import clipbird.shared.generated.resources.compose_multiplatform
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
-@Preview
 fun App() {
   MaterialTheme {
-    var showContent by remember { mutableStateOf(false) }
+    var showContent by remember { mutableStateOf(true) }
     Column(
       modifier = Modifier
         .background(MaterialTheme.colorScheme.primaryContainer)
@@ -35,7 +32,7 @@ fun App() {
         Text("Click me!")
       }
       AnimatedVisibility(showContent) {
-        val greeting = remember { Greeting().greet() }
+        val greeting = remember { "Hello, Compose Multiplatform!" }
         Column(
           modifier = Modifier.fillMaxWidth(),
           horizontalAlignment = Alignment.CenterHorizontally,

@@ -6,6 +6,10 @@ plugins {
   alias(libs.plugins.composeCompiler)
 }
 
+kotlin {
+  jvmToolchain(25)
+}
+
 dependencies {
   implementation(projects.shared)
 
@@ -18,7 +22,7 @@ dependencies {
 compose.desktop {
   application {
     mainClass = "com.srilakshmikanthanp.clipbird.MainKt"
-
+    jvmArgs += listOf("--enable-native-access=ALL-UNNAMED")
     nativeDistributions {
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
       packageName = "com.srilakshmikanthanp.clipbird"

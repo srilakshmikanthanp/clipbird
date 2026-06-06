@@ -8,13 +8,54 @@ plugins {
   alias(libs.plugins.kotlinSerialization)
 }
 
+val jvmMainResourcesDirectory = layout.buildDirectory.dir("generated/jvmMain/resources/native")
+val jvmMainCppDirectory = layout.projectDirectory.dir("src/jvmMain/cpp")
+val jvmMainCppBuildDirectory = jvmMainCppDirectory.dir("build")
+
+tasks.register<Exec>("configureNative") {
+  description = "Configure native build using CMake"
+  workingDir(jvmMainCppDirectory.asFile)
+  commandLine("cmake", "-B", jvmMainCppBuildDirectory.asFile.absolutePath)
+}
+
+tasks.register<Exec>("buildNative") {
+  description = "Build native library"
+  dependsOn("configureNative")
+  workingDir(jvmMainCppDirectory.asFile)
+  commandLine("cmake", "--build", jvmMainCppBuildDirectory.asFile.absolutePath)
+}
+
+tasks.register<Sync>("packageNative") {
+  description = "Copy native libraries into JVM resources"
+  dependsOn("buildNative")
+
+  from(jvmMainCppBuildDirectory) {
+    include("*.dll")
+    include("*.so")
+    include("*.dylib")
+  }
+
+  into(jvmMainResourcesDirectory)
+}
+
+afterEvaluate {
+  tasks.named("jvmProcessResources") {
+    dependsOn("packageNative")
+  }
+}
+
 kotlin {
-  // Enable expect/actual classes (currently in Beta)
+  jvmToolchain(25)
+
   compilerOptions {
     freeCompilerArgs.add("-Xexpect-actual-classes")
   }
 
-  jvm()
+  jvm {
+    compilerOptions {
+      jvmTarget = JvmTarget.JVM_25
+    }
+  }
 
   androidLibrary {
     namespace = "com.srilakshmikanthanp.clipbird.shared"
@@ -22,7 +63,7 @@ kotlin {
     minSdk = libs.versions.android.minSdk.get().toInt()
 
     compilerOptions {
-      jvmTarget = JvmTarget.JVM_11
+      jvmTarget = JvmTarget.JVM_25
     }
 
     androidResources {
@@ -37,7 +78,6 @@ kotlin {
   sourceSets {
     androidMain.dependencies {
       implementation(libs.compose.uiToolingPreview)
-      implementation(libs.kable.default.permissions)
     }
 
     commonMain.dependencies {
@@ -52,6 +92,12 @@ kotlin {
       implementation(libs.kable.core)
       implementation(libs.kotlinx.serialization.core)
       implementation(libs.kotlinx.serialization.protobuf)
+    }
+
+    jvmMain {
+      resources.srcDir(
+        layout.buildDirectory.dir("generated/jvmMain/resources")
+      )
     }
 
     commonTest.dependencies {

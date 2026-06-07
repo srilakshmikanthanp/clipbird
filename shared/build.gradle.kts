@@ -6,6 +6,7 @@ plugins {
   alias(libs.plugins.composeMultiplatform)
   alias(libs.plugins.composeCompiler)
   alias(libs.plugins.kotlinSerialization)
+  alias(libs.plugins.ksp)
 }
 
 val jvmMainResourcesDirectory = layout.buildDirectory.dir("generated/jvmMain/resources/native")
@@ -78,6 +79,7 @@ kotlin {
   sourceSets {
     androidMain.dependencies {
       implementation(libs.compose.uiToolingPreview)
+      implementation(libs.androidx.room.sqlite.wrapper)
     }
 
     commonMain.dependencies {
@@ -92,6 +94,8 @@ kotlin {
       implementation(libs.kable.core)
       implementation(libs.kotlinx.serialization.core)
       implementation(libs.kotlinx.serialization.protobuf)
+      implementation(libs.androidx.room.runtime)
+      implementation(libs.androidx.sqlite.bundled)
     }
 
     jvmMain {
@@ -108,4 +112,6 @@ kotlin {
 
 dependencies {
   androidRuntimeClasspath(libs.compose.uiTooling)
+  add("kspAndroid", libs.androidx.room.compiler)
+  add("kspJvm", libs.androidx.room.compiler)
 }

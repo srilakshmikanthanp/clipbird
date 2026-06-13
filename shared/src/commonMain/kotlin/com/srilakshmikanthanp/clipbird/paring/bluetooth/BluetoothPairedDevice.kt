@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.paring.bluetooth
 
+import com.srilakshmikanthanp.clipbird.common.toPublicKey
 import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import java.security.PublicKey
 import kotlin.uuid.ExperimentalUuidApi
@@ -15,4 +16,15 @@ class BluetoothPairedDevice(
   id = id,
   name = name,
   publicKey = publicKey,
-)
+) {
+  companion object {
+    fun from(projection: BluetoothPairedDeviceProjection): BluetoothPairedDevice {
+      return BluetoothPairedDevice(
+        id = projection.id,
+        name = projection.name,
+        publicKey = projection.publicKey.toPublicKey(),
+        address = Uuid.parse(projection.address),
+      )
+    }
+  }
+}

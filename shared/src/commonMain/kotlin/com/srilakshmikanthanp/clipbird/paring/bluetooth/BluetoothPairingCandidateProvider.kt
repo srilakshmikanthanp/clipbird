@@ -16,10 +16,10 @@ class BluetoothPairingCandidateProvider(
   private val serviceUuid: Uuid,
   private val scope: CoroutineScope
 ) : PairingCandidateProvider<BluetoothPairingCandidate> {
-  override val devices: StateFlow<Set<BluetoothPairingCandidate>> = bluetoothManager.boundedDevices.map { devices ->
+  override val devices: StateFlow<Collection<BluetoothPairingCandidate>> = bluetoothManager.boundedDevices.map { devices ->
     devices.filter { device ->
       device.serviceUuids.contains(serviceUuid)
-    }.mapTo(mutableSetOf()) { device ->
+    }.map { device ->
       BluetoothPairingCandidate(device.address, serviceUuid)
     }
   }.stateIn(

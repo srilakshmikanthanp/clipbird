@@ -9,9 +9,9 @@ import com.srilakshmikanthanp.clipbird.packet.nextPacket
 import com.srilakshmikanthanp.clipbird.packet.sendPacket
 import com.srilakshmikanthanp.clipbird.paring.InvalidPairingPacketException
 import com.srilakshmikanthanp.clipbird.paring.Pairer
-import com.srilakshmikanthanp.clipbird.paring.PairingCodeGenerator
 import com.srilakshmikanthanp.clipbird.paring.PairingVerifier
 import com.srilakshmikanthanp.clipbird.paring.PairingFailedException
+import com.srilakshmikanthanp.clipbird.utility.CodeGenerator
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -19,7 +19,6 @@ import kotlin.uuid.ExperimentalUuidApi
 class BluetoothPairer(
   private val bluetoothManager: BluetoothManager,
   private val hostDevice: HostDevice,
-  private val pairingCodeGenerator: PairingCodeGenerator,
   private val pairingVerifier: PairingVerifier
 ): Pairer<BluetoothPairingCandidate, BluetoothPairedDevice> {
   override suspend fun pair(candidate: BluetoothPairingCandidate): BluetoothPairedDevice {
@@ -41,7 +40,7 @@ class BluetoothPairer(
       address = candidate.address,
     )
 
-    val code = pairingCodeGenerator.generate(
+    val code = CodeGenerator.generate(
       hostDevice.publicKey.encoded,
       packet.publicKey
     )

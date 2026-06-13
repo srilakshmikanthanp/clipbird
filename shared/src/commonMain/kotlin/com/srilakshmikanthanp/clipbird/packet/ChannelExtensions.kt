@@ -1,6 +1,7 @@
 package com.srilakshmikanthanp.clipbird.packet
 
 import com.srilakshmikanthanp.clipbird.io.Channel
+import com.srilakshmikanthanp.clipbird.packet.PacketType.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -14,7 +15,9 @@ suspend fun Channel.nextPacket(): Packet {
   val data: ByteArray = readExactly(length)
   val packetType = PacketType.from(type)
   return when (packetType) {
-    PacketType.PairingPacket -> ProtoBuf.decodeFromByteArray<PairingPacket>(data)
+    PairingPacketType -> ProtoBuf.decodeFromByteArray<PairingPacket>(data)
+    NoncePacketType -> ProtoBuf.decodeFromByteArray<NoncePacket>(data)
+    SignaturePacketType -> ProtoBuf.decodeFromByteArray<SignaturePacket>(data)
   }
 }
 

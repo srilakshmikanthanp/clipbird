@@ -6,6 +6,5 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class BluetoothPairingCandidate(
-  val address: Uuid,
-  val serviceUuid: Uuid,
+  val address: Uuid
 ) : PairingCandidate

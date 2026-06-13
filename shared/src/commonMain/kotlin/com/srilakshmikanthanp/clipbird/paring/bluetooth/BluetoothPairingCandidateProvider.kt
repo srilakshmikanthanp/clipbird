@@ -3,28 +3,35 @@ package com.srilakshmikanthanp.clipbird.paring.bluetooth
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.paring.PairingCandidateProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlin.collections.map
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class BluetoothPairingCandidateProvider(
-  bluetoothManager: BluetoothManager,
+  private val bluetoothPairedDeviceService: BluetoothPairedDeviceService,
   private val serviceUuid: Uuid,
-  private val scope: CoroutineScope
+  private val scope: CoroutineScope,
+  private val bluetoothManager: BluetoothManager,
 ) : PairingCandidateProvider<BluetoothPairingCandidate> {
-  override val devices: StateFlow<Collection<BluetoothPairingCandidate>> = bluetoothManager.boundedDevices.map { devices ->
-    devices.filter { device ->
-      device.serviceUuids.contains(serviceUuid)
-    }.map { device ->
-      BluetoothPairingCandidate(device.address, serviceUuid)
-    }
+  override val devices: StateFlow<Collection<BluetoothPairingCandidate>> = bluetoothManager.boundedDevices.combine(
+    bluetoothPairedDeviceService.getAll()
+  ) { boundedDevices, pairedDevices ->
+    val pairedAddresses = pairedDevices
+      .map { it.address }
+      .toSet()
+
+    boundedDevices
+      .filter { serviceUuid in it.serviceUuids }
+      .filter { it.address !in pairedAddresses }
+      .map { BluetoothPairingCandidate(it.address) }
   }.stateIn(
-    scope = scope,
+    scope,
     started = SharingStarted.WhileSubscribed(),
-    initialValue = emptySet()
+    emptyList()
   )
 }

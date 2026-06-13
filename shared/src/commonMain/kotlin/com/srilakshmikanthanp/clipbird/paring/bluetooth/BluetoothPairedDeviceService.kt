@@ -15,7 +15,7 @@ class BluetoothPairedDeviceService(
 ) {
   @OptIn(ExperimentalUuidApi::class)
   fun getAll(): Flow<List<BluetoothPairedDevice>> {
-    return bleDao.getAll().map { bleDevices -> bleDevices.map(BluetoothPairedDevice::from) }
+    return bleDao.getAll().map { bleDevices -> bleDevices.map { it.toBluetoothPairedDevice() } }
   }
 
   @Transaction

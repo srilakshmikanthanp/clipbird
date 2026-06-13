@@ -14,15 +14,17 @@ import com.srilakshmikanthanp.clipbird.paring.PairingFailedException
 import com.srilakshmikanthanp.clipbird.utility.CodeGenerator
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalSerializationApi::class)
 class BluetoothPairer(
   private val bluetoothManager: BluetoothManager,
   private val hostDevice: HostDevice,
-  private val pairingVerifier: PairingVerifier
+  private val pairingVerifier: PairingVerifier,
+  private val serviceUuid: Uuid,
 ): Pairer<BluetoothPairingCandidate, BluetoothPairedDevice> {
   override suspend fun pair(candidate: BluetoothPairingCandidate): BluetoothPairedDevice {
-    val serverEndpoint = BluetoothServerEndpoint(candidate.address, candidate.serviceUuid)
+    val serverEndpoint = BluetoothServerEndpoint(candidate.address, serviceUuid)
     val channel = bluetoothManager.connect(serverEndpoint)
     val pairingPacket = PairingPacket(hostDevice.id, hostDevice.name, hostDevice.publicKey.encoded)
     channel.sendPacket(pairingPacket)
@@ -37,7 +39,7 @@ class BluetoothPairer(
       publicKey = packet.publicKey.toPublicKey(),
       name = packet.deviceName,
       id = packet.deviceId,
-      address = candidate.address,
+      address = candidate.address
     )
 
     val code = CodeGenerator.generate(

@@ -7,7 +7,6 @@ import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent.Found
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent.Lost
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryException
-import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer.Message.CleanUp
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer.Message.DeviceFound
 import kotlinx.coroutines.channels.Channel

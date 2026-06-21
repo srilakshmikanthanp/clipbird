@@ -8,8 +8,14 @@ open class PacketException(
 ) : Exception(message, cause)
 
 class PacketMismatchException(
-  expectedPacket: KClass<out Packet>,
-  actualPacket: Packet,
+  val expectedPacket: KClass<out Packet>,
+  val actualPacket: Packet,
   message: String = "Expected packet of type ${expectedPacket.simpleName}, but received ${actualPacket::class.simpleName}",
+  cause: Throwable? = null
+) : PacketException(message, cause)
+
+class UnknownPacketException (
+  packetType: Int,
+  message: String = "Unknown packet type: $packetType",
   cause: Throwable? = null
 ) : PacketException(message, cause)

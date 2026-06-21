@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class BluetoothClipbirdServer(
+class ClipbirdBluetoothServer(
   private val bluetoothManager: BluetoothManager,
   private val serverConfig: BluetoothServerConfig,
 ) : ClipbirdServer {

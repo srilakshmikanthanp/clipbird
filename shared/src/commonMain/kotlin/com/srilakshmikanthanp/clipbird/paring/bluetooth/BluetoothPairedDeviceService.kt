@@ -1,20 +1,23 @@
 package com.srilakshmikanthanp.clipbird.paring.bluetooth
 
 import androidx.room.Transaction
-import com.srilakshmikanthanp.clipbird.common.toPublicKey
-import com.srilakshmikanthanp.clipbird.paring.PairedDeviceEntityDao
 import com.srilakshmikanthanp.clipbird.paring.PairedDeviceEntity
+import com.srilakshmikanthanp.clipbird.paring.PairedDeviceEntityDao
+import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 class BluetoothPairedDeviceService(
   private val pairedDao: PairedDeviceEntityDao,
   private val bleDao: BluetoothPairedDeviceDao,
-) {
+) : PairedDeviceService<BluetoothPairedDevice> {
+  override suspend fun findById(id: Long): BluetoothPairedDevice? {
+    return bleDao.findById(id)?.toBluetoothPairedDevice()
+  }
+
   @OptIn(ExperimentalUuidApi::class)
-  fun getAll(): Flow<List<BluetoothPairedDevice>> {
+  override fun getAll(): Flow<List<BluetoothPairedDevice>> {
     return bleDao.getAll().map { bleDevices -> bleDevices.map { it.toBluetoothPairedDevice() } }
   }
 
@@ -25,7 +28,7 @@ class BluetoothPairedDeviceService(
   }
 
   @Transaction
-  suspend fun delete(id: Long) {
+  override suspend fun delete(id: Long) {
     pairedDao.deleteById(id)
   }
 }

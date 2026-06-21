@@ -19,6 +19,18 @@ interface BluetoothPairedDeviceDao {
   )
   fun getAll(): Flow<List<BluetoothPairedDeviceProjection>>
 
+  @Query(
+    """
+        SELECT
+            p.id, p.name, p.publicKey, b.address
+        FROM paired_device p
+        JOIN ble_paired_device b
+            ON p.id = b.id
+        WHERE p.id = :id
+    """
+  )
+  suspend fun findById(id: Long): BluetoothPairedDeviceProjection?
+
   @Upsert
   suspend fun upsert(device: BluetoothPairedDeviceEntity)
 

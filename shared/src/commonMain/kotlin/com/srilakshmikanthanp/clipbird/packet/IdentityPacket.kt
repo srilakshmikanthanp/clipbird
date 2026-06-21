@@ -6,8 +6,3 @@ import kotlinx.serialization.Serializable
 class IdentityPacket(
   val deviceId: Long
 ) : Packet
-
-fun Packet.asIdentityPacket(): IdentityPacket {
-  if (this !is IdentityPacket) throw PacketMismatchException(IdentityPacket::class, this)
-  return this
-}

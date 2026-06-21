@@ -1,6 +1,6 @@
-package com.srilakshmikanthanp.clipbird.host.bluetoorh
+package com.srilakshmikanthanp.clipbird.server.bluetooth
 
-import com.srilakshmikanthanp.clipbird.host.ClipbirdServer
+import com.srilakshmikanthanp.clipbird.server.ClipbirdServer
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig

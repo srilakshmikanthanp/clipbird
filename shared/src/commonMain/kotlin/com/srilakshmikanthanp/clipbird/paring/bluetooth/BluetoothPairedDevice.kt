@@ -12,7 +12,7 @@ class BluetoothPairedDevice(
   id: Long,
   name: String,
   publicKey: PublicKey,
-  val address: Uuid
+  val address: String
 ) : PairedDevice(
   id = id,
   name = name,

@@ -17,6 +17,6 @@ fun BluetoothPairedDeviceProjection.toBluetoothPairedDevice(): BluetoothPairedDe
     id = this.id,
     name = this.name,
     publicKey = this.publicKey.toPublicKey(),
-    address = Uuid.parse(this.address),
+    address = this.address,
   )
 }

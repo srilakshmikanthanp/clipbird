@@ -5,7 +5,7 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class BluetoothDevice(
-  val address: Uuid,
+  val address: String,
   val name: String?,
   val serviceUuids: Set<Uuid>,
 )

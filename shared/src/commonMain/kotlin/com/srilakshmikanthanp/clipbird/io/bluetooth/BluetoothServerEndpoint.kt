@@ -6,6 +6,6 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class BluetoothServerEndpoint (
-  val address: Uuid,
+  val address: String,
   val serviceUuid: Uuid
 ) : ServerEndpoint

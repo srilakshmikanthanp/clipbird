@@ -5,8 +5,9 @@ import kotlinx.serialization.Serializable
 @Serializable(with = PacketTypeSerializer::class)
 enum class PacketType(val value: Int) {
   PairingPacketType(0x01),
-  NoncePacketType(0x02),
-  SignaturePacketType(0x03);
+  IdentityPacketType(0x02),
+  NoncePacketType(0x03),
+  SignaturePacketType(0x04);
 
   companion object {
     fun from(value: Int): PacketType {

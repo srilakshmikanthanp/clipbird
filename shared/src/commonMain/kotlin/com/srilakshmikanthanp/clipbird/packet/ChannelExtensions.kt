@@ -14,11 +14,7 @@ suspend fun Channel.nextPacket(): Packet {
   val type: Int = ByteBuffer.wrap(readExactly(4)).int
   val data: ByteArray = readExactly(length)
   val packetType = PacketType.from(type)
-  return when (packetType) {
-    PairingPacketType -> ProtoBuf.decodeFromByteArray<PairingPacket>(data)
-    NoncePacketType -> ProtoBuf.decodeFromByteArray<NoncePacket>(data)
-    SignaturePacketType -> ProtoBuf.decodeFromByteArray<SignaturePacket>(data)
-  }
+  return data.toPacket(packetType)
 }
 
 @OptIn(ExperimentalSerializationApi::class)

@@ -1,6 +1,8 @@
 package com.srilakshmikanthanp.clipbird.io
 
 import kotlinx.coroutines.flow.StateFlow
+import java.io.EOFException
+import java.io.IOException
 
 interface Channel : AutoCloseable {
   /**
@@ -12,19 +14,19 @@ interface Channel : AutoCloseable {
   /**
    * Read Exactly [size] bytes from the underlying transport, suspending until enough data is available.
    *
-   * @throws ChannelClosedException when the channel closes before enough bytes are available.
-   * @throws ChannelReadException for failures during read
+   * @param size the exact number of bytes to read, must be positive
+   * @throws EOFException if the channel is closed before reading the requested number of bytes
+   * @throws IOException for failures during read
    */
-  @Throws(ChannelClosedException::class, ChannelReadException::class)
+  @Throws(EOFException::class, IOException::class)
   suspend fun readExactly(size: Int = 1): ByteArray
 
   /**
    * Writes all bytes in [data] to the underlying transport.
    *
-   * @throws ChannelClosedException when the channel is already closed.
-   * @throws ChannelWriteException for non-timeout write failures.
+   * @throws IOException for failures during write
    */
-  @Throws(ChannelClosedException::class, ChannelWriteException::class)
+  @Throws(IOException::class)
   suspend fun write(data: ByteArray)
 
   /**

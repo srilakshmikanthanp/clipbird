@@ -1,11 +1,13 @@
 package com.srilakshmikanthanp.clipbird.io
 
+import java.io.IOException
+
 interface ServerFactory<T : ServerConfig> {
   /**
    * Starts listening with [config].
    *
-   * @throws ServerStartException when bind/listen setup fails.
+   * @throws IOException when bind/listen setup fails.
    */
-  @Throws(ServerStartException::class)
+  @Throws(IOException::class)
   suspend fun start(config: T): Server
 }

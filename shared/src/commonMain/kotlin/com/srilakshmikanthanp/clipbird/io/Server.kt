@@ -1,17 +1,22 @@
 package com.srilakshmikanthanp.clipbird.io
 
+import java.io.IOException
+
 interface Server : AutoCloseable {
   /**
    * Accepts the next inbound connection.
    *
-   * @throws ServerClosedException when server is closed while waiting for a connection.
-   * @throws ChannelConnectionException when accept/handshake fails.
+   * @throws IOException when accepting the connection fails.
+   * @return a [Channel] representing the accepted connection.
    */
-  @Throws(ServerClosedException::class, ChannelConnectionException::class)
+  @Throws(IOException::class)
   suspend fun accept(): Channel
 
   /**
    * Stops listening.
+   *
+   * @throws IOException when closing the server fails.
    */
+  @Throws(IOException::class)
   override fun close()
 }

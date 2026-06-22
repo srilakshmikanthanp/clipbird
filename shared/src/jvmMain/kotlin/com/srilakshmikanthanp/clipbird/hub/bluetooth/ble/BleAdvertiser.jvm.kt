@@ -14,23 +14,34 @@ actual class BleAdvertiser(private val serviceUuid: Uuid, private val device: Bl
   private val _advertisedDevice: MutableStateFlow<BleHubDevice?> = MutableStateFlow(null)
   actual override val advertisedDevice = _advertisedDevice.asStateFlow()
 
-  private val bleAdvertiserFfi: BleAdvertiserFfi = BleAdvertiserFfi(serviceUuid, ProtoBuf.encodeToByteArray(device))
+  private var bleAdvertiserFfi: BleAdvertiserFfi? = null
 
   actual override suspend fun startAdvertising() {
-    if (_advertisedDevice.value != null) {
-      throw IllegalStateException("Already advertising")
+    if (bleAdvertiserFfi != null) {
+      throw IllegalStateException("Advertiser already started")
     }
 
-    bleAdvertiserFfi.start()
-    _advertisedDevice.value = device
+    val bleAdvertiserFfi = BleAdvertiserFfi(serviceUuid, ProtoBuf.encodeToByteArray(device))
+
+    runCatching {
+      bleAdvertiserFfi.start()
+    }.onFailure {
+      bleAdvertiserFfi.close()
+    }.onSuccess {
+      this.bleAdvertiserFfi = bleAdvertiserFfi
+      _advertisedDevice.value = device
+    }.getOrThrow()
   }
 
   actual override suspend fun stopAdvertising() {
-    if (_advertisedDevice.value == null) {
-      throw IllegalStateException("Not currently advertising")
-    }
+    val ffi = bleAdvertiserFfi ?: throw IllegalStateException("Not advertising")
 
-    bleAdvertiserFfi.stop()
-    _advertisedDevice.value = null
+    try {
+      ffi.stop()
+    } finally {
+      ffi.close()
+      bleAdvertiserFfi = null
+      _advertisedDevice.value = null
+    }
   }
 }

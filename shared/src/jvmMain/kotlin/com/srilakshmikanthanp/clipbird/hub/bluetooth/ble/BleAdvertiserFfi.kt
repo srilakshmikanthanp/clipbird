@@ -1,23 +1,15 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
-import com.srilakshmikanthanp.clipbird.NativeClipbirdLoader
+import com.srilakshmikanthanp.clipbird.NativeClipbirdLoader.library
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
 import java.lang.foreign.*
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-private object Native {
-  private val lib: SymbolLookup by lazy {
-    SymbolLookup.libraryLookup(
-      NativeClipbirdLoader.libraryPath, Arena.global()
-    )
-  }
-
-  private val linker = Linker.nativeLinker()
-
+private object NativeFfi {
   private val createHandle by lazy {
-    linker.downcallHandle(
-      lib.findOrThrow("clipbird_ble_advertiser_create"),
+    Linker.nativeLinker().downcallHandle(
+      library.findOrThrow("clipbird_ble_advertiser_create"),
       FunctionDescriptor.of(
         ValueLayout.ADDRESS,
         ValueLayout.ADDRESS,
@@ -28,15 +20,15 @@ private object Native {
   }
 
   private val destroyHandle by lazy {
-    linker.downcallHandle(
-      lib.findOrThrow("clipbird_ble_advertiser_destroy"),
+    Linker.nativeLinker().downcallHandle(
+      library.findOrThrow("clipbird_ble_advertiser_destroy"),
       FunctionDescriptor.ofVoid(ValueLayout.ADDRESS),
     )
   }
 
   private val startHandle by lazy {
-    linker.downcallHandle(
-      lib.findOrThrow("clipbird_ble_advertiser_start"),
+    Linker.nativeLinker().downcallHandle(
+      library.findOrThrow("clipbird_ble_advertiser_start"),
       FunctionDescriptor.of(
         ValueLayout.JAVA_INT,
         ValueLayout.ADDRESS,
@@ -45,29 +37,18 @@ private object Native {
   }
 
   private val stopHandle by lazy {
-    linker.downcallHandle(
-      lib.findOrThrow("clipbird_ble_advertiser_stop"),
+    Linker.nativeLinker().downcallHandle(
+      library.findOrThrow("clipbird_ble_advertiser_stop"),
       FunctionDescriptor.of(
         ValueLayout.JAVA_INT,
-        ValueLayout.ADDRESS,
-      ),
-    )
-  }
-
-  private val isAdvertisingHandle by lazy {
-    linker.downcallHandle(
-      lib.findOrThrow("clipbird_ble_advertiser_is_advertising"),
-      FunctionDescriptor.of(
-        ValueLayout.JAVA_INT,
-        ValueLayout.ADDRESS,
         ValueLayout.ADDRESS,
       ),
     )
   }
 
   private val lastErrorHandle by lazy {
-    linker.downcallHandle(
-      lib.findOrThrow("clipbird_ble_advertiser_last_error"),
+    Linker.nativeLinker().downcallHandle(
+      library.findOrThrow("clipbird_ble_advertiser_last_error"),
       FunctionDescriptor.of(ValueLayout.ADDRESS),
     )
   }
@@ -84,10 +65,6 @@ private object Native {
     }
   }
 
-  fun destroy(advertiser: MemorySegment) {
-    destroyHandle.invoke(advertiser)
-  }
-
   fun start(advertiser: MemorySegment) {
     if (startHandle.invoke(advertiser) as Int != 0) {
       throw AdvertisingException("Failed to start advertising: ${lastError()}")
@@ -100,14 +77,8 @@ private object Native {
     }
   }
 
-  fun isAdvertising(advertiser: MemorySegment): Boolean {
-    Arena.ofConfined().use { arena ->
-      val flagSeg = arena.allocate(ValueLayout.JAVA_BYTE)
-      if (isAdvertisingHandle.invoke(advertiser, flagSeg) as Int != 0) {
-        throw AdvertisingException("Failed to check advertising status: ${lastError()}")
-      }
-      return flagSeg.get(ValueLayout.JAVA_BYTE, 0L) != 0.toByte()
-    }
+  fun destroy(advertiser: MemorySegment) {
+    destroyHandle.invoke(advertiser)
   }
 
   fun lastError(): String {
@@ -118,25 +89,21 @@ private object Native {
 }
 
 @OptIn(ExperimentalUuidApi::class)
-class NativeBleAdvertiser(
-  private val serviceUuid: Uuid,
-  private val serviceData: ByteArray,
+class BleAdvertiserFfi(
+  serviceUuid: Uuid,
+  serviceData: ByteArray,
 ) : AutoCloseable {
-  private val handle: MemorySegment = Native.create(serviceUuid, serviceData)
+  private val handle: MemorySegment = NativeFfi.create(serviceUuid, serviceData)
 
   fun start() {
-    Native.start(handle)
+    NativeFfi.start(handle)
   }
 
   fun stop() {
-    Native.stop(handle)
-  }
-
-  fun isAdvertising(): Boolean {
-    return Native.isAdvertising(handle)
+    NativeFfi.stop(handle)
   }
 
   override fun close() {
-    Native.destroy(handle)
+    NativeFfi.destroy(handle)
   }
 }

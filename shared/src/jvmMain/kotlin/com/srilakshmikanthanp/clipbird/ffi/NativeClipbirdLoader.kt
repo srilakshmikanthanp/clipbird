@@ -1,11 +1,11 @@
-package com.srilakshmikanthanp.clipbird
+package com.srilakshmikanthanp.clipbird.ffi
 
 import java.lang.foreign.Arena
 import java.lang.foreign.SymbolLookup
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-object NativeClipbirdLoader {
+internal object NativeClipbirdLoader {
   private val libraryPath by lazy {
     val extension = when {
       System.getProperty("os.name").startsWith("Windows", ignoreCase = true) -> ".dll"

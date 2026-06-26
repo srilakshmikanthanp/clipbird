@@ -1,6 +1,7 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
-import com.srilakshmikanthanp.clipbird.NativeClipbirdLoader.library
+import com.srilakshmikanthanp.clipbird.ffi.NativeClipbirdLoader.library
+import com.srilakshmikanthanp.clipbird.ffi.NativeFfiError
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,7 +72,7 @@ private object NativeFfi {
     Linker.nativeLinker().downcallHandle(
       library.findOrThrow("clipbird_ble_advertiser_start"),
       FunctionDescriptor.of(
-        ValueLayout.JAVA_INT,
+        ValueLayout.JAVA_BOOLEAN,
         ValueLayout.ADDRESS,
       ),
     )
@@ -81,7 +82,7 @@ private object NativeFfi {
     Linker.nativeLinker().downcallHandle(
       library.findOrThrow("clipbird_ble_advertiser_stop"),
       FunctionDescriptor.of(
-        ValueLayout.JAVA_INT,
+        ValueLayout.JAVA_BOOLEAN,
         ValueLayout.ADDRESS,
       ),
     )
@@ -94,45 +95,32 @@ private object NativeFfi {
     )
   }
 
-  private val lastErrorHandle by lazy {
-    Linker.nativeLinker().downcallHandle(
-      library.findOrThrow("clipbird_ble_advertiser_last_error"),
-      FunctionDescriptor.of(ValueLayout.ADDRESS),
-    )
-  }
-
   @OptIn(ExperimentalUuidApi::class)
   fun create(serviceUuid: Uuid, serviceData: ByteArray): MemorySegment {
     Arena.ofConfined().use { arena ->
       val uuidSeg = arena.allocateFrom(serviceUuid.toString())
       val dataSeg = arena.allocate(serviceData.size.toLong())
       MemorySegment.copy(serviceData, 0, dataSeg, ValueLayout.JAVA_BYTE, 0L, serviceData.size)
-      val result = createHandle.invoke(uuidSeg, dataSeg, dataSeg.byteSize()) as MemorySegment
-      if (result == MemorySegment.NULL) throw AdvertisingException("Failed to create native BLE advertiser: ${lastError()}")
+      val result = createHandle.invoke(uuidSeg, dataSeg, serviceData.size) as MemorySegment
+      if (result == MemorySegment.NULL) throw AdvertisingException("Failed to create native BLE advertiser: ${NativeFfiError.lastError()}")
       return result
     }
   }
 
   fun start(advertiser: MemorySegment) {
-    if (startHandle.invoke(advertiser) as Int != 0) {
-      throw AdvertisingException("Failed to start advertising: ${lastError()}")
+    if (!(startHandle.invoke(advertiser) as Boolean)) {
+      throw AdvertisingException("Failed to start advertising: ${NativeFfiError.lastError()}")
     }
   }
 
   fun stop(advertiser: MemorySegment) {
-    if (stopHandle.invoke(advertiser) as Int != 0) {
-      throw AdvertisingException("Failed to stop advertising: ${lastError()}")
+    if (!(stopHandle.invoke(advertiser) as Boolean)) {
+      throw AdvertisingException("Failed to stop advertising: ${NativeFfiError.lastError()}")
     }
   }
 
   fun destroy(advertiser: MemorySegment) {
     destroyHandle.invoke(advertiser)
-  }
-
-  fun lastError(): String {
-    val ptr = lastErrorHandle.invoke() as MemorySegment
-    if (ptr == MemorySegment.NULL) throw IllegalStateException("Failed to get last error")
-    return ptr.getString(0)
   }
 }
 

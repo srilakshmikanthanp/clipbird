@@ -13,7 +13,7 @@ extern "C" {
 
 bool clipbird_ble_advertiser_start(advertiser::ClipBirdAdvertiser* advertiser) {
   if (!advertiser) {
-    error::setLastError(utility::toUnderlying(advertiser::ClipBirdAdvertiserErrorCode::INTERNAL_ERROR), "Invalid argument: advertiser must not be null.");
+    error::setLastError(utility::toUnderlying(advertiser::ClipBirdAdvertiserErrorCode::INVALID_ARGUMENT), "Invalid argument: advertiser must not be null.");
     return false;
   }
   try {
@@ -31,7 +31,7 @@ bool clipbird_ble_advertiser_start(advertiser::ClipBirdAdvertiser* advertiser) {
 
 bool clipbird_ble_advertiser_stop(advertiser::ClipBirdAdvertiser* advertiser) {
   if (!advertiser) {
-    error::setLastError(utility::toUnderlying(advertiser::ClipBirdAdvertiserErrorCode::INTERNAL_ERROR), "Invalid argument: advertiser must not be null.");
+    error::setLastError(utility::toUnderlying(advertiser::ClipBirdAdvertiserErrorCode::INVALID_ARGUMENT), "Invalid argument: advertiser must not be null.");
     return false;
   }
   try {
@@ -49,7 +49,7 @@ bool clipbird_ble_advertiser_stop(advertiser::ClipBirdAdvertiser* advertiser) {
 
 bool clipbird_ble_advertiser_is_advertising(const advertiser::ClipBirdAdvertiser* advertiser, bool* is_advertising) {
   if (!advertiser || !is_advertising) {
-    error::setLastError(utility::toUnderlying(advertiser::ClipBirdAdvertiserErrorCode::INTERNAL_ERROR), "Invalid argument: advertiser and is_advertising must not be null.");
+    error::setLastError(utility::toUnderlying(advertiser::ClipBirdAdvertiserErrorCode::INVALID_ARGUMENT), "Invalid argument: advertiser and is_advertising must not be null.");
     return false;
   }
   try {

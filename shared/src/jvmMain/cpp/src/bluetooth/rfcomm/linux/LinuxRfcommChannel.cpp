@@ -18,8 +18,8 @@ bool LinuxRfcommChannel::isOpen() const {
 	// TODO: Add implementation.
 }
 
-void LinuxRfcommChannel::close() {
-	// TODO: Add implementation.
+LinuxRfcommChannel::~LinuxRfcommChannel() {
+  // TODO: Add implementation.
 }
 
 }  // namespace clipbird::bluetooth::rfcomm

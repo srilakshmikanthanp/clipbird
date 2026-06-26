@@ -8,6 +8,14 @@
 namespace clipbird::io {
 
 /**
+ * Enumeration of error codes for channel operations.
+ */
+enum class ChannelErrorCode: int {
+  INVALID_ARGUMENT = 0,
+  INTERNAL_ERROR = 1
+};
+
+/**
  * Struct representing a Channel instance to hold the implementation of the Channel interface.
  */
 struct ClipBirdChannel {
@@ -25,7 +33,7 @@ extern "C" {
  * @param length The number of bytes to read.
  * @return 0 on success, or a non-zero error code on failure.
  */
-int clipbird_channel_read_exactly(clipbird::io::ClipBirdChannel* channel, std::uint8_t* buffer, int length);
+bool clipbird_channel_read_exactly(clipbird::io::ClipBirdChannel* channel, std::uint8_t* buffer, std::size_t length);
 
 /**
  * Writes `length` bytes from the provided data buffer to the specified channel.
@@ -34,14 +42,15 @@ int clipbird_channel_read_exactly(clipbird::io::ClipBirdChannel* channel, std::u
  * @param length The number of bytes to write.
  * @return 0 on success, or a non-zero error code on failure.
  */
-int clipbird_channel_write(clipbird::io::ClipBirdChannel* channel, const std::uint8_t* data, int length);
+bool clipbird_channel_write(clipbird::io::ClipBirdChannel* channel, const std::uint8_t* data, std::size_t length);
 
 /**
  * Checks if the specified channel is currently open.
  * @param channel A pointer to the ClipBirdChannel instance to check.
- * @return 1 if the channel is open, 0 if it is closed, or a negative error code on failure.
+ * @param is_open A pointer to a boolean variable that will be set to true if the channel is open, or false otherwise.
+ * @return 0 if success, or a non-zero error code on failure.
  */
-int clipbird_channel_is_open(const clipbird::io::ClipBirdChannel* channel);
+bool clipbird_channel_is_open(const clipbird::io::ClipBirdChannel* channel, bool* is_open);
 
 /**
  * Destroys a Channel instance and releases its resources.

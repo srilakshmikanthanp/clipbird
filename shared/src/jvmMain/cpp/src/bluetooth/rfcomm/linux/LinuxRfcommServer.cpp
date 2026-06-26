@@ -10,8 +10,8 @@ std::unique_ptr<io::Channel> LinuxRfcommServer::accept() {
 	// TODO: Add implementation.
 }
 
-void LinuxRfcommServer::close() {
-	// TODO: Add implementation.
+LinuxRfcommServer::~LinuxRfcommServer() {
+  // TODO: Add implementation.
 }
 
 }  // namespace clipbird::bluetooth::rfcomm

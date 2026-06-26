@@ -7,7 +7,7 @@
 
 #include <sdbus-c++/sdbus-c++.h>
 
-namespace clipbird {
+namespace clipbird::bluetooth::ble {
 class LinuxBleAdvertisementData final {
  public:
   LinuxBleAdvertisementData(sdbus::IConnection& connection, sdbus::ObjectPath objectPath,

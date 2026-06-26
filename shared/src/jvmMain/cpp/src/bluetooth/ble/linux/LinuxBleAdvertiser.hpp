@@ -8,10 +8,10 @@
 #include <sdbus-c++/sdbus-c++.h>
 
 #include "LinuxBleAdvertisementData.hpp"
-#include "Advertiser.hpp"
+#include "advertiser/Advertiser.hpp"
 
 
-namespace clipbird {
+namespace clipbird::bluetooth::ble {
 class LinuxBleAdvertiser final : public Advertiser {
  public:
   LinuxBleAdvertiser(const std::string& serviceUuid, const std::vector<std::uint8_t>& serviceData);

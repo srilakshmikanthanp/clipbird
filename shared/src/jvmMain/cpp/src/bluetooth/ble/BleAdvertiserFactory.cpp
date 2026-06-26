@@ -8,7 +8,8 @@
 #include "windows/WindowsBleAdvertiser.hpp"
 #endif
 
-namespace clipbird {
+
+namespace clipbird::bluetooth::ble {
 
 std::unique_ptr<Advertiser> createBleAdvertiser(const std::string& serviceUuid, const std::vector<std::uint8_t>& serviceData) {
 #if defined(__linux__)

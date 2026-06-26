@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "Advertiser.hpp"
+#include "advertiser/Advertiser.hpp"
 
-namespace clipbird {
+namespace clipbird::bluetooth::ble {
 class WindowsBleAdvertiser : public Advertiser {
  public:
   WindowsBleAdvertiser(const std::string& serviceUuid, const std::vector<std::uint8_t>& serviceData);

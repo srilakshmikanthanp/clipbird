@@ -1,6 +1,6 @@
 #include "LinuxBleAdvertisementData.hpp"
 
-namespace clipbird {
+namespace clipbird::bluetooth::ble {
 LinuxBleAdvertisementData::LinuxBleAdvertisementData(sdbus::IConnection& connection,
                                                      sdbus::ObjectPath objectPath,
                                                      std::string serviceUuid,

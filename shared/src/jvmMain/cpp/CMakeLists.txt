@@ -17,13 +17,23 @@ target_include_directories(
   clipbird
   PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include
+  PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 target_sources(
   clipbird
   PRIVATE
+  src/advertiser/AdvertiserFfi.cpp
   src/bluetooth/ble/BleAdvertiserFactory.cpp
-  src/bluetooth/ble/BleAdvertiserFfi.cpp
+  src/bluetooth/ble/BleAdvertiserFactoryFfi.cpp
+  src/bluetooth/rfcomm/BluetoothManagerFactory.cpp
+  src/bluetooth/rfcomm/BluetoothManagerFactoryFfi.cpp
+  src/bluetooth/rfcomm/BluetoothManagerFfi.cpp
+  src/error/Error.cpp
+  src/error/ErrorFfi.cpp
+  src/io/ChannelFfi.cpp
+  src/io/ServerFfi.cpp
 )
 
 if(UNIX)
@@ -51,6 +61,9 @@ if(UNIX)
     PRIVATE
     src/bluetooth/ble/linux/LinuxBleAdvertisementData.cpp
     src/bluetooth/ble/linux/LinuxBleAdvertiser.cpp
+    src/bluetooth/rfcomm/linux/LinuxBluetoothManager.cpp
+    src/bluetooth/rfcomm/linux/LinuxRfcommChannel.cpp
+    src/bluetooth/rfcomm/linux/LinuxRfcommServer.cpp
   )
 
   target_include_directories(
@@ -81,6 +94,9 @@ elseif(WIN32)
   target_sources(
     clipbird
     PRIVATE
-    src/ble/windows/WindowsBleAdvertiser.cpp
+    src/bluetooth/ble/windows/WindowsBleAdvertiser.cpp
+    src/bluetooth/rfcomm/windows/WindowsBluetoothManager.cpp
+    src/bluetooth/rfcomm/windows/WindowsRfcommChannel.cpp
+    src/bluetooth/rfcomm/windows/WindowsRfcommServer.cpp
   )
 endif()

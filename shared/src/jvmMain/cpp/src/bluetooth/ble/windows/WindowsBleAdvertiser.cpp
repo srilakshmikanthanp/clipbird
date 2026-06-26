@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace clipbird {
+namespace clipbird::bluetooth::ble {
 WindowsBleAdvertiser::WindowsBleAdvertiser(const std::string& serviceUuid, const std::vector<std::uint8_t>& serviceData) {
   throw std::runtime_error("WindowsBleAdvertiser is not implemented yet.");
 }

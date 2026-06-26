@@ -32,7 +32,7 @@ private object NativeFfi {
       val dataSeg = arena.allocate(serviceData.size.toLong())
       MemorySegment.copy(serviceData, 0, dataSeg, ValueLayout.JAVA_BYTE, 0L, serviceData.size)
       val result = createHandle.invoke(uuidSeg, dataSeg, serviceData.size) as MemorySegment
-      if (result == MemorySegment.NULL) throw AdvertisingException("Failed to create native BLE advertiser: ${NativeFfiError.lastError()}")
+      if (result == MemorySegment.NULL) throw AdvertisingException("Failed to create native BLE advertiser: ${NativeFfiError.lastErrorMessage()}")
       return result
     }
   }
@@ -49,7 +49,7 @@ private object NativeFfi {
 
   fun start(advertiser: MemorySegment) {
     if (!(startHandle.invoke(advertiser) as Boolean)) {
-      throw AdvertisingException("Failed to start advertising: ${NativeFfiError.lastError()}")
+      throw AdvertisingException("Failed to start advertising: ${NativeFfiError.lastErrorMessage()}")
     }
   }
 
@@ -65,7 +65,7 @@ private object NativeFfi {
 
   fun stop(advertiser: MemorySegment) {
     if (!(stopHandle.invoke(advertiser) as Boolean)) {
-      throw AdvertisingException("Failed to stop advertising: ${NativeFfiError.lastError()}")
+      throw AdvertisingException("Failed to stop advertising: ${NativeFfiError.lastErrorMessage()}")
     }
   }
 

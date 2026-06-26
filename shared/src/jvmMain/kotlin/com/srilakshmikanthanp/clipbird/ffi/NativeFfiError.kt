@@ -30,8 +30,4 @@ internal object NativeFfiError {
   fun lastErrorCode(): Int {
     return lastErrorCodeHandle.invoke() as Int
   }
-
-  fun lastError(): String {
-    return "Error code: ${lastErrorCode()}, message: ${lastErrorMessage()}"
-  }
 }

@@ -1,17 +1,19 @@
 #include "WindowsRfcommServer.hpp"
 
+#include <stdexcept>
+
 namespace clipbird::bluetooth::rfcomm {
 
 WindowsRfcommServer::WindowsRfcommServer() {
-	// TODO: Add implementation.
+	throw std::runtime_error("WindowsRfcommServer is not implemented yet.");
 }
 
 std::unique_ptr<io::Channel> WindowsRfcommServer::accept() {
-	// TODO: Add implementation.
+	throw std::runtime_error("WindowsRfcommServer is not implemented yet.");
 }
 
 void WindowsRfcommServer::close() {
-	// TODO: Add implementation.
+	throw std::runtime_error("WindowsRfcommServer is not implemented yet.");
 }
 
 }  // namespace clipbird::bluetooth::rfcomm

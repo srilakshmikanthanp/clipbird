@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <memory>
 #include <cstdint>
 
@@ -17,21 +18,10 @@ struct ClipBirdBluetoothManager {
 };
 
 /**
- * Struct representing a Bluetooth device with its address, name, and service UUIDs.
- */
-struct ClipBirdBluetoothDevice {
-  const char* address;
-  const char* name;
-  const char** serviceUuids;
-  long serviceUuidCount;
-};
-
-/**
  * Struct representing a list of Bluetooth devices.
  */
 struct ClipBirdBluetoothDeviceList {
-  ClipBirdBluetoothDevice* devices;
-  long count;
+  std::vector<BluetoothDevice> devices;
 };
 
 }  // namespace clipbird::bluetooth::rfcomm
@@ -45,6 +35,58 @@ extern "C" {
  * @return A pointer to a ClipBirdBluetoothDeviceList containing the bonded devices.
  */
 clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* clipbird_bluetooth_manager_bonded_devices(clipbird::bluetooth::rfcomm::ClipBirdBluetoothManager* manager);
+
+/**
+ * Retrieves the number of Bluetooth devices in the list.
+ *
+ * @param list A pointer to the ClipBirdBluetoothDeviceList instance.
+ * @return The number of Bluetooth devices in the list.
+ */
+std::size_t clipbird_bluetooth_device_list_size(const clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list);
+
+/**
+ * Retrieves the address of a Bluetooth device in the list.
+ *
+ * @param list A pointer to the ClipBirdBluetoothDeviceList instance.
+ * @param index The index of the Bluetooth device.
+ * @return The Bluetooth device address.
+ */
+const char* clipbird_bluetooth_device_address(const clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list, std::size_t index);
+
+/**
+ * Retrieves the name of a Bluetooth device in the list.
+ *
+ * @param list A pointer to the ClipBirdBluetoothDeviceList instance.
+ * @param index The index of the Bluetooth device.
+ * @return The Bluetooth device name.
+ */
+const char* clipbird_bluetooth_device_name(const clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list, std::size_t index);
+
+/**
+ * Retrieves the number of service UUIDs for a Bluetooth device in the list.
+ *
+ * @param list A pointer to the ClipBirdBluetoothDeviceList instance.
+ * @param index The index of the Bluetooth device.
+ * @return The number of service UUIDs for the Bluetooth device.
+ */
+std::size_t clipbird_bluetooth_device_service_uuid_count(const clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list, std::size_t index);
+
+/**
+ * Retrieves a service UUID for a Bluetooth device in the list.
+ *
+ * @param list A pointer to the ClipBirdBluetoothDeviceList instance.
+ * @param device_index The index of the Bluetooth device.
+ * @param uuid_index The index of the service UUID.
+ * @return The Bluetooth device service UUID.
+ */
+const char* clipbird_bluetooth_device_service_uuid(const clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list, std::size_t device_index, std::size_t uuid_index);
+
+/**
+ * Destroys a Bluetooth device list and releases any associated resources.
+ *
+ * @param list A pointer to the ClipBirdBluetoothDeviceList instance to destroy.
+ */
+void clipbird_bluetooth_device_list_destroy(clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list);
 
 /**
  * Connects to a Bluetooth device with the specified address and service UUID.

@@ -1,16 +1,9 @@
 package com.srilakshmikanthanp.clipbird.io
 
-import kotlinx.coroutines.flow.StateFlow
 import java.io.EOFException
 import java.io.IOException
 
 interface Channel : AutoCloseable {
-  /**
-   * Indicates whether the channel is currently open.
-   * Should emit `false` when the channel is closed.
-   */
-  val isOpen: StateFlow<Boolean>
-
   /**
    * Read Exactly [size] bytes from the underlying transport, suspending until enough data is available.
    *

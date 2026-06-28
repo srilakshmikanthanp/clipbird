@@ -20,9 +20,6 @@ class BluetoothChannel(
   private val output = DataOutputStream(BufferedOutputStream(socket.outputStream))
   private val input = DataInputStream(BufferedInputStream(socket.inputStream))
 
-  private val _isOpen = MutableStateFlow(socket.isConnected)
-  override val isOpen: StateFlow<Boolean> = _isOpen.asStateFlow()
-
   override suspend fun readExactly(size: Int): ByteArray = withContext(Dispatchers.IO) {
     runCatching {
       val buffer = ByteArray(size)
@@ -43,8 +40,6 @@ class BluetoothChannel(
   }
 
   override fun close() {
-    if (_isOpen.compareAndSet(expect = true, update = false)) {
-      socket.close()
-    }
+    socket.close()
   }
 }

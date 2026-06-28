@@ -45,14 +45,6 @@ bool clipbird_channel_read_exactly(clipbird::io::ClipBirdChannel* channel, std::
 bool clipbird_channel_write(clipbird::io::ClipBirdChannel* channel, const std::uint8_t* data, std::size_t length);
 
 /**
- * Checks if the specified channel is currently open.
- * @param channel A pointer to the ClipBirdChannel instance to check.
- * @param is_open A pointer to a boolean variable that will be set to true if the channel is open, or false otherwise.
- * @return 0 if success, or a non-zero error code on failure.
- */
-bool clipbird_channel_is_open(const clipbird::io::ClipBirdChannel* channel, bool* is_open);
-
-/**
  * Destroys a Channel instance and releases its resources.
  * @param channel A pointer to the ClipBirdChannel instance to destroy.
  */

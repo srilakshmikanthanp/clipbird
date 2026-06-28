@@ -7,7 +7,7 @@
 #include <utility>
 
 namespace clipbird::bluetooth::ble {
-LinuxBleAdvertiser::LinuxBleAdvertiser(const std::string& serviceUuid, const std::vector<std::uint8_t>& serviceData)
+LinuxBleAdvertiser::LinuxBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData)
   : connection(sdbus::createSystemBusConnection()),
     bluezProxy(sdbus::createProxy(
       *connection,
@@ -59,14 +59,10 @@ void LinuxBleAdvertiser::startAdvertising() {
 
   auto options = std::map<std::string, sdbus::Variant>{};
 
-  try {
-    advertisingManagerProxy->callMethod("RegisterAdvertisement")
-      .onInterface(kAdvertisingManagerInterface)
-      .withArguments(advertisementData->getObjectPath(), options);
-    this->advertising = true;
-  } catch (const sdbus::Error& e) {
-    throw std::runtime_error(std::string("Failed to register advertisement: ") + e.what());
-  }
+  advertisingManagerProxy->callMethod("RegisterAdvertisement")
+    .onInterface(kAdvertisingManagerInterface)
+    .withArguments(advertisementData->getObjectPath(), options);
+  this->advertising = true;
 }
 
 bool LinuxBleAdvertiser::isAdvertising() const {
@@ -86,12 +82,8 @@ void LinuxBleAdvertiser::stopAdvertising() {
     adapterPath
   );
 
-  try {
-    advertisingManagerProxy->callMethod("UnregisterAdvertisement")
-      .onInterface(kAdvertisingManagerInterface)
-      .withArguments(advertisementData->getObjectPath());
-  } catch (const sdbus::Error& e) {
-    throw std::runtime_error(std::string("Failed to unregister advertisement: ") + e.what());
-  }
+  advertisingManagerProxy->callMethod("UnregisterAdvertisement")
+    .onInterface(kAdvertisingManagerInterface)
+    .withArguments(advertisementData->getObjectPath());
 }
 }  // namespace clipbird

@@ -10,7 +10,6 @@ class Channel {
  public:
   virtual std::vector<std::uint8_t> readExactly(std::size_t size) = 0;
   virtual void write(const std::vector<std::uint8_t>& data) = 0;
-  virtual bool isOpen() const = 0;
   virtual ~Channel() = default;
 };
 

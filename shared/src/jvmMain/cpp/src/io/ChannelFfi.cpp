@@ -47,25 +47,6 @@ bool clipbird_channel_write(io::ClipBirdChannel* channel, const std::uint8_t* da
   }
 }
 
-bool clipbird_channel_is_open(const io::ClipBirdChannel* channel, bool* is_open) {
-  if (!channel || !is_open) {
-    error::setLastError(utility::toUnderlying(io::ChannelErrorCode::INVALID_ARGUMENT), "Invalid argument: channel and is_open must not be null.");
-    return false;
-  }
-
-  try {
-    *is_open = channel->impl->isOpen();
-    error::clearLastError();
-    return true;
-  } catch (const std::exception& e) {
-    error::setLastError(utility::toUnderlying(io::ChannelErrorCode::INTERNAL_ERROR), e.what());
-    return false;
-  } catch (...) {
-    error::setLastError(utility::toUnderlying(io::ChannelErrorCode::INTERNAL_ERROR), "INTERNAL_ERROR error occurred while checking if the channel is open.");
-    return false;
-  }
-}
-
 void clipbird_channel_destroy(io::ClipBirdChannel* channel) {
 	delete channel;
 }

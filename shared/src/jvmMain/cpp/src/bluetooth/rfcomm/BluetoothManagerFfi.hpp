@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstddef>
-#include <memory>
 #include <cstdint>
+#include <memory>
+#include <vector>
 
 #include "bluetooth/rfcomm/BluetoothManager.hpp"
 #include "io/ChannelFfi.hpp"
@@ -77,9 +78,9 @@ std::size_t clipbird_bluetooth_device_service_uuid_count(const clipbird::bluetoo
  * @param list A pointer to the ClipBirdBluetoothDeviceList instance.
  * @param device_index The index of the Bluetooth device.
  * @param uuid_index The index of the service UUID.
- * @return The Bluetooth device service UUID.
+ * @return A pointer to the Bluetooth device service UUID bytes. The UUID is 16 bytes long.
  */
-const char* clipbird_bluetooth_device_service_uuid(const clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list, std::size_t device_index, std::size_t uuid_index);
+const std::uint8_t* clipbird_bluetooth_device_service_uuid(const clipbird::bluetooth::rfcomm::ClipBirdBluetoothDeviceList* list, std::size_t device_index, std::size_t uuid_index);
 
 /**
  * Destroys a Bluetooth device list and releases any associated resources.

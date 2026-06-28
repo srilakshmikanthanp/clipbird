@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <memory>
-#include <string>
 #include <vector>
 
+#include <boost/uuid/uuid.hpp>
 #include <sdbus-c++/sdbus-c++.h>
 
 #include "LinuxBleAdvertisementData.hpp"
@@ -14,7 +14,7 @@
 namespace clipbird::bluetooth::ble {
 class LinuxBleAdvertiser final : public Advertiser {
  public:
-  LinuxBleAdvertiser(const std::string& serviceUuid, const std::vector<std::uint8_t>& serviceData);
+  LinuxBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData);
   ~LinuxBleAdvertiser() override = default;
 
   void startAdvertising() override;
@@ -38,6 +38,6 @@ class LinuxBleAdvertiser final : public Advertiser {
   inline static constexpr const char* kRootPath = "/";
   inline static constexpr const char* kAdapterInterface = "org.bluez.Adapter1";
   inline static constexpr const char* kAdvertisingManagerInterface = "org.bluez.LEAdvertisingManager1";
-  inline static constexpr const char* kAdvertisementPath = "/com/srilakshmikanthanp/clipbird/advertisement0";
+  inline static constexpr const char* kAdvertisementPath = "/com/srilakshmikanthanp/clipbird/advertisement";
 };
 }  // namespace clipbird

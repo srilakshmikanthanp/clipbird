@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.ffi
 
+import com.srilakshmikanthanp.clipbird.ffi.NativeCleaners
 import com.srilakshmikanthanp.clipbird.ffi.NativeClipbirdLoader.library
 import com.srilakshmikanthanp.clipbird.ffi.NativeFfiError
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
@@ -12,7 +13,7 @@ import kotlin.use
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-private object NativeFfi {
+private object BleAdvertiserFfiBindings {
   private val createHandle by lazy {
     Linker.nativeLinker().downcallHandle(
       library.findOrThrow("clipbird_ble_advertiser_create"),
@@ -86,17 +87,21 @@ class BleAdvertiserFfi(
   serviceUuid: Uuid,
   serviceData: ByteArray,
 ) : AutoCloseable {
-  private val handle: MemorySegment = NativeFfi.create(serviceUuid, serviceData)
+  private val advertiser = BleAdvertiserFfiBindings.create(serviceUuid, serviceData)
+
+  private val cleanable = NativeCleaners.cleaner.register(this) {
+    BleAdvertiserFfiBindings.destroy(advertiser)
+  }
 
   fun start() {
-    NativeFfi.start(handle)
+    BleAdvertiserFfiBindings.start(advertiser)
   }
 
   fun stop() {
-    NativeFfi.stop(handle)
+    BleAdvertiserFfiBindings.stop(advertiser)
   }
 
   override fun close() {
-    NativeFfi.destroy(handle)
+    cleanable.clean()
   }
 }

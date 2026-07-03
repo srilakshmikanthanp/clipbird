@@ -111,7 +111,7 @@ clipbird::io::ClipBirdChannel* clipbird_bluetooth_manager_connect(clipbird::blue
  * nullptr if the server could not be started. The caller is responsible
  * for destroying the server using clipbird_server_destroy.
  */
-clipbird::io::ClipBirdServer* clipbird_bluetooth_manager_start_server(clipbird::bluetooth::rfcomm::ClipBirdBluetoothManager* manager, const char* service_name, const char* service_uuid);
+clipbird::io::ClipBirdServer* clipbird_bluetooth_manager_start(clipbird::bluetooth::rfcomm::ClipBirdBluetoothManager* manager, const char* service_name, const char* service_uuid);
 
 /**
  * Destroys the BluetoothManager instance and releases any associated resources.

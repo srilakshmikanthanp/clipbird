@@ -42,7 +42,7 @@ io::ClipBirdChannel* clipbird_bluetooth_manager_connect(rfcomm::ClipBirdBluetoot
   return new io::ClipBirdChannel{manager->impl->connect(std::string(address), uuidGenerator(service_uuid))};
 }
 
-io::ClipBirdServer* clipbird_bluetooth_manager_start_server(rfcomm::ClipBirdBluetoothManager* manager, const char* service_name, const char* service_uuid) {
+io::ClipBirdServer* clipbird_bluetooth_manager_start(rfcomm::ClipBirdBluetoothManager* manager, const char* service_name, const char* service_uuid) {
   boost::uuids::string_generator uuidGenerator;
   return new io::ClipBirdServer{manager->impl->start(std::string(service_name), uuidGenerator(service_uuid))};
 }

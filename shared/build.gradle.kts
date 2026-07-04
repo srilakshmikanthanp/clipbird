@@ -9,42 +9,6 @@ plugins {
   alias(libs.plugins.ksp)
 }
 
-val jvmMainResourcesDirectory = layout.buildDirectory.dir("generated/jvmMain/resources/native")
-val jvmMainCppDirectory = layout.projectDirectory.dir("src/jvmMain/cpp")
-val jvmMainCppBuildDirectory = jvmMainCppDirectory.dir("build")
-
-tasks.register<Exec>("configureNative") {
-  description = "Configure native build using CMake"
-  workingDir(jvmMainCppDirectory.asFile)
-  commandLine("cmake", "-B", jvmMainCppBuildDirectory.asFile.absolutePath)
-}
-
-tasks.register<Exec>("buildNative") {
-  description = "Build native library"
-  dependsOn("configureNative")
-  workingDir(jvmMainCppDirectory.asFile)
-  commandLine("cmake", "--build", jvmMainCppBuildDirectory.asFile.absolutePath)
-}
-
-tasks.register<Sync>("packageNative") {
-  description = "Copy native libraries into JVM resources"
-  dependsOn("buildNative")
-
-  from(jvmMainCppBuildDirectory) {
-    include("*.dll")
-    include("*.so")
-    include("*.dylib")
-  }
-
-  into(jvmMainResourcesDirectory)
-}
-
-afterEvaluate {
-  tasks.named("jvmProcessResources") {
-    dependsOn("packageNative")
-  }
-}
-
 kotlin {
   jvmToolchain(25)
 
@@ -98,10 +62,8 @@ kotlin {
       implementation(libs.androidx.sqlite.bundled)
     }
 
-    jvmMain {
-      resources.srcDir(
-        layout.buildDirectory.dir("generated/jvmMain/resources")
-      )
+    jvmMain.dependencies {
+      implementation(projects.jvmNative)
     }
 
     commonTest.dependencies {

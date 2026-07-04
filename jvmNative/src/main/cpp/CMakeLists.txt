@@ -13,6 +13,14 @@ add_library(
   SHARED
 )
 
+if(WIN32)
+  set_target_properties(
+    clipbird
+    PROPERTIES
+    PREFIX "lib"
+  )
+endif()
+
 target_include_directories(
   clipbird
   PUBLIC

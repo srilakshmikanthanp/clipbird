@@ -5,11 +5,12 @@ import java.lang.foreign.SymbolLookup
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-internal object NativeClipbirdLoader {
+object NativeClipbirdLoader {
   private val libraryPath by lazy {
     val extension = when {
       System.getProperty("os.name").startsWith("Windows", ignoreCase = true) -> ".dll"
       System.getProperty("os.name").startsWith("Linux", ignoreCase = true) -> ".so"
+      System.getProperty("os.name").startsWith("Mac", ignoreCase = true) -> ".dylib"
       else -> throw UnsupportedOperationException("Unsupported OS: ${System.getProperty("os.name")}")
     }
 

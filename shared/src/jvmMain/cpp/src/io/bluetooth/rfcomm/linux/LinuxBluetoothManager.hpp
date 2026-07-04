@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "bluetooth/rfcomm/BluetoothManager.hpp"
+#include "io/bluetooth/rfcomm/BluetoothManager.hpp"
 #include "LinuxRfcommServer.hpp"
 #include "LinuxRfcommChannel.hpp"
 

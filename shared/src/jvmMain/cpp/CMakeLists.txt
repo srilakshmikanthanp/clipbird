@@ -27,9 +27,9 @@ target_sources(
   src/advertiser/advertiser.cxx
   src/advertiser/ble/BleAdvertiserFactory.cpp
   src/advertiser/ble/ble_advertiser_factory.cxx
-  src/bluetooth/rfcomm/BluetoothManagerFactory.cpp
-  src/bluetooth/rfcomm/BluetoothManagerFactoryFfi.cpp
-  src/bluetooth/rfcomm/BluetoothManagerFfi.cpp
+  src/io/bluetooth/rfcomm/BluetoothManagerFactory.cpp
+  src/io/bluetooth/rfcomm/BluetoothManagerFactoryFfi.cpp
+  src/io/bluetooth/rfcomm/BluetoothManagerFfi.cpp
   src/error/Error.cpp
   src/error/ErrorFfi.cpp
   src/io/ChannelFfi.cpp
@@ -70,12 +70,12 @@ if(UNIX)
     src/log/LogFfi.cpp
     src/advertiser/ble/linux/LinuxBleAdvertisementData.cpp
     src/advertiser/ble/linux/LinuxBleAdvertiser.cpp
-    src/bluetooth/rfcomm/linux/LinuxBluetoothManager.cpp
-    src/bluetooth/rfcomm/linux/LinuxRfcommChannel.cpp
-    src/bluetooth/rfcomm/linux/LinuxRfcommClientProfile.cpp
-    src/bluetooth/rfcomm/linux/LinuxRfcommConnector.cpp
-    src/bluetooth/rfcomm/linux/LinuxRfcommServer.cpp
-    src/bluetooth/rfcomm/linux/LinuxRfcommServerProfile.cpp
+    src/io/bluetooth/rfcomm/linux/LinuxBluetoothManager.cpp
+    src/io/bluetooth/rfcomm/linux/LinuxRfcommChannel.cpp
+    src/io/bluetooth/rfcomm/linux/LinuxRfcommClientProfile.cpp
+    src/io/bluetooth/rfcomm/linux/LinuxRfcommConnector.cpp
+    src/io/bluetooth/rfcomm/linux/LinuxRfcommServer.cpp
+    src/io/bluetooth/rfcomm/linux/LinuxRfcommServerProfile.cpp
   )
 
   target_include_directories(
@@ -116,8 +116,8 @@ elseif(WIN32)
     clipbird
     PRIVATE
     src/advertiser/ble/windows/WindowsBleAdvertiser.cpp
-    src/bluetooth/rfcomm/windows/WindowsBluetoothManager.cpp
-    src/bluetooth/rfcomm/windows/WindowsRfcommChannel.cpp
-    src/bluetooth/rfcomm/windows/WindowsRfcommServer.cpp
+    src/io/bluetooth/rfcomm/windows/WindowsBluetoothManager.cpp
+    src/io/bluetooth/rfcomm/windows/WindowsRfcommChannel.cpp
+    src/io/bluetooth/rfcomm/windows/WindowsRfcommServer.cpp
   )
 endif()

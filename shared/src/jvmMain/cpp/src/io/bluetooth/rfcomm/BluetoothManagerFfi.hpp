@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "bluetooth/rfcomm/BluetoothManager.hpp"
+#include "io/bluetooth/rfcomm/BluetoothManager.hpp"
 #include "io/ChannelFfi.hpp"
 #include "io/ServerFfi.hpp"
 

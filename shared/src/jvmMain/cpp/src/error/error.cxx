@@ -1,4 +1,4 @@
-#include "error/ErrorFfi.hpp"
+#include "error/error.hxx"
 
 extern "C" {
 

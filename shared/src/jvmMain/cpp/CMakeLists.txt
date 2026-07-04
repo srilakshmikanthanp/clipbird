@@ -31,7 +31,7 @@ target_sources(
   src/io/bluetooth/rfcomm/BluetoothManagerFactoryFfi.cpp
   src/io/bluetooth/rfcomm/BluetoothManagerFfi.cpp
   src/error/Error.cpp
-  src/error/ErrorFfi.cpp
+  src/error/error.cxx
   src/io/ChannelFfi.cpp
   src/io/ServerFfi.cpp
 )

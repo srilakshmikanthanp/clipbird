@@ -67,7 +67,7 @@ if(UNIX)
     clipbird
     PRIVATE
     src/log/Log.cpp
-    src/log/LogFfi.cpp
+    src/log/log.cxx
     src/advertiser/ble/linux/LinuxBleAdvertisementData.cpp
     src/advertiser/ble/linux/LinuxBleAdvertiser.cpp
     src/io/bluetooth/rfcomm/linux/LinuxBluetoothManager.cpp

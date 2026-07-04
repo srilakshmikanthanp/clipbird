@@ -2,6 +2,6 @@
 
 namespace clipbird::log {
 
-void configureLogging();
+void configure();
 
 }  // namespace clipbird::log

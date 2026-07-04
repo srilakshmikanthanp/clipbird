@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-void clipbird_configure_log();
+void clipbird_log_configure();
 
 #ifdef __cplusplus
 }

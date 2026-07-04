@@ -2,8 +2,8 @@
 
 extern "C" {
 
-void clipbird_configure_log() {
-  clipbird::log::configureLogging();
+void clipbird_log_configure() {
+  clipbird::log::configure();
 }
 
 }

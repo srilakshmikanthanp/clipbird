@@ -8,9 +8,12 @@
 
 namespace clipbird::log {
 
-void configureLogging() {
-  static std::once_flag configureOnce;
-  std::call_once(configureOnce, []() {
+namespace {
+  std::once_flag flag;
+}
+
+void configure() {
+  std::call_once(flag, []() {
     boost::log::add_common_attributes();
     boost::log::add_console_log(std::clog, boost::log::keywords::format = "[%TimeStamp%] [%Severity%] %Message%");
   });

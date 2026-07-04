@@ -8,7 +8,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <sdbus-c++/sdbus-c++.h>
 
-namespace clipbird::bluetooth::ble {
+namespace clipbird::advertiser::ble {
 class LinuxBleAdvertisementData final {
  public:
   LinuxBleAdvertisementData(sdbus::IConnection& connection, sdbus::ObjectPath objectPath,

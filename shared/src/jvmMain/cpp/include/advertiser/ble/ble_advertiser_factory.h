@@ -8,9 +8,9 @@
 extern "C" {
 #endif
 
-typedef enum clipbird_ble_advertiser_factory_error_code {
-  CLIPBIRD_BLE_ADVERTISER_FACTORY_INTERNAL_ERROR = 1
-} clipbird_ble_advertiser_factory_error_code_t;
+typedef enum clipbird_advertiser_ble_factory_error_code {
+  CLIPBIRD_ADVERTISER_BLE_FACTORY_INTERNAL_ERROR = 1
+} clipbird_advertiser_ble_factory_error_code_t;
 
 /**
  * Creates a new BLE advertiser instance.
@@ -19,7 +19,7 @@ typedef enum clipbird_ble_advertiser_factory_error_code {
  * @param service_data_length The length of the service data.
  * @return A pointer to the created advertiser instance, or nullptr on failure.
  */
-clipbird_ble_advertiser_t* clipbird_ble_advertiser_create(const char* service_uuid, const uint8_t* service_data, int service_data_length);
+clipbird_advertiser_t* clipbird_advertiser_ble_create(const char* service_uuid, const uint8_t* service_data, int service_data_length);
 
 #ifdef __cplusplus
 }

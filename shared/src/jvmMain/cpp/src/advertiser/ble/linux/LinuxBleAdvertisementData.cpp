@@ -2,7 +2,7 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-namespace clipbird::bluetooth::ble {
+namespace clipbird::advertiser::ble {
 LinuxBleAdvertisementData::LinuxBleAdvertisementData(sdbus::IConnection& connection,
                                                      sdbus::ObjectPath objectPath,
                                                      boost::uuids::uuid serviceUuid,

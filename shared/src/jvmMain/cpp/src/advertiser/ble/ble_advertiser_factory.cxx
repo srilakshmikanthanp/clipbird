@@ -10,23 +10,23 @@
 #include <memory>
 #include <vector>
 
-namespace ble = clipbird::bluetooth::ble;
+namespace ble = clipbird::advertiser::ble;
 namespace error = clipbird::error;
 
 extern "C" {
 
-clipbird_ble_advertiser_t* clipbird_ble_advertiser_create(const char* service_uuid, const std::uint8_t* service_data, int service_data_length) {
+clipbird_advertiser_t* clipbird_advertiser_ble_create(const char* service_uuid, const std::uint8_t* service_data, int service_data_length) {
   try {
     boost::uuids::string_generator uuidGenerator;
-    auto advertiserHandle = std::make_unique<clipbird_ble_advertiser>();
+    auto advertiserHandle = std::make_unique<clipbird_advertiser>();
     advertiserHandle->impl = ble::createBleAdvertiser(uuidGenerator(service_uuid), std::vector<std::uint8_t>(service_data, service_data + service_data_length));
     error::clearLastError();
     return advertiserHandle.release();
   } catch (const std::exception& e) {
-    error::setLastError(clipbird_ble_advertiser_factory_error_code::CLIPBIRD_BLE_ADVERTISER_FACTORY_INTERNAL_ERROR, e.what());
+    error::setLastError(clipbird_advertiser_ble_factory_error_code::CLIPBIRD_ADVERTISER_BLE_FACTORY_INTERNAL_ERROR, e.what());
     return nullptr;
   } catch (...) {
-    error::setLastError(clipbird_ble_advertiser_factory_error_code::CLIPBIRD_BLE_ADVERTISER_FACTORY_INTERNAL_ERROR, "Unknown error occurred while creating BLE advertiser.");
+    error::setLastError(clipbird_advertiser_ble_factory_error_code::CLIPBIRD_ADVERTISER_BLE_FACTORY_INTERNAL_ERROR, "Unknown error occurred while creating BLE advertiser.");
     return nullptr;
   }
 }

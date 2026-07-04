@@ -9,7 +9,7 @@
 #endif
 
 
-namespace clipbird::bluetooth::ble {
+namespace clipbird::advertiser::ble {
 
 std::unique_ptr<Advertiser> createBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData) {
 #if defined(__linux__)

@@ -5,6 +5,6 @@
 #include "advertiser/Advertiser.hpp"
 #include "advertiser/advertiser.h"
 
-struct clipbird_ble_advertiser {
+struct clipbird_advertiser {
   std::unique_ptr<clipbird::Advertiser> impl;
 };

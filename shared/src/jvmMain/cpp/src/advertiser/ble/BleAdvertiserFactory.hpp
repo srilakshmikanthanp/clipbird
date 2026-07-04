@@ -8,6 +8,6 @@
 
 #include "advertiser/Advertiser.hpp"
 
-namespace clipbird::bluetooth::ble {
+namespace clipbird::advertiser::ble {
 std::unique_ptr<Advertiser> createBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData);
 }  // namespace clipbird

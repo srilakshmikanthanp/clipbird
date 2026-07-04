@@ -11,7 +11,7 @@
 #include "advertiser/Advertiser.hpp"
 
 
-namespace clipbird::bluetooth::ble {
+namespace clipbird::advertiser::ble {
 class LinuxBleAdvertiser final : public Advertiser {
  public:
   LinuxBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData);

@@ -6,7 +6,7 @@
 #include <string>
 #include <utility>
 
-namespace clipbird::bluetooth::ble {
+namespace clipbird::advertiser::ble {
 LinuxBleAdvertiser::LinuxBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData)
   : connection(sdbus::createSystemBusConnection()),
     bluezProxy(sdbus::createProxy(

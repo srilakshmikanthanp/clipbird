@@ -1,5 +1,5 @@
-import clipbird.build.cmake.buildCmake
-import clipbird.build.cmake.configureCmake
+import clipbird.cpp.cmake.buildCmake
+import clipbird.cpp.cmake.configureCmake
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Sync
 import org.gradle.jvm.toolchain.JavaLanguageVersion

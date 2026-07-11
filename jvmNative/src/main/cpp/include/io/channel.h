@@ -12,7 +12,9 @@ typedef struct clipbird_io_channel clipbird_io_channel_t;
 
 typedef enum clipbird_io_channel_error_code {
   CLIPBIRD_IO_CHANNEL_INVALID_ARGUMENT = 0,
-  CLIPBIRD_IO_CHANNEL_INTERNAL_ERROR = 1
+  CLIPBIRD_IO_CHANNEL_INTERNAL_ERROR = 1,
+  CLIPBIRD_IO_CHANNEL_EOF = 2,
+  CLIPBIRD_IO_CHANNEL_IO_ERROR = 3
 } clipbird_io_channel_error_code_t;
 
 /**

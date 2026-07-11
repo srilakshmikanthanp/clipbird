@@ -6,5 +6,5 @@
 #include "io/bluetooth/BluetoothManager.hpp"
 
 struct clipbird_bluetooth_manager {
-  std::unique_ptr<clipbird::bluetooth::BluetoothManager> impl;
+  std::unique_ptr<clipbird::io::bluetooth::BluetoothManager> impl;
 };

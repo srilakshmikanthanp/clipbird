@@ -5,7 +5,7 @@
 
 #include <boost/uuid/uuid.hpp>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 struct BluetoothDevice {
   std::string address;
@@ -13,4 +13,4 @@ struct BluetoothDevice {
   std::vector<boost::uuids::uuid> serviceUuids;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

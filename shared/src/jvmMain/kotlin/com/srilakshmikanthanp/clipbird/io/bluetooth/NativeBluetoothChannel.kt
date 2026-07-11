@@ -2,8 +2,9 @@ package com.srilakshmikanthanp.clipbird.io.bluetooth
 
 import com.srilakshmikanthanp.clipbird.extensions.orThrow
 import com.srilakshmikanthanp.clipbird.ffi.NativeCleaners
-import com.srilakshmikanthanp.clipbird.ffi.NativeError
+import com.srilakshmikanthanp.clipbird.ffi.error.NativeError
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
+import com.srilakshmikanthanp.clipbird.ffi.io.bluetooth.toChannelReadExactlyException
 import com.srilakshmikanthanp.clipbird.io.Channel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,7 +18,7 @@ private object BluetoothChannelHandle {
   fun readExactly(channel: MemorySegment, size: Int): ByteArray {
     Arena.ofConfined().use { arena ->
       val buffer: MemorySegment = arena.allocate(size.toLong())
-      Clipbird.clipbird_io_channel_read_exactly(channel, buffer, size.toLong()).orThrow { IOException("Failed to read from channel: ${NativeError.lastErrorMessage()}") }
+      Clipbird.clipbird_io_channel_read_exactly(channel, buffer, size.toLong()).orThrow { NativeError.lastErrorCode().toChannelReadExactlyException() }
       return buffer.toArray(ValueLayout.JAVA_BYTE)
     }
   }

@@ -7,7 +7,7 @@
 #include <map>
 #include <vector>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 std::vector<bluetooth::BluetoothDevice> LinuxBluetoothManager::bondedDevices() {
   using InterfaceProperties = std::map<sdbus::InterfaceName, LinuxStdBusProperties>;
@@ -70,4 +70,4 @@ std::unique_ptr<io::Server> LinuxBluetoothManager::startRfcommServer(const std::
   return std::make_unique<LinuxRfcommServer>(serviceName, serviceUuid);
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

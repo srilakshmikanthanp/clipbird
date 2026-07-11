@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ffi
+package com.srilakshmikanthanp.clipbird.ffi.error
 
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
 import java.lang.foreign.MemorySegment

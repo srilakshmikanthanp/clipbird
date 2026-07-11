@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 std::vector<bluetooth::BluetoothDevice> WindowsBluetoothManager::bondedDevices() {
 	throw std::runtime_error("WindowsBluetoothManager::bondedDevices() is not implemented yet.");
@@ -16,4 +16,4 @@ std::unique_ptr<io::Server> WindowsBluetoothManager::startRfcommServer(const std
   throw std::runtime_error("WindowsBluetoothManager::startRfcommServer() is not implemented yet.");
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

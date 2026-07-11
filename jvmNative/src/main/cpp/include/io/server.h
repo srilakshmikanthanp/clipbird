@@ -10,7 +10,8 @@ typedef struct clipbird_io_server clipbird_io_server_t;
 
 typedef enum clipbird_io_server_error_code {
   CLIPBIRD_IO_SERVER_INVALID_ARGUMENT = 0,
-  CLIPBIRD_IO_SERVER_INTERNAL_ERROR = 1
+  CLIPBIRD_IO_SERVER_INTERNAL_ERROR = 1,
+  CLIPBIRD_IO_SERVER_IO_ERROR = 2
 } clipbird_io_server_error_code_t;
 
 /**

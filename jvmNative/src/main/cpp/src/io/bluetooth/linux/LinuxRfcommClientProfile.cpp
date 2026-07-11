@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <utility>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 LinuxRfcommClientProfile::LinuxRfcommClientProfile(sdbus::IConnection& connection, const boost::uuids::uuid& serviceUuid)
   : connection(connection),
@@ -89,4 +89,4 @@ LinuxRfcommClientProfile::~LinuxRfcommClientProfile() {
   }
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

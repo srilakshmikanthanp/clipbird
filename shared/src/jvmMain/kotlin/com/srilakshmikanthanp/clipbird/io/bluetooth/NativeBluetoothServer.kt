@@ -2,7 +2,7 @@ package com.srilakshmikanthanp.clipbird.io.bluetooth
 
 import com.srilakshmikanthanp.clipbird.extensions.orThrow
 import com.srilakshmikanthanp.clipbird.ffi.NativeCleaners
-import com.srilakshmikanthanp.clipbird.ffi.NativeError
+import com.srilakshmikanthanp.clipbird.ffi.error.NativeError
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.io.Server
 import kotlinx.coroutines.Dispatchers

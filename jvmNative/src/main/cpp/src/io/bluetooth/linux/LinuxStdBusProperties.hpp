@@ -9,7 +9,7 @@
 #include <boost/uuid/string_generator.hpp>
 #include <sdbus-c++/sdbus-c++.h>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 using LinuxStdBusProperties = std::map<sdbus::PropertyName, sdbus::Variant>;
 
@@ -41,4 +41,4 @@ std::optional<T> getProperty(const LinuxStdBusProperties& properties, const std:
 	return fromVariant<T>(property->second);
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

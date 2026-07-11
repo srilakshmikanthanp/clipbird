@@ -7,7 +7,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <sdbus-c++/sdbus-c++.h>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class LinuxRfcommClientProfile final {
  public:
@@ -37,4 +37,4 @@ class LinuxRfcommClientProfile final {
   bool registered = false;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

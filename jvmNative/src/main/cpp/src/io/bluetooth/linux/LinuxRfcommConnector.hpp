@@ -7,7 +7,7 @@
 
 #include "LinuxRfcommClientProfile.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class LinuxRfcommConnector final {
  public:
@@ -30,4 +30,4 @@ class LinuxRfcommConnector final {
   std::atomic_bool connected = false;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

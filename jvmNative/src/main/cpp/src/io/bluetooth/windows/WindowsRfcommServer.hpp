@@ -2,7 +2,7 @@
 
 #include "io/Server.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class WindowsRfcommServer final : public io::Server {
  public:
@@ -12,4 +12,4 @@ class WindowsRfcommServer final : public io::Server {
   void close() override;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

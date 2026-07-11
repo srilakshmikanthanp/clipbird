@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 WindowsRfcommChannel::WindowsRfcommChannel() {
   throw std::runtime_error("WindowsRfcommChannel::WindowsRfcommChannel() is not implemented yet.");
@@ -19,4 +19,4 @@ void WindowsRfcommChannel::write(const std::vector<std::uint8_t>& data) {
 WindowsRfcommChannel::~WindowsRfcommChannel() {
   throw std::runtime_error("WindowsRfcommChannel::~WindowsRfcommChannel() is not implemented yet.");
 }
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

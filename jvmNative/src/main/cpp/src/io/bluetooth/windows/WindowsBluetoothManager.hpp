@@ -2,7 +2,7 @@
 
 #include "io/bluetooth/BluetoothManager.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class WindowsBluetoothManager final : public BluetoothManager {
  public:
@@ -11,4 +11,4 @@ class WindowsBluetoothManager final : public BluetoothManager {
   std::unique_ptr<io::Server> startRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid) override;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

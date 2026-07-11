@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 WindowsRfcommServer::WindowsRfcommServer() {
 	throw std::runtime_error("WindowsRfcommServer is not implemented yet.");
@@ -16,4 +16,4 @@ void WindowsRfcommServer::close() {
 	throw std::runtime_error("WindowsRfcommServer is not implemented yet.");
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

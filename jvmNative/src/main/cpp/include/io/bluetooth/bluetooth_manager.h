@@ -13,6 +13,15 @@ extern "C" {
 
 typedef struct clipbird_bluetooth_device_list clipbird_bluetooth_device_list_t;
 
+typedef enum clipbird_bluetooth_manager_error_code {
+  CLIPBIRD_BLUETOOTH_MANAGER_INVALID_ARGUMENT = 0,
+  CLIPBIRD_BLUETOOTH_MANAGER_INTERNAL_ERROR = 1,
+  CLIPBIRD_BLUETOOTH_MANAGER_INVALID_DEVICE_ADDRESS = 2,
+  CLIPBIRD_BLUETOOTH_MANAGER_DEVICE_NOT_FOUND = 3,
+  CLIPBIRD_BLUETOOTH_MANAGER_SERVICE_NOT_FOUND = 4,
+  CLIPBIRD_BLUETOOTH_MANAGER_IO_ERROR = 5
+} clipbird_bluetooth_manager_error_code_t;
+
 /**
  * Retrieves a list of bonded Bluetooth devices.
  * @param manager A pointer to the Bluetooth manager instance.

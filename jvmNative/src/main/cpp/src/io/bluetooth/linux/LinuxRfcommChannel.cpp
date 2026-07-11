@@ -10,7 +10,7 @@
 
 #include "io/EOFException.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 LinuxRfcommChannel::LinuxRfcommChannel(int socket_fd) : socket_fd(socket_fd) {
   // No additional initialization required for now.
@@ -64,4 +64,4 @@ LinuxRfcommChannel::~LinuxRfcommChannel() {
   ::close(socket_fd);
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

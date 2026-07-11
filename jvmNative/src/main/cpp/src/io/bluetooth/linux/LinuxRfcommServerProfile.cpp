@@ -7,7 +7,7 @@
 
 #include "io/IOException.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 LinuxRfcommServerProfile::LinuxRfcommServerProfile(
   sdbus::IConnection& connection,
@@ -79,4 +79,4 @@ LinuxRfcommServerProfile::~LinuxRfcommServerProfile() {
   }
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

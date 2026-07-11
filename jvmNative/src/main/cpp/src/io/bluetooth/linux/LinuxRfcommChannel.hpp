@@ -2,7 +2,7 @@
 
 #include "io/Channel.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class LinuxRfcommChannel final : public io::Channel {
  public:
@@ -16,4 +16,4 @@ class LinuxRfcommChannel final : public io::Channel {
   int socket_fd;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

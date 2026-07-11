@@ -4,6 +4,6 @@
 
 #include "io/bluetooth/BluetoothManager.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 std::unique_ptr<BluetoothManager> createBluetoothManager();
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

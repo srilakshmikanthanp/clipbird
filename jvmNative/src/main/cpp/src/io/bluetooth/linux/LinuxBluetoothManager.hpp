@@ -9,7 +9,7 @@
 #include "LinuxRfcommServer.hpp"
 #include "LinuxRfcommChannel.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class LinuxBluetoothManager final : public BluetoothManager {
  public:
@@ -21,4 +21,4 @@ class LinuxBluetoothManager final : public BluetoothManager {
   std::unique_ptr<sdbus::IConnection> connection = sdbus::createSystemBusConnection();
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

@@ -4,7 +4,7 @@
 
 #include "io/Channel.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class WindowsRfcommChannel final : public io::Channel {
  public:
@@ -15,4 +15,4 @@ class WindowsRfcommChannel final : public io::Channel {
   ~WindowsRfcommChannel() override;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

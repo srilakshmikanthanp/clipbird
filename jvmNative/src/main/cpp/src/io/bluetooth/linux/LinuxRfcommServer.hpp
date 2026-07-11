@@ -8,7 +8,7 @@
 
 #include "io/Server.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 class LinuxRfcommServerProfile;
 
@@ -23,4 +23,4 @@ class LinuxRfcommServer final : public io::Server {
   std::unique_ptr<LinuxRfcommServerProfile> profileRegistration;
 };
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

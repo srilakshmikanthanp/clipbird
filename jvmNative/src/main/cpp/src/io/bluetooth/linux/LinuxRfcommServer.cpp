@@ -2,7 +2,7 @@
 #include "LinuxRfcommServer.hpp"
 #include "LinuxRfcommServerProfile.hpp"
 
-namespace clipbird::bluetooth {
+namespace clipbird::io::bluetooth {
 
 LinuxRfcommServer::LinuxRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid)
   : connection(sdbus::createSystemBusConnection()),
@@ -20,4 +20,4 @@ LinuxRfcommServer::~LinuxRfcommServer() {
 	connection->leaveEventLoop();
 }
 
-}  // namespace clipbird::bluetooth
+}  // namespace clipbird::io::bluetooth

@@ -1,5 +1,4 @@
 #include "io/bluetooth/BluetoothDeviceNotFoundException.hpp"
-#include "io/bluetooth/BluetoothInvalidDeviceAddressException.hpp"
 #include "LinuxRfcommConnector.hpp"
 #include "LinuxStdBusProperties.hpp"
 
@@ -49,7 +48,7 @@ std::string LinuxRfcommConnector::normalize(const std::string& address) {
   bdaddr_t parsedAddress{};
 
   if (str2ba(address.c_str(), &parsedAddress) != 0) {
-    throw BluetoothInvalidDeviceAddressException("Invalid Bluetooth address: " + address);
+    throw std::invalid_argument("Invalid Bluetooth address: " + address);
   }
 
   normalizedAddress.resize(18);

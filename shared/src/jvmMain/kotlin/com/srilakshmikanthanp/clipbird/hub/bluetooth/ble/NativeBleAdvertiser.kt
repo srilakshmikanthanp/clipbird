@@ -2,7 +2,7 @@ package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
 import com.srilakshmikanthanp.clipbird.extensions.orThrow
 import com.srilakshmikanthanp.clipbird.ffi.NativeCleaners
-import com.srilakshmikanthanp.clipbird.ffi.NativeError
+import com.srilakshmikanthanp.clipbird.ffi.error.NativeError
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
 import java.lang.foreign.Arena

@@ -13,7 +13,15 @@ import kotlinx.coroutines.withContext
 actual class BluetoothManager : ClientFactory<BluetoothServerEndpoint>, ServerFactory<BluetoothServerConfig> {
   private val nativeBluetoothManager = NativeBluetoothManager()
 
-  actual val boundedDevices: StateFlow<List<BluetoothDevice>> = MutableStateFlow<List<BluetoothDevice>>(emptyList()).asStateFlow()
+  private val _boundedDevices = MutableStateFlow(nativeBluetoothManager.bondedDevices())
+
+  actual val boundedDevices: StateFlow<List<BluetoothDevice>> = _boundedDevices.asStateFlow()
+
+  init {
+    nativeBluetoothManager.setBondedDevicesChangedCallback {
+      _boundedDevices.value = nativeBluetoothManager.bondedDevices()
+    }
+  }
 
   override suspend fun connect(endpoint: BluetoothServerEndpoint): Channel = withContext(Dispatchers.IO) {
     NativeBluetoothChannel(nativeBluetoothManager.connect(endpoint))

@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ffi
+package com.srilakshmikanthanp.clipbird.ffi.loader
 
 import java.lang.foreign.Arena
 import java.lang.foreign.SymbolLookup

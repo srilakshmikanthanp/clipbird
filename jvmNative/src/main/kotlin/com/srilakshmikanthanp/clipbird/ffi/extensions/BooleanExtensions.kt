@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.extensions
+package com.srilakshmikanthanp.clipbird.ffi.extensions
 
 fun Boolean.orThrow(supplier: () -> Throwable): Boolean {
   if (!this) {

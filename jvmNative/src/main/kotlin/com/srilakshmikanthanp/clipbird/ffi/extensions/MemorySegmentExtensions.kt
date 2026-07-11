@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.extensions
+package com.srilakshmikanthanp.clipbird.ffi.extensions
 
 import java.lang.foreign.MemorySegment
 

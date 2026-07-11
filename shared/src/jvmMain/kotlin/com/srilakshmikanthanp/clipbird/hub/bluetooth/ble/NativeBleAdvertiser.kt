@@ -1,8 +1,8 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
-import com.srilakshmikanthanp.clipbird.extensions.orThrow
-import com.srilakshmikanthanp.clipbird.ffi.NativeCleaners
-import com.srilakshmikanthanp.clipbird.ffi.error.NativeError
+import com.srilakshmikanthanp.clipbird.ffi.extensions.orThrow
+import com.srilakshmikanthanp.clipbird.ffi.common.NativeCleaners
+import com.srilakshmikanthanp.clipbird.ffi.error.NativeErrorHandle
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
 import java.lang.foreign.Arena
@@ -21,19 +21,19 @@ private object BleAdvertiserHandle {
         serviceData.size
       )
     }.orThrow {
-      AdvertisingException("Failed to create BLE advertiser: ${NativeError.lastErrorMessage()}")
+      AdvertisingException("Failed to create BLE advertiser: ${NativeErrorHandle.lastErrorMessage()}")
     }
   }
 
   fun start(advertiser: MemorySegment) {
     Clipbird.clipbird_advertiser_start(advertiser).orThrow {
-      AdvertisingException("Failed to start advertising: ${NativeError.lastErrorMessage()}")
+      AdvertisingException("Failed to start advertising: ${NativeErrorHandle.lastErrorMessage()}")
     }
   }
 
   fun stop(advertiser: MemorySegment) {
     Clipbird.clipbird_advertiser_stop(advertiser).orThrow {
-      AdvertisingException("Failed to stop advertising: ${NativeError.lastErrorMessage()}")
+      AdvertisingException("Failed to stop advertising: ${NativeErrorHandle.lastErrorMessage()}")
     }
   }
 

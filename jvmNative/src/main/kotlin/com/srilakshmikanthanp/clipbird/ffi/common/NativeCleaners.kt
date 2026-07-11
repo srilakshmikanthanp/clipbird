@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ffi
+package com.srilakshmikanthanp.clipbird.ffi.common
 
 import java.lang.ref.Cleaner
 

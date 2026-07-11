@@ -22,12 +22,29 @@ typedef enum clipbird_bluetooth_manager_error_code {
   CLIPBIRD_BLUETOOTH_MANAGER_IO_ERROR = 5
 } clipbird_bluetooth_manager_error_code_t;
 
+typedef void (*clipbird_bluetooth_manager_bonded_devices_changed_callback_t)(void* context);
+
 /**
  * Retrieves a list of bonded Bluetooth devices.
  * @param manager A pointer to the Bluetooth manager instance.
  * @return A pointer to a device list containing the bonded devices.
  */
 clipbird_bluetooth_device_list_t* clipbird_bluetooth_manager_bonded_devices(clipbird_bluetooth_manager_t* manager);
+
+/**
+ * Registers a callback that is invoked when the bonded-device set changes.
+ * The callback does not receive device data; call clipbird_bluetooth_manager_bonded_devices() to refresh the latest list.
+ * @param manager A pointer to the Bluetooth manager instance.
+ * @param callback The callback to invoke when the bonded-device set changes.
+ * @param context Opaque user data passed back to the callback.
+ */
+void clipbird_bluetooth_manager_set_bonded_devices_changed_callback(clipbird_bluetooth_manager_t* manager, clipbird_bluetooth_manager_bonded_devices_changed_callback_t callback, void* context);
+
+/**
+ * Removes the bonded-device change callback previously registered with clipbird_bluetooth_manager_set_bonded_devices_changed_callback().
+ * @param manager A pointer to the Bluetooth manager instance.
+ */
+void clipbird_bluetooth_manager_remove_bonded_devices_changed_callback(clipbird_bluetooth_manager_t* manager);
 
 /**
  * Retrieves the number of Bluetooth devices in the list.
@@ -51,23 +68,6 @@ const char* clipbird_bluetooth_device_address(const clipbird_bluetooth_device_li
  * @return The Bluetooth device name.
  */
 const char* clipbird_bluetooth_device_name(const clipbird_bluetooth_device_list_t* list, size_t index);
-
-/**
- * Retrieves the number of service UUIDs for a Bluetooth device in the list.
- * @param list A pointer to the device list instance.
- * @param index The index of the Bluetooth device.
- * @return The number of service UUIDs for the Bluetooth device.
- */
-size_t clipbird_bluetooth_device_service_uuid_count(const clipbird_bluetooth_device_list_t* list, size_t index);
-
-/**
- * Retrieves a service UUID for a Bluetooth device in the list.
- * @param list A pointer to the device list instance.
- * @param device_index The index of the Bluetooth device.
- * @param uuid_index The index of the service UUID.
- * @return A pointer to the Bluetooth device service UUID bytes. The UUID is 16 bytes long.
- */
-const uint8_t* clipbird_bluetooth_device_service_uuid(const clipbird_bluetooth_device_list_t* list, size_t device_index, size_t uuid_index);
 
 /**
  * Destroys a Bluetooth device list and releases any associated resources.

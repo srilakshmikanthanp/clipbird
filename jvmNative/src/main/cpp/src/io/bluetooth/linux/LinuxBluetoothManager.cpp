@@ -2,23 +2,67 @@
 #include "LinuxRfcommConnector.hpp"
 #include "LinuxStdBusProperties.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <sdbus-c++/sdbus-c++.h>
 
+#include <algorithm>
+#include <functional>
 #include <map>
+#include <mutex>
 #include <vector>
 
 namespace clipbird::io::bluetooth {
+
+LinuxBluetoothManager::LinuxBluetoothManager()
+  : objectManager(sdbus::createProxy(*connection, sdbus::ServiceName("org.bluez"), sdbus::ObjectPath("/"))) {
+
+  objectManager
+    ->uponSignal("InterfacesAdded")
+    .onInterface(kObjectManagerInterface)
+    .call([this](const sdbus::ObjectPath&, const std::map<sdbus::InterfaceName, std::map<sdbus::PropertyName, sdbus::Variant>>& interfacesAndProperties) {
+      if (interfacesAndProperties.find(sdbus::InterfaceName(kBluezDeviceInterface)) != interfacesAndProperties.end()) {
+        this->notifyBondedDevicesChanged();
+      }
+    });
+
+  objectManager
+    ->uponSignal("InterfacesRemoved")
+    .onInterface(kObjectManagerInterface)
+    .call([this](const sdbus::ObjectPath&, const std::vector<sdbus::InterfaceName>& interfaces) {
+      if (std::find(interfaces.begin(), interfaces.end(), sdbus::InterfaceName(kBluezDeviceInterface)) != interfaces.end()) {
+        this->notifyBondedDevicesChanged();
+      }
+    });
+
+  connection->enterEventLoopAsync();
+}
+
+LinuxBluetoothManager::~LinuxBluetoothManager() {
+  this->connection->leaveEventLoop();
+  this->removeBondedDevicesChangedCallback();
+}
+
+void LinuxBluetoothManager::setBondedDevicesChangedCallback(std::function<void()> callback) {
+  std::lock_guard<std::mutex> guard(bondedDevicesChangedMutex);
+  bondedDevicesChangedCallback = std::move(callback);
+}
+
+void LinuxBluetoothManager::removeBondedDevicesChangedCallback() {
+  std::unique_lock<std::mutex> lock(bondedDevicesChangedMutex);
+  bondedDevicesChangedCallback = {};
+  bondedDevicesChangedCondition.wait(lock, [this]() {
+    return bondedDevicesChangedInFlightCount == 0;
+  });
+}
 
 std::vector<bluetooth::BluetoothDevice> LinuxBluetoothManager::bondedDevices() {
   using InterfaceProperties = std::map<sdbus::InterfaceName, LinuxStdBusProperties>;
   using ManagedObjects = std::map<sdbus::ObjectPath, InterfaceProperties>;
 
-  auto manager = sdbus::createProxy(*connection, sdbus::ServiceName("org.bluez"), sdbus::ObjectPath("/"));
-
   ManagedObjects managedObjects;
 
-  manager->callMethod("GetManagedObjects")
-    .onInterface("org.freedesktop.DBus.ObjectManager")
+  objectManager->callMethod("GetManagedObjects")
+    .onInterface(kObjectManagerInterface)
     .storeResultsTo(managedObjects);
 
   std::vector<bluetooth::BluetoothDevice> devices;
@@ -48,16 +92,41 @@ std::vector<bluetooth::BluetoothDevice> LinuxBluetoothManager::bondedDevices() {
       name = getProperty<std::string>(properties, "Name");
     }
 
-    auto uuids = getProperty<std::vector<boost::uuids::uuid>>(properties, "UUIDs");
-
-    devices.push_back(bluetooth::BluetoothDevice{
-      *address,
-      name.value_or("Unknown"),
-      uuids.value_or(std::vector<boost::uuids::uuid>{})
-    });
+    devices.push_back(bluetooth::BluetoothDevice{ *address, name.value_or("Unknown") });
   }
 
   return devices;
+}
+
+void LinuxBluetoothManager::notifyBondedDevicesChanged() {
+  std::function<void()> callback;
+
+  {
+    std::lock_guard<std::mutex> guard(bondedDevicesChangedMutex);
+
+    if (!bondedDevicesChangedCallback) {
+      return;
+    }
+
+    ++bondedDevicesChangedInFlightCount;
+    callback = bondedDevicesChangedCallback;
+  }
+
+  try {
+    callback();
+  } catch (const std::exception& e) {
+    BOOST_LOG_TRIVIAL(warning) << "Bonded-device change callback failed: " << e.what();
+  } catch (...) {
+    BOOST_LOG_TRIVIAL(warning) << "Bonded-device change callback failed with an unknown error";
+  }
+
+  {
+    std::lock_guard<std::mutex> guard(bondedDevicesChangedMutex);
+
+    if (--bondedDevicesChangedInFlightCount == 0) {
+      bondedDevicesChangedCondition.notify_all();
+    }
+  }
 }
 
 std::unique_ptr<io::Channel> LinuxBluetoothManager::connectRfcomm(const std::string& address, const boost::uuids::uuid& serviceUuid) {

@@ -4,6 +4,14 @@
 
 namespace clipbird::io::bluetooth {
 
+void WindowsBluetoothManager::setBondedDevicesChangedCallback(std::function<void()>) {
+  throw std::runtime_error("WindowsBluetoothManager::setBondedDevicesChangedCallback() is not implemented yet.");
+}
+
+void WindowsBluetoothManager::removeBondedDevicesChangedCallback() {
+  throw std::runtime_error("WindowsBluetoothManager::removeBondedDevicesChangedCallback() is not implemented yet.");
+}
+
 std::vector<bluetooth::BluetoothDevice> WindowsBluetoothManager::bondedDevices() {
 	throw std::runtime_error("WindowsBluetoothManager::bondedDevices() is not implemented yet.");
 }

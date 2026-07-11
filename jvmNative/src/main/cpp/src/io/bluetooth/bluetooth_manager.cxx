@@ -40,6 +40,37 @@ clipbird_bluetooth_device_list_t* clipbird_bluetooth_manager_bonded_devices(clip
   }
 }
 
+void clipbird_bluetooth_manager_set_bonded_devices_changed_callback(
+  clipbird_bluetooth_manager_t* manager,
+  clipbird_bluetooth_manager_bonded_devices_changed_callback_t callback,
+  void* context
+) {
+  if (!manager || !manager->impl) {
+    error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INVALID_ARGUMENT, "Invalid argument: manager must not be null.");
+    return;
+  }
+
+  if (!callback) {
+    error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INVALID_ARGUMENT, "Invalid argument: callback must not be null.");
+    return;
+  }
+
+  manager->impl->setBondedDevicesChangedCallback([callback, context]() { callback(context); });
+  error::clearLastError();
+}
+
+void clipbird_bluetooth_manager_remove_bonded_devices_changed_callback(
+  clipbird_bluetooth_manager_t* manager
+) {
+  if (!manager || !manager->impl) {
+    error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INVALID_ARGUMENT, "Invalid argument: manager must not be null.");
+    return;
+  } else {
+    manager->impl->removeBondedDevicesChangedCallback();
+    error::clearLastError();
+  }
+}
+
 std::size_t clipbird_bluetooth_device_list_size(const clipbird_bluetooth_device_list_t* list) {
   return list->devices.size();
 }
@@ -50,14 +81,6 @@ const char* clipbird_bluetooth_device_address(const clipbird_bluetooth_device_li
 
 const char* clipbird_bluetooth_device_name(const clipbird_bluetooth_device_list_t* list, std::size_t index) {
   return list->devices[index].name.c_str();
-}
-
-std::size_t clipbird_bluetooth_device_service_uuid_count(const clipbird_bluetooth_device_list_t* list, std::size_t index) {
-  return list->devices[index].serviceUuids.size();
-}
-
-const std::uint8_t* clipbird_bluetooth_device_service_uuid(const clipbird_bluetooth_device_list_t* list, std::size_t device_index, std::size_t uuid_index) {
-  return list->devices[device_index].serviceUuids[uuid_index].data;
 }
 
 void clipbird_bluetooth_device_list_destroy(clipbird_bluetooth_device_list_t* list) {

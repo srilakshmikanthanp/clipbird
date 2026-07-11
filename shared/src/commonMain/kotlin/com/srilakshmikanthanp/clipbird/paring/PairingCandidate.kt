@@ -1,3 +1,5 @@
 package com.srilakshmikanthanp.clipbird.paring
 
-interface PairingCandidate
+interface PairingCandidate {
+  val name: String
+}

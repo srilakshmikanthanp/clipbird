@@ -13,21 +13,20 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class BluetoothPairingCandidateProvider(
-  private val bluetoothPairedDeviceService: BluetoothPairedDeviceService,
-  private val serviceUuid: Uuid,
-  private val scope: CoroutineScope,
-  private val bluetoothManager: BluetoothManager,
+  bluetoothPairedDeviceService: BluetoothPairedDeviceService,
+  scope: CoroutineScope,
+  bluetoothManager: BluetoothManager,
 ) : PairingCandidateProvider<BluetoothPairingCandidate> {
   override val devices: StateFlow<Collection<BluetoothPairingCandidate>> = bluetoothManager.boundedDevices.combine(
     bluetoothPairedDeviceService.getAll()
   ) { boundedDevices, pairedDevices ->
-    val pairedAddresses = pairedDevices
-      .map { it.address }
-      .toSet()
-
-    boundedDevices
-      .filter { it.address !in pairedAddresses }
-      .map { BluetoothPairingCandidate(it.address) }
+    val pairedAddresses = pairedDevices.map { it.address }.toSet()
+    boundedDevices.mapNotNull {
+      val name = it.name ?: return@mapNotNull null
+      val address = it.address
+      if (address in pairedAddresses) return@mapNotNull null
+      BluetoothPairingCandidate(name, address)
+    }
   }.stateIn(
     scope,
     started = SharingStarted.WhileSubscribed(),

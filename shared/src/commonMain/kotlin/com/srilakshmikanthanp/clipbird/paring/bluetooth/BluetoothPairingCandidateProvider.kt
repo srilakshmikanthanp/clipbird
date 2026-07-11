@@ -26,7 +26,6 @@ class BluetoothPairingCandidateProvider(
       .toSet()
 
     boundedDevices
-      .filter { serviceUuid in it.serviceUuids }
       .filter { it.address !in pairedAddresses }
       .map { BluetoothPairingCandidate(it.address) }
   }.stateIn(

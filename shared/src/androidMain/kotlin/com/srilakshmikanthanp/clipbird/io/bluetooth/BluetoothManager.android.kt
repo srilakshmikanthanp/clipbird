@@ -35,8 +35,7 @@ actual class BluetoothManager(
 
   @OptIn(ExperimentalUuidApi::class)
   private fun AndroidBluetoothDevice.toSharedBluetoothDevice(): BluetoothDevice {
-    val uuids = this.uuids.map { Uuid.parse(it.uuid.toString()) }.toSet()
-    return BluetoothDevice(address = address, name = name, serviceUuids = uuids)
+    return BluetoothDevice(address = address, name = name)
   }
 
   actual val boundedDevices: StateFlow<List<BluetoothDevice>> = callbackFlow {

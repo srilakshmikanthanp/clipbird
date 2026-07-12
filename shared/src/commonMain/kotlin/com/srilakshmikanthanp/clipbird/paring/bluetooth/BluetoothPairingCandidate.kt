@@ -2,7 +2,7 @@ package com.srilakshmikanthanp.clipbird.paring.bluetooth
 
 import com.srilakshmikanthanp.clipbird.paring.PairingCandidate
 
-class BluetoothPairingCandidate(
+data class BluetoothPairingCandidate(
   override val name: String,
   val address: String,
 ) : PairingCandidate

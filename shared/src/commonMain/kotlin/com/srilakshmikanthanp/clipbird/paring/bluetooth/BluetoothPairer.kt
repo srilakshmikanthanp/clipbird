@@ -1,6 +1,6 @@
 package com.srilakshmikanthanp.clipbird.paring.bluetooth
 
-import com.srilakshmikanthanp.clipbird.common.HostDevice
+import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.common.toPublicKey
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerEndpoint
@@ -19,11 +19,12 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class, ExperimentalSerializationApi::class)
 class BluetoothPairer(
   private val bluetoothManager: BluetoothManager,
-  private val hostDevice: HostDevice,
+  private val hostDeviceProvider: HostDeviceProvider,
   private val pairingVerifier: PairingVerifier,
   private val serviceUuid: Uuid,
 ): Pairer<BluetoothPairingCandidate, BluetoothPairedDevice> {
   override suspend fun pair(candidate: BluetoothPairingCandidate): BluetoothPairedDevice {
+    val hostDevice = hostDeviceProvider.get()
     val serverEndpoint = BluetoothServerEndpoint(candidate.address, serviceUuid)
     val channel = bluetoothManager.connect(serverEndpoint)
     val pairingPacket = PairingPacket(hostDevice.id, hostDevice.name, hostDevice.publicKey.encoded)

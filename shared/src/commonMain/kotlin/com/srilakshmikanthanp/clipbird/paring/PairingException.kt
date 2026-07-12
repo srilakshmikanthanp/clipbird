@@ -12,3 +12,11 @@ class InvalidPairingPacketException(
 class PairingFailedException(
   message: String
 ) : PairingException(message)
+
+class AlreadyPairingException(
+  message: String
+) : PairingException(message)
+
+class IllegalPairingCandidateException(
+  candidate: PairingCandidate
+) : PairingException("Unsupported pairing candidate: ${candidate::class.simpleName}")

@@ -40,6 +40,26 @@ clipbird_bluetooth_device_list_t* clipbird_bluetooth_manager_bonded_devices(clip
   }
 }
 
+const char* clipbird_bluetooth_manager_local_name(clipbird_bluetooth_manager_t* manager) {
+  if (!manager || !manager->impl) {
+    error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INVALID_ARGUMENT, "Invalid argument: manager must not be null.");
+    return nullptr;
+  }
+
+  try {
+    static thread_local std::string name;
+    name = manager->impl->localName();
+    error::clearLastError();
+    return name.c_str();
+  } catch (const std::exception& e) {
+    error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INTERNAL_ERROR, e.what());
+    return nullptr;
+  } catch (...) {
+    error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INTERNAL_ERROR, "Unknown error occurred while retrieving local name.");
+    return nullptr;
+  }
+}
+
 void clipbird_bluetooth_manager_set_bonded_devices_changed_callback(
   clipbird_bluetooth_manager_t* manager,
   clipbird_bluetooth_manager_bonded_devices_changed_callback_t callback,

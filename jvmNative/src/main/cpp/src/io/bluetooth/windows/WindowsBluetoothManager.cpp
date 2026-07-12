@@ -16,6 +16,10 @@ std::vector<bluetooth::BluetoothDevice> WindowsBluetoothManager::bondedDevices()
 	throw std::runtime_error("WindowsBluetoothManager::bondedDevices() is not implemented yet.");
 }
 
+std::string WindowsBluetoothManager::localName() {
+	throw std::runtime_error("WindowsBluetoothManager::localName() is not implemented yet.");
+}
+
 std::unique_ptr<io::Channel> WindowsBluetoothManager::connectRfcomm(const std::string& address, const boost::uuids::uuid& serviceUuid) {
   throw std::runtime_error("WindowsBluetoothManager::connectRfcomm() is not implemented yet.");
 }

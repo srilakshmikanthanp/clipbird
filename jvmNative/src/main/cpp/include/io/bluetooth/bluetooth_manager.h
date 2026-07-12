@@ -32,6 +32,14 @@ typedef void (*clipbird_bluetooth_manager_bonded_devices_changed_callback_t)(voi
 clipbird_bluetooth_device_list_t* clipbird_bluetooth_manager_bonded_devices(clipbird_bluetooth_manager_t* manager);
 
 /**
+ * Retrieves the local Bluetooth adapter name.
+ * @param manager A pointer to the Bluetooth manager instance.
+ * @return The local adapter name, or nullptr on error. The returned string is owned by the manager
+ *         and is valid until the next call to this function on the same thread.
+ */
+const char* clipbird_bluetooth_manager_local_name(clipbird_bluetooth_manager_t* manager);
+
+/**
  * Registers a callback that is invoked when the bonded-device set changes.
  * The callback does not receive device data; call clipbird_bluetooth_manager_bonded_devices() to refresh the latest list.
  * @param manager A pointer to the Bluetooth manager instance.

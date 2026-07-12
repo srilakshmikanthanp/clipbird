@@ -42,6 +42,12 @@ object BluetoothManagerHandle {
     return BluetoothDeviceList(Clipbird.clipbird_bluetooth_manager_bonded_devices(manager))
   }
 
+  fun localName(manager: MemorySegment): String {
+    return Clipbird.clipbird_bluetooth_manager_local_name(manager).orThrow {
+      IOException("Failed to get Bluetooth local name: ${NativeErrorHandle.lastErrorMessage()}")
+    }.reinterpret(Long.MAX_VALUE).getString(0)
+  }
+
   @OptIn(ExperimentalUuidApi::class)
   fun connect(manager: MemorySegment, address: String, serviceUuid: String): MemorySegment {
     return Arena.ofConfined().use { arena ->

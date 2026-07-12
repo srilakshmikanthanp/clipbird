@@ -31,6 +31,10 @@ class NativeBluetoothManager : AutoCloseable {
     }
   }
 
+  fun name(): String {
+    return BluetoothManagerHandle.localName(memorySegment)
+  }
+
   @OptIn(ExperimentalUuidApi::class)
   fun connect(endpoint: BluetoothServerEndpoint): MemorySegment {
     return BluetoothManagerHandle.connect(memorySegment, endpoint.address, endpoint.serviceUuid.toString())

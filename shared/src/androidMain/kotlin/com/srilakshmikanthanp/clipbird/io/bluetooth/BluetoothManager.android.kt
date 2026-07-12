@@ -33,6 +33,8 @@ actual class BluetoothManager(
   private val androidBluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as AndroidBluetoothManager
   private val bluetoothAdapter = androidBluetoothManager.adapter
 
+  actual val name: String get() = bluetoothAdapter.name ?: "Unknown"
+
   @OptIn(ExperimentalUuidApi::class)
   private fun AndroidBluetoothDevice.toSharedBluetoothDevice(): BluetoothDevice {
     return BluetoothDevice(address = address, name = name)

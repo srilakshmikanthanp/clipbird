@@ -98,6 +98,39 @@ std::vector<bluetooth::BluetoothDevice> LinuxBluetoothManager::bondedDevices() {
   return devices;
 }
 
+std::string LinuxBluetoothManager::localName() {
+  using InterfaceProperties = std::map<sdbus::InterfaceName, LinuxStdBusProperties>;
+  using ManagedObjects = std::map<sdbus::ObjectPath, InterfaceProperties>;
+
+  ManagedObjects managedObjects;
+
+  objectManager->callMethod("GetManagedObjects")
+    .onInterface(kObjectManagerInterface)
+    .storeResultsTo(managedObjects);
+
+  for (const auto& [path, interfaces] : managedObjects) {
+    auto adapterInterface = interfaces.find(sdbus::InterfaceName(kBluezAdapterInterface));
+
+    if (adapterInterface == interfaces.end()) {
+      continue;
+    }
+
+    const auto& properties = adapterInterface->second;
+
+    auto name = getProperty<std::string>(properties, "Alias");
+
+    if (!name.has_value()) {
+      name = getProperty<std::string>(properties, "Name");
+    }
+
+    if (name.has_value()) {
+      return *name;
+    }
+  }
+
+  throw std::runtime_error("No Bluetooth adapter found");
+}
+
 void LinuxBluetoothManager::notifyBondedDevicesChanged() {
   std::function<void()> callback;
 

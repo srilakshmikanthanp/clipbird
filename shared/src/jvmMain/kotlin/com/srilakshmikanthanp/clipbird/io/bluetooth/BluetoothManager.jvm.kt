@@ -17,6 +17,8 @@ actual class BluetoothManager : ClientFactory<BluetoothServerEndpoint>, ServerFa
 
   actual val boundedDevices: StateFlow<List<BluetoothDevice>> = _boundedDevices.asStateFlow()
 
+  actual val name: String get() = nativeBluetoothManager.name()
+
   init {
     nativeBluetoothManager.setBondedDevicesChangedCallback {
       _boundedDevices.value = nativeBluetoothManager.bondedDevices()

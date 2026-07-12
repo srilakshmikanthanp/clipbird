@@ -22,6 +22,7 @@ class BluetoothManager {
   virtual void removeBondedDevicesChangedCallback() = 0;
 
   virtual std::vector<BluetoothDevice> bondedDevices() = 0;
+  virtual std::string localName() = 0;
   virtual std::unique_ptr<io::Channel> connectRfcomm(const std::string& address, const boost::uuids::uuid& serviceUuid) = 0;
   virtual std::unique_ptr<io::Server> startRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid) = 0;
 };

@@ -1,93 +1,171 @@
 package com.srilakshmikanthanp.clipbird.ui.pairing
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.srilakshmikanthanp.clipbird.ui.pairing.components.DeviceRow
+import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.paring.PairingCandidate
 import org.koin.compose.viewmodel.koinViewModel
-
-@Composable
-fun DevicesScreen(viewModel: PairingViewModel = koinViewModel()) {
-  val state by viewModel.uiState.collectAsStateWithLifecycle()
-  val snackBarHostState = remember { SnackbarHostState() }
-
-  LaunchedEffect(Unit) {
-    viewModel.events.collect { event ->
-      snackBarHostState.showSnackbar(event.toMessage())
-    }
-  }
-
-  Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) { padding ->
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-      if (state.discovered.isNotEmpty()) {
-        item { SectionHeader("Available") }
-        items(state.discovered, key = { it.candidate.name }) { device ->
-          DeviceRow(
-            name = device.candidate.name,
-            onClick = { viewModel.pair(device.candidate) },
-            trailing = {
-              if (device.isPairing) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-              }
-            },
-          )
-        }
-      }
-
-      if (state.paired.isNotEmpty()) {
-        item { SectionHeader("Paired") }
-        items(state.paired, key = { it.id }) { device ->
-          DeviceRow(
-            name = device.name,
-            trailing = {
-              TextButton(onClick = { viewModel.unpair(device.id) }) { Text("Unpair") }
-            },
-          )
-        }
-      }
-
-      if (state.discovered.isEmpty() && state.paired.isEmpty()) {
-        item {
-          Text(
-            text = "No devices found",
-            modifier = Modifier.fillParentMaxSize().padding(32.dp),
-            style = MaterialTheme.typography.bodyMedium,
-          )
-        }
-      }
-    }
-  }
-}
-
-@Composable
-private fun SectionHeader(text: String) {
-  Text(
-    text = text,
-    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-    style = MaterialTheme.typography.titleSmall,
-    color = MaterialTheme.colorScheme.primary,
-  )
-}
 
 private fun PairingViewModel.PairingEvent.toMessage(): String = when (this) {
   is PairingViewModel.PairingEvent.AlreadyPairing -> "Already pairing with $deviceName"
   is PairingViewModel.PairingEvent.Failed -> "Pairing failed with $deviceName"
   is PairingViewModel.PairingEvent.Unsupported -> "$deviceName is not supported"
   is PairingViewModel.PairingEvent.Error -> "Could not pair with $deviceName"
+}
+
+@Composable
+private fun DeviceGroup(title: String, content: @Composable () -> Unit) {
+  Column {
+    Text(
+      text = title.uppercase(),
+      modifier = Modifier.padding(start = 4.dp, bottom = 8.dp),
+      style = MaterialTheme.typography.labelLarge,
+      color = MaterialTheme.colorScheme.primary,
+    )
+    Card(modifier = Modifier.fillMaxWidth()) {
+      content()
+    }
+  }
+}
+
+@Composable
+private fun EmptyGroup(text: String) {
+  Box(
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 24.dp),
+    contentAlignment = Alignment.Center,
+  ) {
+    Text(
+      text = text,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+  }
+}
+
+@Composable
+private fun DeviceAvatar(name: String) {
+  Surface(
+    shape = CircleShape,
+    color = MaterialTheme.colorScheme.primaryContainer,
+    modifier = Modifier.size(40.dp),
+  ) {
+    Box(contentAlignment = Alignment.Center) {
+      Text(
+        text = name.firstOrNull()?.uppercase() ?: "?",
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
+      )
+    }
+  }
+}
+
+@Composable
+private fun AvailableDevices(
+  devices: List<PairingViewModel.DiscoveredUiDevice>,
+  onPair: (PairingCandidate) -> Unit,
+) {
+  if (devices.isEmpty()) {
+    EmptyGroup("No available devices")
+    return
+  }
+
+  devices.forEachIndexed { index, device ->
+    if (index > 0) HorizontalDivider()
+    ListItem(
+      modifier = Modifier.clickable(enabled = !device.isPairing) { onPair(device.candidate) },
+      colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+      headlineContent = { Text(device.candidate.name) },
+      leadingContent = { DeviceAvatar(device.candidate.name) },
+      supportingContent = { Text(if (device.isPairing) "Pairing…" else "Tap to pair") },
+      trailingContent = {
+        if (device.isPairing) {
+          CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp)
+        }
+      },
+    )
+  }
+}
+
+@Composable
+private fun PairedDevices(
+  devices: List<PairedDevice>,
+  onRemove: (Long) -> Unit,
+) {
+  if (devices.isEmpty()) {
+    EmptyGroup("No paired devices")
+    return
+  }
+
+  devices.forEachIndexed { index, device ->
+    if (index > 0) HorizontalDivider()
+    ListItem(
+      headlineContent = { Text(device.name) },
+      leadingContent = { DeviceAvatar(device.name) },
+      colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+      trailingContent = {
+        IconButton(onClick = { onRemove(device.id) }) {
+          Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.name}")
+        }
+      },
+    )
+  }
+}
+@Composable
+fun DevicesScreen(
+  snackBarHostState: SnackbarHostState,
+  viewModel: PairingViewModel = koinViewModel(),
+) {
+  val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+  LaunchedEffect(Unit) {
+    viewModel.events.collect { snackBarHostState.showSnackbar(it.toMessage()) }
+  }
+
+  LazyColumn(
+    verticalArrangement = Arrangement.spacedBy(24.dp),
+    modifier = Modifier.fillMaxSize(),
+    contentPadding = PaddingValues(16.dp),
+  ) {
+    item {
+      DeviceGroup(title = "Available") {
+        AvailableDevices(devices = state.discovered, onPair = viewModel::pair)
+      }
+    }
+
+    item {
+      DeviceGroup(title = "Paired") {
+        PairedDevices(devices = state.paired, onRemove = viewModel::unpair)
+      }
+    }
+  }
 }

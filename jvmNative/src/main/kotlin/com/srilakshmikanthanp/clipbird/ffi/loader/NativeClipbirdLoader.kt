@@ -1,28 +1,27 @@
 package com.srilakshmikanthanp.clipbird.ffi.loader
 
-import java.lang.foreign.Arena
-import java.lang.foreign.SymbolLookup
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
+@Suppress("UnsafeDynamicallyLoadedCode")
 object NativeClipbirdLoader {
-  private val libraryPath by lazy {
+  private val loaded by lazy {
     val extension = when {
-      System.getProperty("os.name").startsWith("Windows", ignoreCase = true) -> ".dll"
-      System.getProperty("os.name").startsWith("Linux", ignoreCase = true) -> ".so"
-      System.getProperty("os.name").startsWith("Mac", ignoreCase = true) -> ".dylib"
-      else -> throw UnsupportedOperationException("Unsupported OS: ${System.getProperty("os.name")}")
+      System.getProperty("os.name").startsWith("Windows", true) -> ".dll"
+      System.getProperty("os.name").startsWith("Linux", true) -> ".so"
+      System.getProperty("os.name").startsWith("Mac", true) -> ".dylib"
+      else -> error("Unsupported OS: ${System.getProperty("os.name")}")
     }
 
-    javaClass.getResourceAsStream("/native/libclipbird$extension")?.use {
-      val file = Files.createTempFile("clipbird", extension).toFile()
-      file.deleteOnExit()
-      Files.copy(it, file.toPath(), StandardCopyOption.REPLACE_EXISTING)
-      file.absolutePath
-    } ?: throw IllegalStateException("Native library not found in resources")
+    val path = javaClass.getResourceAsStream("/native/libclipbird$extension")?.use { input ->
+      val temp = Files.createTempFile("clipbird-", extension)
+      temp.toFile().deleteOnExit()
+      Files.copy(input, temp, StandardCopyOption.REPLACE_EXISTING)
+      temp
+    } ?: error("Native library not found: /native/libclipbird$extension")
+
+    System.load(path.toAbsolutePath().toString())
   }
 
-  val library: SymbolLookup by lazy {
-    SymbolLookup.libraryLookup(libraryPath, Arena.global())
-  }
+  fun load() = loaded
 }

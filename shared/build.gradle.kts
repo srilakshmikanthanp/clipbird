@@ -44,6 +44,8 @@ kotlin {
     androidMain.dependencies {
       implementation(libs.compose.uiToolingPreview)
       implementation(libs.androidx.room.sqlite.wrapper)
+      implementation(libs.koin.android)
+      implementation(libs.androidx.activity.compose)
     }
 
     commonMain.dependencies {
@@ -55,11 +57,16 @@ kotlin {
       implementation(libs.compose.uiToolingPreview)
       implementation(libs.androidx.lifecycle.viewmodelCompose)
       implementation(libs.androidx.lifecycle.runtimeCompose)
+      implementation(libs.navigation.compose)
       implementation(libs.kable.core)
       implementation(libs.kotlinx.serialization.core)
       implementation(libs.kotlinx.serialization.protobuf)
       implementation(libs.androidx.room.runtime)
       implementation(libs.androidx.sqlite.bundled)
+      implementation(libs.koin.core)
+      implementation(libs.koin.compose)
+      implementation(libs.koin.compose.viewmodel)
+      api(libs.koin.annotations)
     }
 
     jvmMain.dependencies {
@@ -76,4 +83,13 @@ dependencies {
   androidRuntimeClasspath(libs.compose.uiTooling)
   add("kspAndroid", libs.androidx.room.compiler)
   add("kspJvm", libs.androidx.room.compiler)
+  // Koin's processor runs per-target (like Room), so each target generates its full graph — the
+  // common feature modules plus that target's platform module. This lets platform bindings be
+  // annotated too, and avoids the duplicate KoinMeta that kspCommonMainMetadata + per-target caused.
+  add("kspAndroid", libs.koin.ksp.compiler)
+  add("kspJvm", libs.koin.ksp.compiler)
+}
+
+ksp {
+  arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
 }

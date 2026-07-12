@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.ui.navigation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.Devices
+import clipbird.shared.generated.resources.Res
+import clipbird.shared.generated.resources.logo
+import org.jetbrains.compose.resources.painterResource
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -31,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -49,11 +53,10 @@ private fun NavigationDrawerHeader() {
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier.fillMaxWidth().padding(24.dp),
   ) {
-    Icon(
-      imageVector = Icons.Outlined.Devices,
-      contentDescription = null,
-      tint = MaterialTheme.colorScheme.primary,
-      modifier = Modifier.size(56.dp),
+    Image(
+      painter = painterResource(Res.drawable.logo),
+      contentDescription = "Clipbird logo",
+      modifier = Modifier.size(72.dp),
     )
     Spacer(Modifier.height(12.dp))
     Text(text = "Clipbird", style = MaterialTheme.typography.headlineSmall)

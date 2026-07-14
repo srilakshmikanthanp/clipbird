@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -140,6 +141,7 @@ private fun PairedDevices(
     )
   }
 }
+
 @Composable
 fun DevicesScreen(
   snackBarHostState: SnackbarHostState,
@@ -151,20 +153,22 @@ fun DevicesScreen(
     viewModel.events.collect { snackBarHostState.showSnackbar(it.toMessage()) }
   }
 
-  LazyColumn(
-    verticalArrangement = Arrangement.spacedBy(24.dp),
-    modifier = Modifier.fillMaxSize(),
-    contentPadding = PaddingValues(16.dp),
-  ) {
-    item {
-      DeviceGroup(title = "Available") {
-        AvailableDevices(devices = state.discovered, onPair = viewModel::pair)
+  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+    LazyColumn(
+      verticalArrangement = Arrangement.spacedBy(24.dp),
+      modifier = Modifier.widthIn(max = 600.dp).fillMaxWidth(),
+      contentPadding = PaddingValues(16.dp),
+    ) {
+      item {
+        DeviceGroup(title = "Available") {
+          AvailableDevices(devices = state.discovered, onPair = viewModel::pair)
+        }
       }
-    }
 
-    item {
-      DeviceGroup(title = "Paired") {
-        PairedDevices(devices = state.paired, onRemove = viewModel::unpair)
+      item {
+        DeviceGroup(title = "Paired") {
+          PairedDevices(devices = state.paired, onRemove = viewModel::unpair)
+        }
       }
     }
   }

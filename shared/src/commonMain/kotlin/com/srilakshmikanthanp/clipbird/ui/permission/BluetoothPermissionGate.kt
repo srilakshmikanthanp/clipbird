@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ui
+package com.srilakshmikanthanp.clipbird.ui.permission
 
 import androidx.compose.runtime.Composable
 

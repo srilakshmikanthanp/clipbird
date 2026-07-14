@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ui
+package com.srilakshmikanthanp.clipbird.ui.permission
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -30,9 +30,7 @@ private fun BluetoothPermissionRequired(
   onGrant: () -> Unit,
 ) {
   Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(24.dp),
+    modifier = Modifier.fillMaxSize().padding(24.dp),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {

@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ui.pairing
+package com.srilakshmikanthanp.clipbird.ui.device
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

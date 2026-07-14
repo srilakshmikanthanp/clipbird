@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ui.pairing
+package com.srilakshmikanthanp.clipbird.ui.device
 
 import com.srilakshmikanthanp.clipbird.paring.BlockingPairingVerifier
 import com.srilakshmikanthanp.clipbird.paring.PairedDevice
@@ -8,14 +8,15 @@ import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Module
 
 @Module
-class PairingViewModelModule {
+class DeviceModule {
+  @KoinViewModel
+  fun pairingVerificationViewModel(
+    verifier: BlockingPairingVerifier
+  ): PairingVerificationViewModel = PairingVerificationViewModel(verifier)
+
   @KoinViewModel
   fun pairingViewModel(
     coordinator: PairingCoordinator,
     pairedDeviceService: PairedDeviceService<out PairedDevice>,
-  ): PairingViewModel = PairingViewModel(coordinator, pairedDeviceService)
-
-  @KoinViewModel
-  fun pairingVerificationViewModel(verifier: BlockingPairingVerifier): PairingVerificationViewModel =
-    PairingVerificationViewModel(verifier)
+  ): DeviceViewModel = DeviceViewModel(coordinator, pairedDeviceService)
 }

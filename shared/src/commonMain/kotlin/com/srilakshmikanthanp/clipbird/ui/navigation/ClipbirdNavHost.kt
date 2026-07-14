@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.srilakshmikanthanp.clipbird.ui.pairing.DevicesScreen
+import com.srilakshmikanthanp.clipbird.ui.device.DevicesScreen
 
 @Composable
 fun ClipbirdNavHost(

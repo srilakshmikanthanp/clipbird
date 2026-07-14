@@ -1,10 +1,12 @@
-package com.srilakshmikanthanp.clipbird.ui.pairing
+package com.srilakshmikanthanp.clipbird.ui.device
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,15 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.paring.PairingCandidate
 import org.koin.compose.viewmodel.koinViewModel
 
-private fun PairingViewModel.PairingEvent.toMessage(): String = when (this) {
-  is PairingViewModel.PairingEvent.AlreadyPairing -> "Already pairing with $deviceName"
-  is PairingViewModel.PairingEvent.Failed -> "Pairing failed with $deviceName"
-  is PairingViewModel.PairingEvent.Unsupported -> "$deviceName is not supported"
-  is PairingViewModel.PairingEvent.Error -> "Could not pair with $deviceName"
+private fun DeviceViewModel.PairingEvent.toMessage(): String = when (this) {
+  is DeviceViewModel.PairingEvent.AlreadyPairing -> "Already pairing with $deviceName"
+  is DeviceViewModel.PairingEvent.Failed -> "Pairing failed with $deviceName"
+  is DeviceViewModel.PairingEvent.Unsupported -> "$deviceName is not supported"
+  is DeviceViewModel.PairingEvent.Error -> "Could not pair with $deviceName"
 }
 
 @Composable
@@ -92,7 +93,7 @@ private fun DeviceAvatar(name: String) {
 
 @Composable
 private fun AvailableDevices(
-  devices: List<PairingViewModel.DiscoveredUiDevice>,
+  devices: List<DeviceViewModel.DiscoveredDevice>,
   onPair: (PairingCandidate) -> Unit,
 ) {
   if (devices.isEmpty()) {
@@ -119,7 +120,7 @@ private fun AvailableDevices(
 
 @Composable
 private fun PairedDevices(
-  devices: List<PairedDevice>,
+  devices: List<DeviceViewModel.Device>,
   onRemove: (Long) -> Unit,
 ) {
   if (devices.isEmpty()) {
@@ -130,12 +131,20 @@ private fun PairedDevices(
   devices.forEachIndexed { index, device ->
     if (index > 0) HorizontalDivider()
     ListItem(
-      headlineContent = { Text(device.name) },
-      leadingContent = { DeviceAvatar(device.name) },
+      headlineContent = { Text(device.pairedDevice.name) },
+      leadingContent = { DeviceAvatar(device.pairedDevice.name) },
       colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+      supportingContent = {
+        val color = if (device.connected) Color(0xFF4CAF50) else MaterialTheme.colorScheme.outline
+        val label = if (device.connected) "Connected" else "Disconnected"
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+          Box(Modifier.size(8.dp).background(color, CircleShape))
+          Text(label, style = MaterialTheme.typography.bodySmall, color = color)
+        }
+      },
       trailingContent = {
-        IconButton(onClick = { onRemove(device.id) }) {
-          Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.name}")
+        IconButton(onClick = { onRemove(device.pairedDevice.id) }) {
+          Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.pairedDevice.name}")
         }
       },
     )
@@ -145,7 +154,7 @@ private fun PairedDevices(
 @Composable
 fun DevicesScreen(
   snackBarHostState: SnackbarHostState,
-  viewModel: PairingViewModel = koinViewModel(),
+  viewModel: DeviceViewModel = koinViewModel(),
 ) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -167,7 +176,7 @@ fun DevicesScreen(
 
       item {
         DeviceGroup(title = "Paired") {
-          PairedDevices(devices = state.paired, onRemove = viewModel::unpair)
+          PairedDevices(devices = state.devices, onRemove = viewModel::unpair)
         }
       }
     }

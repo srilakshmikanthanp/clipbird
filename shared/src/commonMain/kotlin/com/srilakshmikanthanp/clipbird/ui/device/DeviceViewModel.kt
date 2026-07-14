@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ui.pairing
+package com.srilakshmikanthanp.clipbird.ui.device
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class PairingViewModel(
+class DeviceViewModel(
   private val coordinator: PairingCoordinator,
   private val pairedDeviceService: PairedDeviceService<out PairedDevice>,
 ) : ViewModel() {
@@ -29,29 +29,34 @@ class PairingViewModel(
     data class Error(val deviceName: String, val cause: Throwable) : PairingEvent
   }
 
-  data class PairingUiState(
-    val discovered: List<DiscoveredUiDevice> = emptyList(),
-    val paired: List<PairedDevice> = emptyList(),
-  )
-
-  data class DiscoveredUiDevice(
+  data class DiscoveredDevice(
     val candidate: PairingCandidate,
     val isPairing: Boolean,
   )
 
-  val uiState: StateFlow<PairingUiState> = combine(
+  data class Device(
+    val pairedDevice: PairedDevice,
+    val connected: Boolean
+  )
+
+  data class DeviceState(
+    val discovered: List<DiscoveredDevice> = emptyList(),
+    val devices: List<Device> = emptyList(),
+  )
+
+  val uiState: StateFlow<DeviceState> = combine(
+    pairedDeviceService.getAll(),
     coordinator.devices,
     coordinator.pairing,
-    pairedDeviceService.getAll(),
-  ) { devices, pairing, paired ->
-    PairingUiState(
-      discovered = devices.map { DiscoveredUiDevice(it, isPairing = it in pairing) },
-      paired = paired,
+  ) { paired, devices, pairing ->
+    DeviceState(
+      discovered = devices.map { DiscoveredDevice(it, isPairing = it in pairing) },
+      devices = paired.map { Device(pairedDevice = it, connected = true) }
     )
   }.stateIn(
     viewModelScope,
     SharingStarted.WhileSubscribed(5_000),
-    PairingUiState()
+    DeviceState()
   )
 
   private val _events = Channel<PairingEvent>(Channel.BUFFERED)

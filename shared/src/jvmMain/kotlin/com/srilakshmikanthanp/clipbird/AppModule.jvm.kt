@@ -6,7 +6,7 @@ import com.srilakshmikanthanp.clipbird.database.DatabasePlatformModule
 import com.srilakshmikanthanp.clipbird.ffi.loader.NativeClipbirdLoader
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothPlatformModule
 import com.srilakshmikanthanp.clipbird.paring.PairingModule
-import com.srilakshmikanthanp.clipbird.ui.pairing.PairingViewModelModule
+import com.srilakshmikanthanp.clipbird.ui.device.DeviceModule
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.module
 
@@ -18,7 +18,7 @@ fun initKoin() {
       DatabaseModule().module,
       DatabasePlatformModule().module,
       PairingModule().module,
-      PairingViewModelModule().module,
+      DeviceModule().module,
       BluetoothPlatformModule().module,
     )
   }

@@ -29,11 +29,13 @@ val nativeBuildDirectory = nativeSourceDirectory.dir("build")
 val nativeResourcesDirectory = layout.buildDirectory.dir("generated/resources/main")
 
 tasks.register<Exec>("configureNative") {
+  val buildType = providers.gradleProperty("nativeBuildType").getOrElse("Debug")
   description = "Configure the clipbird native library"
   workingDir(nativeSourceDirectory.asFile)
   configureCmake(
     sourceDir = nativeSourceDirectory.asFile,
-    buildDir = nativeBuildDirectory.asFile
+    buildDir = nativeBuildDirectory.asFile,
+    buildType = buildType
   )
 }
 

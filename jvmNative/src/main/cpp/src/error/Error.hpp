@@ -1,12 +1,13 @@
 #pragma once
 
+#include <string>
 #include <string_view>
 
 namespace clipbird::error {
 
 struct Error {
   int code;
-  std::string_view message;
+  std::string message;
 };
 
 void setLastError(int code, std::string_view error);

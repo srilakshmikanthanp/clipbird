@@ -49,7 +49,11 @@ private fun BluetoothPermissionRequired(
 actual fun BluetoothPermissionGate(content: @Composable () -> Unit) {
   val required = remember {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN)
+      arrayOf(
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_ADVERTISE,
+      )
     } else {
       emptyArray()
     }

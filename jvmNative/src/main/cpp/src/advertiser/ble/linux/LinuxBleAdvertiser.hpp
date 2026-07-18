@@ -15,7 +15,7 @@ namespace clipbird::advertiser::ble {
 class LinuxBleAdvertiser final : public Advertiser {
  public:
   LinuxBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData);
-  ~LinuxBleAdvertiser() override = default;
+  ~LinuxBleAdvertiser() override;
 
   void startAdvertising() override;
   bool isAdvertising() const override;
@@ -27,7 +27,7 @@ class LinuxBleAdvertiser final : public Advertiser {
  private:
   const std::unique_ptr<sdbus::IConnection> connection;
   const std::unique_ptr<sdbus::IProxy> bluezProxy;
-  const std::unique_ptr<LinuxBleAdvertisementData> advertisementData;
+  std::unique_ptr<LinuxBleAdvertisementData> advertisementData;
 
  private:
   bool advertising = false;

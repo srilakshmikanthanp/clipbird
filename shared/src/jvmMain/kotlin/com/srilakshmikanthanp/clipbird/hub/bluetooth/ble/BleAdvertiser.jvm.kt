@@ -3,13 +3,11 @@ package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.encodeToByteArray
-import kotlinx.serialization.protobuf.ProtoBuf
+import java.nio.ByteBuffer
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalSerializationApi::class)
+@OptIn(ExperimentalUuidApi::class)
 actual class BleAdvertiser(private val serviceUuid: Uuid, private val device: BleHubDevice) : Advertiser<BleHubDevice> {
   private val _advertisedDevice: MutableStateFlow<BleHubDevice?> = MutableStateFlow(null)
   actual override val advertisedDevice = _advertisedDevice.asStateFlow()
@@ -21,7 +19,8 @@ actual class BleAdvertiser(private val serviceUuid: Uuid, private val device: Bl
       throw IllegalStateException("Advertiser already started")
     }
 
-    val nativeBleAdvertiser = NativeBleAdvertiser(serviceUuid, ProtoBuf.encodeToByteArray(device))
+    val idBytes = ByteBuffer.allocate(8).putLong(device.id).array()
+    val nativeBleAdvertiser = NativeBleAdvertiser(serviceUuid, idBytes)
 
     runCatching {
       nativeBleAdvertiser.start()

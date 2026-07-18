@@ -1,6 +1,6 @@
 #include "LinuxBleAdvertisementData.hpp"
 
-#include <boost/uuid/uuid_io.hpp>
+#include <map>
 
 namespace clipbird::advertiser::ble {
 LinuxBleAdvertisementData::LinuxBleAdvertisementData(sdbus::IConnection& connection,
@@ -14,16 +14,22 @@ LinuxBleAdvertisementData::LinuxBleAdvertisementData(sdbus::IConnection& connect
   serviceData(serviceData),
   onRelease(onRelease) {
 
-  using serviceUuidData = std::map<std::string, std::vector<std::uint8_t>>;
-  using serviceUuidList = std::vector<std::string>;
+  const auto manufacturerDataGetter = [this]() {
+    std::vector<std::uint8_t> payload;
+    payload.reserve(24);
+    const auto& uuid = this->getServiceUuid();
+    payload.insert(payload.end(), uuid.data, uuid.data + 16);
+    const auto& data = this->getServiceData();
+    payload.insert(payload.end(), data.begin(), data.end());
+    return std::map<std::uint16_t, sdbus::Variant>{ { 0xFFFF, sdbus::Variant(payload) } };
+  };
 
-  const auto serviceUuidGetter = [this]() { return serviceUuidList{ boost::uuids::to_string(this->getServiceUuid()) }; };
-  const auto serviceDataGetter = [this]() { return serviceUuidData{ { boost::uuids::to_string(this->getServiceUuid()), this->getServiceData() } }; };
-  const auto typeGetter = [this]() { return std::string("broadcast"); };
+  const auto typeGetter = []() {
+    return std::string("broadcast");
+  };
 
   object->addVTable(
-    sdbus::registerProperty("ServiceUUIDs").withGetter(serviceUuidGetter),
-    sdbus::registerProperty("ServiceData").withGetter(serviceDataGetter),
+    sdbus::registerProperty("ManufacturerData").withGetter(manufacturerDataGetter),
     sdbus::registerProperty("Type").withGetter(typeGetter),
     sdbus::registerMethod("Release").implementedAs(this->onRelease)
   ).forInterface("org.bluez.LEAdvertisement1");

@@ -7,6 +7,7 @@ import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
+import java.lang.foreign.ValueLayout
 import kotlin.use
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -17,7 +18,7 @@ private object BleAdvertiserHandle {
     return Arena.ofConfined().use { arena ->
       Clipbird.clipbird_advertiser_ble_create(
         arena.allocateFrom(serviceUuid.toString()),
-        MemorySegment.ofArray(serviceData),
+        arena.allocateFrom(ValueLayout.JAVA_BYTE, *serviceData),
         serviceData.size
       )
     }.orThrow {

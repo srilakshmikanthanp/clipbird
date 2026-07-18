@@ -1,5 +1,6 @@
 #include "LinuxBleAdvertiser.hpp"
 
+#include <future>
 #include <map>
 #include <optional>
 #include <stdexcept>
@@ -21,6 +22,12 @@ LinuxBleAdvertiser::LinuxBleAdvertiser(const boost::uuids::uuid& serviceUuid, co
       serviceData,
       [this]() { this->advertising = false; }
     )) {
+  connection->enterEventLoopAsync();
+}
+
+LinuxBleAdvertiser::~LinuxBleAdvertiser() {
+  this->stopAdvertising();
+  connection->leaveEventLoop();
 }
 
 sdbus::ObjectPath LinuxBleAdvertiser::getAdvertisingManagerAdapterPath() {
@@ -45,11 +52,11 @@ sdbus::ObjectPath LinuxBleAdvertiser::getAdvertisingManagerAdapterPath() {
 }
 
 void LinuxBleAdvertiser::startAdvertising() {
-  const auto adapterPath = getAdvertisingManagerAdapterPath();
-
   if (this->isAdvertising()) {
     throw std::runtime_error("Already advertising");
   }
+
+  const auto adapterPath = getAdvertisingManagerAdapterPath();
 
   auto advertisingManagerProxy = sdbus::createProxy(
     *connection,
@@ -59,9 +66,12 @@ void LinuxBleAdvertiser::startAdvertising() {
 
   auto options = std::map<std::string, sdbus::Variant>{};
 
-  advertisingManagerProxy->callMethod("RegisterAdvertisement")
+  advertisingManagerProxy->callMethodAsync("RegisterAdvertisement")
     .onInterface(kAdvertisingManagerInterface)
-    .withArguments(advertisementData->getObjectPath(), options);
+    .withArguments(advertisementData->getObjectPath(), options)
+    .getResultAsFuture()
+    .get();
+
   this->advertising = true;
 }
 
@@ -70,11 +80,11 @@ bool LinuxBleAdvertiser::isAdvertising() const {
 }
 
 void LinuxBleAdvertiser::stopAdvertising() {
-  const auto adapterPath = getAdvertisingManagerAdapterPath();
-
   if (!this->isAdvertising()) {
-    throw std::runtime_error("Not currently advertising");
+    return;
   }
+
+  const auto adapterPath = getAdvertisingManagerAdapterPath();
 
   auto advertisingManagerProxy = sdbus::createProxy(
     *connection,
@@ -82,8 +92,12 @@ void LinuxBleAdvertiser::stopAdvertising() {
     adapterPath
   );
 
-  advertisingManagerProxy->callMethod("UnregisterAdvertisement")
+  advertisingManagerProxy->callMethodAsync("UnregisterAdvertisement")
     .onInterface(kAdvertisingManagerInterface)
-    .withArguments(advertisementData->getObjectPath());
+    .withArguments(advertisementData->getObjectPath())
+    .getResultAsFuture()
+    .get();
+
+  this->advertising = false;
 }
 }  // namespace clipbird

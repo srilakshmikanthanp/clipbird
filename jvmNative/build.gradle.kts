@@ -53,7 +53,7 @@ tasks.register<Sync>("packageNative") {
   description = "Package the native library as a jar resource"
   dependsOn("buildNative")
 
-  from(nativeBuildDirectory) {
+  from(nativeBuildDirectory.dir("src")) {
     include("*.dll")
     include("*.so")
     include("*.dylib")

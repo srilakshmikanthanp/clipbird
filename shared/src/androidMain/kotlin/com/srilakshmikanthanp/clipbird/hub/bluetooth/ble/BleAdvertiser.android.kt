@@ -6,7 +6,6 @@ import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.content.Context
-import android.os.ParcelUuid
 import androidx.annotation.RequiresPermission
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
@@ -14,15 +13,13 @@ import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.encodeToByteArray
-import kotlinx.serialization.protobuf.ProtoBuf
+import java.nio.ByteBuffer
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.toJavaUuid
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalSerializationApi::class)
+@OptIn(ExperimentalUuidApi::class)
 actual class BleAdvertiser(private val context: Context, private val device: BleHubDevice) : Advertiser<BleHubDevice> {
   private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
   private var advertiseCallback: AdvertiseCallback? = null
@@ -42,60 +39,45 @@ actual class BleAdvertiser(private val context: Context, private val device: Ble
       throw AdvertisingException("Bluetooth is disabled")
     }
 
-    if (!adapter.isMultipleAdvertisementSupported) {
-      throw AdvertisingException("BLE advertising is not supported on this device")
-    }
-
     val advertiser = adapter.bluetoothLeAdvertiser ?: throw AdvertisingException("BLE advertiser not available")
 
-    val serviceUuid = ParcelUuid(BluetoothConstants.clipbirdServiceUuid.toJavaUuid())
-    val serviceData = ProtoBuf.encodeToByteArray(device)
+    val javaUuid = BluetoothConstants.clipbirdServiceUuid.toJavaUuid()
+    val manufacturerData = ByteBuffer.allocate(24)
+      .putLong(javaUuid.mostSignificantBits)
+      .putLong(javaUuid.leastSignificantBits)
+      .putLong(device.id)
+      .array()
 
     val settings = AdvertiseSettings.Builder()
       .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
-      .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
       .setConnectable(false)
-      .setTimeout(0)
+      .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
       .build()
 
     val advertiseData = AdvertiseData.Builder()
-      .addServiceUuid(serviceUuid)
+      .addManufacturerData(0xFFFF, manufacturerData)
       .setIncludeDeviceName(false)
       .setIncludeTxPowerLevel(false)
       .build()
 
-    val scanResponse = AdvertiseData.Builder()
-      .addServiceData(serviceUuid, serviceData)
-      .build()
-
     suspendCancellableCoroutine { continuation ->
       val callback = object : AdvertiseCallback() {
-        override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
+        override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
           advertiseCallback = this
           _advertisedDevice.value = device
-
-          if (continuation.isActive) {
-            continuation.resume(Unit)
-          }
+          if (continuation.isActive) continuation.resume(Unit)
         }
 
         override fun onStartFailure(errorCode: Int) {
           if (continuation.isActive) {
             continuation.resumeWithException(
-              AdvertisingException(
-                "Failed to start advertising. errorCode=$errorCode"
-              )
+              AdvertisingException("Failed to start advertising. errorCode=$errorCode")
             )
           }
         }
       }
 
-      advertiser.startAdvertising(
-        settings,
-        advertiseData,
-        scanResponse,
-        callback,
-      )
+      advertiser.startAdvertising(settings, advertiseData, callback)
 
       continuation.invokeOnCancellation {
         advertiser.stopAdvertising(callback)

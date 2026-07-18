@@ -16,15 +16,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromByteArray
-import kotlinx.serialization.protobuf.ProtoBuf
+import java.nio.ByteBuffer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+import kotlin.uuid.toJavaUuid
 
-@OptIn(ExperimentalSerializationApi::class, ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class)
 class BleDiscoverer(
   private val serviceUuid: Uuid,
   private val deviceTimeout: Duration
@@ -49,20 +48,15 @@ class BleDiscoverer(
       }
     }
 
-    val scanner = Scanner {
-      filters {
-        match {
-          services = listOf(serviceUuid)
-        }
-      }
-    }
+    val scanner = Scanner {}
 
     val discoveringJob = launch {
       scanner.advertisements.catch { e ->
         throw DiscoveryException("BLE discovery failed", e)
       }.collect { advertisement ->
-        val device = advertisement.toDevice() ?: return@collect
-        channel.send(DeviceFound(device))
+        advertisement.toDevice()?.let { device ->
+          channel.send(DeviceFound(device))
+        }
       }
     }
 
@@ -91,8 +85,23 @@ class BleDiscoverer(
 
   private fun Advertisement.toDevice(): BleHubDevice? {
     return try {
-      val serviceData = this.serviceData(serviceUuid) ?: return null
-      ProtoBuf.decodeFromByteArray<BleHubDevice>(serviceData)
+      val data = this.manufacturerData(0xFFFF) ?: return null
+      val uuid = serviceUuid.toJavaUuid()
+
+      if (data.size != 24) {
+        return null
+      }
+
+      val buf = ByteBuffer.wrap(data)
+      val msb = buf.getLong()
+      val lsb = buf.getLong()
+      val id = buf.getLong()
+
+      if (msb != uuid.mostSignificantBits || lsb != uuid.leastSignificantBits) {
+        return null
+      }
+
+      BleHubDevice(id)
     } catch (e: Exception) {
       null
     }

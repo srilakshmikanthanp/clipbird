@@ -4,6 +4,6 @@ fun Boolean.orThrow(supplier: () -> Throwable): Boolean {
   if (!this) {
     throw supplier()
   } else {
-    return this
+    return true
   }
 }

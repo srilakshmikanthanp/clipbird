@@ -17,10 +17,11 @@ import java.nio.ByteBuffer
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 
 @OptIn(ExperimentalUuidApi::class)
-actual class BleAdvertiser(private val context: Context, private val device: BleHubDevice) : Advertiser<BleHubDevice> {
+actual class BleAdvertiser(private val context: Context, private val serviceUuid: Uuid, private val device: BleHubDevice) : Advertiser<BleHubDevice> {
   private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
   private var advertiseCallback: AdvertiseCallback? = null
 
@@ -41,7 +42,7 @@ actual class BleAdvertiser(private val context: Context, private val device: Ble
 
     val advertiser = adapter.bluetoothLeAdvertiser ?: throw AdvertisingException("BLE advertiser not available")
 
-    val javaUuid = BluetoothConstants.clipbirdServiceUuid.toJavaUuid()
+    val javaUuid = serviceUuid.toJavaUuid()
     val manufacturerData = ByteBuffer.allocate(24)
       .putLong(javaUuid.mostSignificantBits)
       .putLong(javaUuid.leastSignificantBits)

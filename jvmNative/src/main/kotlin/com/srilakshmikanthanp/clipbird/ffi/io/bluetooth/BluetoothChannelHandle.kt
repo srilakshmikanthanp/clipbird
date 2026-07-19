@@ -25,8 +25,12 @@ object BluetoothChannelHandle {
   }
 
   fun write(channel: MemorySegment, data: ByteArray) {
-    Clipbird.clipbird_io_bluetooth_channel_write(channel, MemorySegment.ofArray(data), data.size.toLong()).orThrow {
-      IOException("Failed to write to channel: ${NativeErrorHandle.lastErrorMessage()}")
+    Arena.ofConfined().use { arena ->
+      val buffer: MemorySegment = arena.allocate(data.size.toLong())
+      buffer.copyFrom(MemorySegment.ofArray(data))
+      Clipbird.clipbird_io_bluetooth_channel_write(channel, buffer, data.size.toLong()).orThrow {
+        IOException("Failed to write to channel: ${NativeErrorHandle.lastErrorMessage()}")
+      }
     }
   }
 

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.srilakshmikanthanp.clipbird.ui.permission.BluetoothPermissionGate
 import com.srilakshmikanthanp.clipbird.ui.navigation.ClipbirdNavigation
 import com.srilakshmikanthanp.clipbird.ui.theme.ClipbirdTheme
 
@@ -12,9 +11,7 @@ import com.srilakshmikanthanp.clipbird.ui.theme.ClipbirdTheme
 fun App() {
   ClipbirdTheme {
     Surface(modifier = Modifier.fillMaxSize()) {
-      BluetoothPermissionGate {
-        ClipbirdNavigation()
-      }
+      ClipbirdNavigation()
     }
   }
 }

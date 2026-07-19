@@ -30,6 +30,7 @@ std::vector<std::uint8_t> LinuxRfcommChannel::readExactly(std::size_t size) {
     ssize_t bytesRead = ::read(socket_fd, buffer.data() + totalRead, size - totalRead);
 
     if (bytesRead < 0) {
+      if (errno == EINTR) continue;
       throw std::system_error(errno, std::generic_category(), "Failed to read from RFCOMM socket");
     }
 

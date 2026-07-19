@@ -12,10 +12,9 @@ kotlin {
 
 dependencies {
   implementation(projects.shared)
-
+  implementation(libs.koin.core)
   implementation(compose.desktop.currentOs)
   implementation(libs.kotlinx.coroutinesSwing)
-
   implementation(libs.compose.uiToolingPreview)
 }
 

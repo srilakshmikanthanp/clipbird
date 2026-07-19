@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class BlockingPairingVerifier : PairingVerifier {
+class PairingDeferredVerifier : PairingVerifier {
   private val pending = MutableStateFlow<Map<VerificationRequest, CompletableDeferred<Boolean>>>(emptyMap())
-  val requests: Flow<List<VerificationRequest>> = pending.map { it.keys.toList() }.distinctUntilChanged()
+  val requests: Flow<VerificationRequest?> = pending.map { it.keys.firstOrNull() }.distinctUntilChanged()
   data class VerificationRequest(val remoteDevice: Device, val code: String)
 
   override suspend fun verify(localDevice: Device, remoteDevice: Device, code: String): Boolean {
@@ -31,5 +31,13 @@ class BlockingPairingVerifier : PairingVerifier {
 
   fun reject(request: VerificationRequest) {
     pending.value[request]?.complete(false)
+  }
+
+  fun confirmById(deviceId: Long) {
+    pending.value.keys.find { it.remoteDevice.id == deviceId }?.let { confirm(it) }
+  }
+
+  fun rejectById(deviceId: Long) {
+    pending.value.keys.find { it.remoteDevice.id == deviceId }?.let { reject(it) }
   }
 }

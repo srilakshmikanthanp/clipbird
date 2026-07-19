@@ -84,9 +84,6 @@ dependencies {
   androidRuntimeClasspath(libs.compose.uiTooling)
   add("kspAndroid", libs.androidx.room.compiler)
   add("kspJvm", libs.androidx.room.compiler)
-  // Koin's processor runs per-target (like Room), so each target generates its full graph — the
-  // common feature modules plus that target's platform module. This lets platform bindings be
-  // annotated too, and avoids the duplicate KoinMeta that kspCommonMainMetadata + per-target caused.
   add("kspAndroid", libs.koin.ksp.compiler)
   add("kspJvm", libs.koin.ksp.compiler)
 }

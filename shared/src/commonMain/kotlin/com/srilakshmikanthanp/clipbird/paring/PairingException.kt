@@ -20,3 +20,7 @@ class AlreadyPairingException(
 class IllegalPairingCandidateException(
   candidate: PairingCandidate
 ) : PairingException("Unsupported pairing candidate: ${candidate::class.simpleName}")
+
+class IllegalPairedDeviceException(
+  device: PairedDevice
+) : PairingException("Unsupported paired device: ${device::class.simpleName}")

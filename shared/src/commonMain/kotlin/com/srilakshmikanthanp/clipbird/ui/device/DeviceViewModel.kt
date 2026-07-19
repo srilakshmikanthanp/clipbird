@@ -2,25 +2,15 @@ package com.srilakshmikanthanp.clipbird.ui.device
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.srilakshmikanthanp.clipbird.paring.AlreadyPairingException
-import com.srilakshmikanthanp.clipbird.paring.IllegalPairingCandidateException
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
-import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.PairingCandidate
-import com.srilakshmikanthanp.clipbird.paring.PairingCoordinator
-import com.srilakshmikanthanp.clipbird.paring.PairingFailedException
+import com.srilakshmikanthanp.clipbird.paring.*
+import com.srilakshmikanthanp.clipbird.ui.device.DeviceViewModel.PairingEvent.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class DeviceViewModel(
-  private val coordinator: PairingCoordinator,
   private val pairedDeviceService: PairedDeviceService<out PairedDevice>,
+  private val coordinator: PairingCoordinator,
 ) : ViewModel() {
   sealed interface PairingEvent {
     data class AlreadyPairing(val deviceName: String) : PairingEvent
@@ -63,10 +53,10 @@ class DeviceViewModel(
   val events: Flow<PairingEvent> = _events.receiveAsFlow()
 
   private fun Throwable.toEvent(candidate: PairingCandidate): PairingEvent = when (this) {
-    is AlreadyPairingException -> PairingEvent.AlreadyPairing(candidate.name)
-    is IllegalPairingCandidateException -> PairingEvent.Unsupported(candidate.name)
-    is PairingFailedException -> PairingEvent.Failed(candidate.name)
-    else -> PairingEvent.Error(candidate.name, this)
+    is AlreadyPairingException -> AlreadyPairing(candidate.name)
+    is IllegalPairingCandidateException -> Unsupported(candidate.name)
+    is PairingFailedException -> Failed(candidate.name)
+    else -> Error(candidate.name, this)
   }
 
   fun pair(candidate: PairingCandidate) = viewModelScope.launch {

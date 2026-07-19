@@ -1,5 +1,7 @@
 package com.srilakshmikanthanp.clipbird
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,9 +13,19 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-
     setContent {
-      App()
+      PermissionGate(onGranted = ::onPermissionsGranted) {
+        App()
+      }
+    }
+  }
+
+  private fun onPermissionsGranted() {
+    val intent = Intent(this, ClipbirdService::class.java)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      startForegroundService(intent)
+    } else {
+      startService(intent)
     }
   }
 }

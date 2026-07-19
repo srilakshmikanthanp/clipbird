@@ -1,42 +1,75 @@
 package com.srilakshmikanthanp.clipbird.paring
 
+import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothChannel
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingCandidate
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 
 class PairingCoordinator(
   private val bluetoothProvider: PairingCandidateProvider<BluetoothPairingCandidate>,
   private val bluetoothPairer: Pairer<BluetoothPairingCandidate, BluetoothPairedDevice>,
+  private val pairingServer: PairingServer<BluetoothChannel>,
+  private val service: BluetoothPairedDeviceService,
+  private val scope: CoroutineScope,
+  private val responder: PairingResponder<BluetoothChannel, BluetoothPairedDevice>
 ) {
   val devices: StateFlow<Collection<PairingCandidate>> = bluetoothProvider.devices
+
   private val _pairing = MutableStateFlow<Set<PairingCandidate>>(emptySet())
   val pairing: StateFlow<Set<PairingCandidate>> = _pairing.asStateFlow()
-  private val lock = Mutex()
 
-  private suspend fun doPair(candidate: PairingCandidate): PairedDevice {
-    return when (candidate) {
-      is BluetoothPairingCandidate -> bluetoothPairer.pair(candidate)
-      else -> throw IllegalPairingCandidateException(candidate)
+  private val pairingSemaphore = Semaphore(1)
+
+  private val serverJobDelegate = lazy { scope.launch { doCollect() } }
+  private val serverJob by serverJobDelegate
+
+  private suspend fun doPair(candidate: BluetoothPairingCandidate): BluetoothPairedDevice {
+    return bluetoothPairer.pair(candidate).also {
+      service.upsert(it)
     }
   }
 
   suspend fun pair(candidate: PairingCandidate): PairedDevice {
-    lock.withLock {
-      if (candidate in _pairing.value) {
-        throw AlreadyPairingException("Already pairing with ${candidate.name}")
-      } else {
-        _pairing.value += candidate
+    pairingSemaphore.withPermit {
+      _pairing.value += candidate
+
+      return try {
+        when (candidate) {
+          is BluetoothPairingCandidate -> doPair(candidate)
+          else -> throw IllegalPairingCandidateException(candidate)
+        }
+      } finally {
+        _pairing.value -= candidate
       }
     }
+  }
 
-    return try {
-      doPair(candidate)
-    } finally {
-      lock.withLock { _pairing.value -= candidate }
+  private suspend fun onNewChannel(channel: BluetoothChannel) {
+    pairingSemaphore.withPermit {
+      channel.use { channel ->
+        service.upsert(responder.respond(channel))
+      }
+    }
+  }
+
+  private suspend fun doCollect() {
+    pairingServer.channels.collect { onNewChannel(it) }
+  }
+
+  fun start() {
+    serverJob
+  }
+
+  fun stop() {
+    if (serverJobDelegate.isInitialized()) {
+      serverJob.cancel()
     }
   }
 }

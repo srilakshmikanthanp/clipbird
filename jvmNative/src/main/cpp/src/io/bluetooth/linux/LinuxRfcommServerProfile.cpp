@@ -2,6 +2,8 @@
 
 #include <boost/log/trivial.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <cstring>
+#include <fcntl.h>
 #include <map>
 #include <stdexcept>
 
@@ -35,6 +37,7 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
   auto options = std::map<std::string, sdbus::Variant>{
     {"Name", sdbus::Variant(serviceName)},
     {"Role", sdbus::Variant(std::string("server"))},
+    {"Channel", sdbus::Variant(uint16_t(0))},
     {"RequireAuthentication", sdbus::Variant(false)},
     {"RequireAuthorization", sdbus::Variant(false)}
   };
@@ -47,6 +50,7 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
 
 void LinuxRfcommServerProfile::onNewConnection(const sdbus::ObjectPath& device, sdbus::UnixFd fd, const std::map<std::string, sdbus::Variant>& properties) {
   try {
+    BOOST_LOG_TRIVIAL(debug) << "RFCOMM NewConnection from " << std::string(device);
     acceptedConnections.push(std::make_tuple(std::move(fd), std::string(device)));
   } catch (const boost::sync_queue_is_closed& e) {
     BOOST_LOG_TRIVIAL(debug) << "Ignored RFCOMM server connection because the profile is closed: " << e.what();
@@ -75,6 +79,12 @@ std::unique_ptr<io::Channel> LinuxRfcommServerProfile::accept() {
     address = device->getProperty("Address").onInterface("org.bluez.Device1").get<std::string>();
   } catch (const sdbus::Error& e) {
     throw io::IOException("Failed to get Bluetooth device address for RFCOMM connection: " + std::string(e.what()));
+  }
+
+  int flags = ::fcntl(fd.get(), F_GETFL, 0);
+
+  if (flags == -1 || ::fcntl(fd.get(), F_SETFL, flags & ~O_NONBLOCK) == -1) {
+    throw io::IOException("Failed to set RFCOMM socket to blocking mode: " + std::string(strerror(errno)));
   }
 
   return std::make_unique<LinuxRfcommChannel>(fd.release(), address);

@@ -164,8 +164,7 @@ void LinuxBluetoothManager::notifyBondedDevicesChanged() {
 
 std::unique_ptr<io::Channel> LinuxBluetoothManager::connectRfcomm(const std::string& address, const boost::uuids::uuid& serviceUuid) {
   LinuxRfcommConnector connector(address, serviceUuid);
-  auto fd = connector.getFd();
-  return std::make_unique<LinuxRfcommChannel>(fd.release(), address);
+  return std::make_unique<LinuxRfcommChannel>(connector.getFd(), address);
 }
 
 std::unique_ptr<io::Server> LinuxBluetoothManager::startRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid) {

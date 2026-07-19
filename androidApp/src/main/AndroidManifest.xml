@@ -16,6 +16,13 @@
       android:name="android.permission.BLUETOOTH_ADMIN"
       android:maxSdkVersion="30" />
 
+  <!-- Notifications (API 33+) -->
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+  <!-- Foreground service -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+
   <application
       android:name=".ClipbirdApplication"
       android:allowBackup="true"
@@ -33,6 +40,15 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
+
+    <service
+        android:name=".ClipbirdService"
+        android:exported="false"
+        android:foregroundServiceType="connectedDevice" />
+
+    <receiver
+        android:name=".pairing.PairingVerificationReceiver"
+        android:exported="false" />
   </application>
 
 </manifest>

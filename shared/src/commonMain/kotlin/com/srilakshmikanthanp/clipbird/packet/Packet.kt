@@ -2,6 +2,7 @@ package com.srilakshmikanthanp.clipbird.packet
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 
 sealed interface Packet
@@ -16,6 +17,16 @@ fun ByteArray.toPacket(packetType: PacketType): Packet {
     PacketType.IdentityPacketType -> ProtoBuf.decodeFromByteArray<IdentityPacket>(this)
     PacketType.ErrorPacketType -> ProtoBuf.decodeFromByteArray<ErrorPacket>(this)
   }
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+fun Packet.toBytes(): ByteArray = when (this) {
+  is ClipboardSyncingPacket -> ProtoBuf.encodeToByteArray(this)
+  is PairingPacket -> ProtoBuf.encodeToByteArray(this)
+  is NoncePacket -> ProtoBuf.encodeToByteArray(this)
+  is SignaturePacket -> ProtoBuf.encodeToByteArray(this)
+  is IdentityPacket -> ProtoBuf.encodeToByteArray(this)
+  is ErrorPacket -> ProtoBuf.encodeToByteArray(this)
 }
 
 fun Packet.getType(): PacketType {

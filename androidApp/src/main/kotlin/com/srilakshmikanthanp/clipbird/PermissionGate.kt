@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.ui.permission
+package com.srilakshmikanthanp.clipbird
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -26,37 +26,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-private fun BluetoothPermissionRequired(
-  onGrant: () -> Unit,
-) {
+private fun PermissionRequired(onGrant: () -> Unit) {
   Column(
     modifier = Modifier.fillMaxSize().padding(24.dp),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    Text(
-      text = "Bluetooth permission is required to find and pair devices.",
-      textAlign = TextAlign.Center,
-    )
+    Text(text = "Permission required to use this app", textAlign = TextAlign.Center)
     Spacer(Modifier.height(16.dp))
-    Button(onClick = onGrant) {
-      Text("Grant permission")
-    }
+    Button(onClick = onGrant) { Text("Grant permission") }
   }
 }
 
 @Composable
-actual fun BluetoothPermissionGate(content: @Composable () -> Unit) {
+fun PermissionGate(onGranted: () -> Unit, content: @Composable () -> Unit) {
   val required = remember {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      arrayOf(
-        Manifest.permission.BLUETOOTH_CONNECT,
-        Manifest.permission.BLUETOOTH_SCAN,
-        Manifest.permission.BLUETOOTH_ADVERTISE,
-      )
-    } else {
-      emptyArray()
-    }
+    buildList {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        add(Manifest.permission.BLUETOOTH_CONNECT)
+        add(Manifest.permission.BLUETOOTH_SCAN)
+        add(Manifest.permission.BLUETOOTH_ADVERTISE)
+      }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        add(Manifest.permission.POST_NOTIFICATIONS)
+      }
+    }.toTypedArray()
   }
 
   val context = LocalContext.current
@@ -75,11 +69,13 @@ actual fun BluetoothPermissionGate(content: @Composable () -> Unit) {
     if (!granted) launcher.launch(required)
   }
 
+  LaunchedEffect(granted) {
+    if (granted) onGranted()
+  }
+
   if (granted) {
     content()
   } else {
-    BluetoothPermissionRequired {
-      launcher.launch(required)
-    }
+    PermissionRequired { launcher.launch(required) }
   }
 }

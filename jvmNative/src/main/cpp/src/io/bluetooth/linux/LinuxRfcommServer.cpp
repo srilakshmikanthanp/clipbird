@@ -4,9 +4,9 @@
 namespace clipbird::io::bluetooth {
 
 LinuxRfcommServer::LinuxRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid)
-  : connection(sdbus::createSystemBusConnection()),
-    profileRegistration (std::make_unique<LinuxRfcommServerProfile>(*connection, serviceName, serviceUuid)) {
+  : connection(sdbus::createSystemBusConnection()) {
   connection->enterEventLoopAsync();
+  profileRegistration = std::make_unique<LinuxRfcommServerProfile>(*connection, serviceName, serviceUuid);
 }
 
 std::unique_ptr<io::Channel> LinuxRfcommServer::accept() {

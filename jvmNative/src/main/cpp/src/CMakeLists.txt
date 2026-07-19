@@ -61,8 +61,8 @@ if(UNIX)
     advertiser/ble/linux/LinuxBleAdvertiser.cpp
     io/bluetooth/linux/LinuxBluetoothManager.cpp
     io/bluetooth/linux/LinuxRfcommChannel.cpp
-    io/bluetooth/linux/LinuxRfcommClientProfile.cpp
     io/bluetooth/linux/LinuxRfcommConnector.cpp
+    io/bluetooth/linux/LinuxSdpResolver.cpp
     io/bluetooth/linux/LinuxRfcommServer.cpp
     io/bluetooth/linux/LinuxRfcommServerProfile.cpp
   )

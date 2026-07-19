@@ -8,10 +8,10 @@ import java.lang.foreign.MemorySegment
 
 object BluetoothServerHandle {
   fun accept(server: MemorySegment): MemorySegment {
-    return Clipbird.clipbird_io_server_accept(server).orThrow { IOException("Failed to accept connection: ${NativeErrorHandle.lastErrorMessage()}") }
+    return Clipbird.clipbird_io_bluetooth_server_accept(server).orThrow { IOException("Failed to accept connection: ${NativeErrorHandle.lastErrorMessage()}") }
   }
 
   fun destroy(server: MemorySegment) {
-    Clipbird.clipbird_io_server_destroy(server)
+    Clipbird.clipbird_io_bluetooth_server_destroy(server)
   }
 }

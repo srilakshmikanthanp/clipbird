@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 import android.bluetooth.BluetoothDevice as AndroidBluetoothDevice
 import android.bluetooth.BluetoothManager as AndroidBluetoothManager
@@ -35,7 +34,6 @@ actual class BluetoothManager(
 
   actual val name: String get() = bluetoothAdapter.name ?: "Unknown"
 
-  @OptIn(ExperimentalUuidApi::class)
   private fun AndroidBluetoothDevice.toSharedBluetoothDevice(): BluetoothDevice {
     return BluetoothDevice(address = address, name = name)
   }
@@ -63,19 +61,19 @@ actual class BluetoothManager(
     started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
   )
 
-  override suspend fun connect(endpoint: BluetoothServerEndpoint): Channel = withContext(Dispatchers.IO) {
+  actual override suspend fun connect(endpoint: BluetoothServerEndpoint): BluetoothChannel = withContext(Dispatchers.IO) {
     val device = bluetoothAdapter.getRemoteDevice(endpoint.address)
     val uuid = endpoint.serviceUuid.toJavaUuid()
     val socket = device.createRfcommSocketToServiceRecord(uuid)
     bluetoothAdapter.cancelDiscovery()
     socket.connect()
-    BluetoothChannel(socket)
+    RfcommBluetoothChannel(socket)
   }
 
-  override suspend fun start(config: BluetoothServerConfig): Server = withContext(Dispatchers.IO) {
+  actual override suspend fun start(config: BluetoothServerConfig): BluetoothServer = withContext(Dispatchers.IO) {
     val serviceName = config.serviceName
     val uuid = config.serviceUuid.toJavaUuid()
     val bluetoothServerSocket = bluetoothAdapter.listenUsingRfcommWithServiceRecord(serviceName, uuid)
-    BluetoothServer(bluetoothServerSocket)
+    RfcommBluetoothServer(bluetoothServerSocket)
   }
 }

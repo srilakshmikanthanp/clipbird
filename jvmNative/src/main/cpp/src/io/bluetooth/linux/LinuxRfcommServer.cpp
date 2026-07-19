@@ -1,4 +1,3 @@
-#include "LinuxRfcommChannel.hpp"
 #include "LinuxRfcommServer.hpp"
 #include "LinuxRfcommServerProfile.hpp"
 
@@ -11,8 +10,7 @@ LinuxRfcommServer::LinuxRfcommServer(const std::string& serviceName, const boost
 }
 
 std::unique_ptr<io::Channel> LinuxRfcommServer::accept() {
-  sdbus::UnixFd fd = profileRegistration->accept();
-  return std::make_unique<LinuxRfcommChannel>(fd.release());
+  return profileRegistration->accept();
 }
 
 LinuxRfcommServer::~LinuxRfcommServer() {

@@ -19,10 +19,10 @@ target_sources(
   io/bluetooth/BluetoothManagerFactory.cpp
   io/bluetooth/bluetooth_manager_factory.cxx
   io/bluetooth/bluetooth_manager.cxx
+  io/bluetooth/bluetooth_channel.cxx
+  io/bluetooth/bluetooth_server.cxx
   error/Error.cpp
   error/error.cxx
-  io/channel.cxx
-  io/server.cxx
 )
 
 if(UNIX)

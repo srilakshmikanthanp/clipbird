@@ -1,16 +1,14 @@
 package com.srilakshmikanthanp.clipbird.io.bluetooth;
 
 import android.bluetooth.BluetoothServerSocket
-import com.srilakshmikanthanp.clipbird.io.Channel
-import com.srilakshmikanthanp.clipbird.io.Server
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class BluetoothServer(
+class RfcommBluetoothServer(
   private val bluetoothServerSocket: BluetoothServerSocket,
-) : Server {
-  override suspend fun accept(): Channel = withContext(Dispatchers.IO) {
-    BluetoothChannel(bluetoothServerSocket.accept())
+) : BluetoothServer {
+  override suspend fun accept(): BluetoothChannel = withContext(Dispatchers.IO) {
+    RfcommBluetoothChannel(bluetoothServerSocket.accept())
   }
 
   override fun close() {

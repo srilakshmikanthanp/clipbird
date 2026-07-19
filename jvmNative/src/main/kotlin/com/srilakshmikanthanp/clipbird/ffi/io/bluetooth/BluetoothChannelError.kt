@@ -6,7 +6,7 @@ import java.io.IOException
 
 internal fun Int.toChannelReadExactlyException(): IOException {
   return when (this) {
-    Clipbird.CLIPBIRD_IO_CHANNEL_EOF() -> IOException("Reached end of channel: ${NativeErrorHandle.lastErrorMessage()}")
+    Clipbird.CLIPBIRD_IO_BLUETOOTH_CHANNEL_EOF() -> IOException("Reached end of channel: ${NativeErrorHandle.lastErrorMessage()}")
     else -> IOException("Failed to read from channel: ${NativeErrorHandle.lastErrorMessage()}")
   }
 }

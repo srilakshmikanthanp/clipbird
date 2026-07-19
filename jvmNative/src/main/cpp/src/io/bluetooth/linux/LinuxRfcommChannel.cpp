@@ -7,13 +7,19 @@
 
 #include <stdexcept>
 #include <system_error>
+#include <utility>
 
 #include "io/EOFException.hpp"
 
 namespace clipbird::io::bluetooth {
 
-LinuxRfcommChannel::LinuxRfcommChannel(int socket_fd) : socket_fd(socket_fd) {
+LinuxRfcommChannel::LinuxRfcommChannel(int socket_fd, std::string remoteAddress)
+  : socket_fd(socket_fd), remote_address(std::move(remoteAddress)) {
   // No additional initialization required for now.
+}
+
+const std::string& LinuxRfcommChannel::remoteAddress() const {
+  return remote_address;
 }
 
 std::vector<std::uint8_t> LinuxRfcommChannel::readExactly(std::size_t size) {

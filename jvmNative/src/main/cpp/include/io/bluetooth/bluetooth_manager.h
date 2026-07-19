@@ -4,8 +4,8 @@
 #include <stdint.h>
 
 #include "io/bluetooth/bluetooth_manager_factory.h"
-#include "io/channel.h"
-#include "io/server.h"
+#include "io/bluetooth/bluetooth_channel.h"
+#include "io/bluetooth/bluetooth_server.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,7 +90,7 @@ void clipbird_bluetooth_device_list_destroy(clipbird_bluetooth_device_list_t* li
  * @param service_uuid The UUID of the RFCOMM service to connect to.
  * @return A pointer to a channel representing the connection, or nullptr if the connection could not be established.
  */
-clipbird_io_channel_t* clipbird_bluetooth_manager_connect_rfcomm(clipbird_bluetooth_manager_t* manager, const char* address, const char* service_uuid);
+clipbird_io_bluetooth_channel_t* clipbird_bluetooth_manager_connect_rfcomm(clipbird_bluetooth_manager_t* manager, const char* address, const char* service_uuid);
 
 /**
  * Starts a Bluetooth RFCOMM server with the specified service name and UUID.
@@ -99,7 +99,7 @@ clipbird_io_channel_t* clipbird_bluetooth_manager_connect_rfcomm(clipbird_blueto
  * @param service_uuid The UUID of the RFCOMM service to create.
  * @return A pointer to a server representing the RFCOMM server, or nullptr if the server could not be started.
  */
-clipbird_io_server_t* clipbird_bluetooth_manager_start_rfcomm_server(clipbird_bluetooth_manager_t* manager, const char* service_name, const char* service_uuid);
+clipbird_io_bluetooth_server_t* clipbird_bluetooth_manager_start_rfcomm_server(clipbird_bluetooth_manager_t* manager, const char* service_name, const char* service_uuid);
 
 /**
  * Destroys the Bluetooth manager instance and releases any associated resources.

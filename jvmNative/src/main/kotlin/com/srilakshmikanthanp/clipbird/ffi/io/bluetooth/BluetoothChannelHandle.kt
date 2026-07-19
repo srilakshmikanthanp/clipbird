@@ -10,21 +10,27 @@ import java.lang.foreign.ValueLayout
 import kotlin.use
 
 object BluetoothChannelHandle {
+  fun remoteAddress(channel: MemorySegment): String {
+    return Clipbird.clipbird_io_bluetooth_channel_remote_address(channel).orThrow {
+      IOException("Failed to get remote address: ${NativeErrorHandle.lastErrorMessage()}")
+    }.getString(0)
+  }
+
   fun readExactly(channel: MemorySegment, size: Int): ByteArray {
     Arena.ofConfined().use { arena ->
       val buffer: MemorySegment = arena.allocate(size.toLong())
-      Clipbird.clipbird_io_channel_read_exactly(channel, buffer, size.toLong()).orThrow { NativeErrorHandle.lastErrorCode().toChannelReadExactlyException() }
+      Clipbird.clipbird_io_bluetooth_channel_read_exactly(channel, buffer, size.toLong()).orThrow { NativeErrorHandle.lastErrorCode().toChannelReadExactlyException() }
       return buffer.toArray(ValueLayout.JAVA_BYTE)
     }
   }
 
   fun write(channel: MemorySegment, data: ByteArray) {
-    Clipbird.clipbird_io_channel_write(channel, MemorySegment.ofArray(data), data.size.toLong()).orThrow {
+    Clipbird.clipbird_io_bluetooth_channel_write(channel, MemorySegment.ofArray(data), data.size.toLong()).orThrow {
       IOException("Failed to write to channel: ${NativeErrorHandle.lastErrorMessage()}")
     }
   }
 
   fun destroy(channel: MemorySegment) {
-    Clipbird.clipbird_io_channel_destroy(channel)
+    Clipbird.clipbird_io_bluetooth_channel_destroy(channel)
   }
 }

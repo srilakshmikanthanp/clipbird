@@ -107,7 +107,7 @@ void clipbird_bluetooth_device_list_destroy(clipbird_bluetooth_device_list_t* li
   delete list;
 }
 
-clipbird_io_channel_t* clipbird_bluetooth_manager_connect_rfcomm(clipbird_bluetooth_manager_t* manager, const char* address, const char* service_uuid) {
+clipbird_io_bluetooth_channel_t* clipbird_bluetooth_manager_connect_rfcomm(clipbird_bluetooth_manager_t* manager, const char* address, const char* service_uuid) {
   if (!manager || !manager->impl || !address || !service_uuid) {
     error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INVALID_ARGUMENT, "Invalid argument: manager, address and service_uuid must not be null.");
     return nullptr;
@@ -115,9 +115,15 @@ clipbird_io_channel_t* clipbird_bluetooth_manager_connect_rfcomm(clipbird_blueto
 
   try {
     boost::uuids::string_generator uuidGenerator;
-    auto channel = manager->impl->connectRfcomm(std::string(address), uuidGenerator(service_uuid));
+    auto* channel = io::bluetooth::makeBluetoothChannelHandle(manager->impl->connectRfcomm(std::string(address), uuidGenerator(service_uuid)));
+
+    if (!channel) {
+      error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INTERNAL_ERROR, "Connected channel is not a Bluetooth channel.");
+      return nullptr;
+    }
+
     error::clearLastError();
-    return new clipbird_io_channel{std::move(channel)};
+    return channel;
   } catch (const bt::BluetoothDeviceNotFoundException& e) {
     error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_DEVICE_NOT_FOUND, e.what());
     return nullptr;
@@ -142,7 +148,7 @@ clipbird_io_channel_t* clipbird_bluetooth_manager_connect_rfcomm(clipbird_blueto
   }
 }
 
-clipbird_io_server_t* clipbird_bluetooth_manager_start_rfcomm_server(clipbird_bluetooth_manager_t* manager, const char* service_name, const char* service_uuid) {
+clipbird_io_bluetooth_server_t* clipbird_bluetooth_manager_start_rfcomm_server(clipbird_bluetooth_manager_t* manager, const char* service_name, const char* service_uuid) {
   if (!manager || !manager->impl || !service_name || !service_uuid) {
     error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_INVALID_ARGUMENT, "Invalid argument: manager, service_name and service_uuid must not be null.");
     return nullptr;
@@ -152,7 +158,7 @@ clipbird_io_server_t* clipbird_bluetooth_manager_start_rfcomm_server(clipbird_bl
     boost::uuids::string_generator uuidGenerator;
     auto server = manager->impl->startRfcommServer(std::string(service_name), uuidGenerator(service_uuid));
     error::clearLastError();
-    return new clipbird_io_server{std::move(server)};
+    return new clipbird_io_bluetooth_server{std::move(server)};
   } catch (const io::IOException& e) {
     error::setLastError(CLIPBIRD_BLUETOOTH_MANAGER_IO_ERROR, e.what());
     return nullptr;

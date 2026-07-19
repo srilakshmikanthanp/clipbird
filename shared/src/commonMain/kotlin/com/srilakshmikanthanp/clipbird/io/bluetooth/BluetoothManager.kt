@@ -1,10 +1,15 @@
 package com.srilakshmikanthanp.clipbird.io.bluetooth
 
+import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.io.ClientFactory
+import com.srilakshmikanthanp.clipbird.io.Server
 import com.srilakshmikanthanp.clipbird.io.ServerFactory
 import kotlinx.coroutines.flow.StateFlow
 
 expect class BluetoothManager : ClientFactory<BluetoothServerEndpoint>, ServerFactory<BluetoothServerConfig> {
   val boundedDevices: StateFlow<List<BluetoothDevice>>
   val name: String
+
+  override suspend fun connect(endpoint: BluetoothServerEndpoint): BluetoothChannel
+  override suspend fun start(config: BluetoothServerConfig): BluetoothServer
 }

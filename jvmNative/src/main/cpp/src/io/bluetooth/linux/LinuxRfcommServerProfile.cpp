@@ -5,6 +5,7 @@
 #include <map>
 #include <stdexcept>
 
+#include "LinuxRfcommChannel.hpp"
 #include "io/IOException.hpp"
 
 namespace clipbird::io::bluetooth {
@@ -13,7 +14,8 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
   sdbus::IConnection& connection,
   const std::string& serviceName,
   const boost::uuids::uuid& serviceUuid
-): objectPath("/com/srilakshmikanthanp/clipbird/rfcomm/server/profile"),
+): connection(connection),
+   objectPath("/com/srilakshmikanthanp/clipbird/rfcomm/server/profile"),
    object(sdbus::createObject(connection, objectPath)),
    profileManager(sdbus::createProxy(connection, sdbus::ServiceName("org.bluez"), sdbus::ObjectPath("/org/bluez"))) {
 
@@ -43,9 +45,9 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
   registered = true;
 }
 
-void LinuxRfcommServerProfile::onNewConnection(const sdbus::ObjectPath&, sdbus::UnixFd fd, const std::map<std::string, sdbus::Variant>& properties) {
+void LinuxRfcommServerProfile::onNewConnection(const sdbus::ObjectPath& device, sdbus::UnixFd fd, const std::map<std::string, sdbus::Variant>& properties) {
   try {
-    acceptedConnections.push(std::move(fd));
+    acceptedConnections.push(std::make_tuple(std::move(fd), std::string(device)));
   } catch (const boost::sync_queue_is_closed& e) {
     BOOST_LOG_TRIVIAL(debug) << "Ignored RFCOMM server connection because the profile is closed: " << e.what();
   }
@@ -56,12 +58,26 @@ void LinuxRfcommServerProfile::release() {
   acceptedConnections.close();
 }
 
-sdbus::UnixFd LinuxRfcommServerProfile::accept() {
+std::unique_ptr<io::Channel> LinuxRfcommServerProfile::accept() {
+  std::tuple<sdbus::UnixFd, std::string> pending;
+
   try {
-    return acceptedConnections.pull();
+    pending = acceptedConnections.pull();
   } catch (const boost::sync_queue_is_closed&) {
     throw io::IOException("BlueZ RFCOMM server has been closed");
   }
+
+  auto& [fd, devicePath] = pending;
+  std::string address;
+
+  try {
+    auto device = sdbus::createProxy(connection, sdbus::ServiceName("org.bluez"), sdbus::ObjectPath(devicePath));
+    address = device->getProperty("Address").onInterface("org.bluez.Device1").get<std::string>();
+  } catch (const sdbus::Error& e) {
+    throw io::IOException("Failed to get Bluetooth device address for RFCOMM connection: " + std::string(e.what()));
+  }
+
+  return std::make_unique<LinuxRfcommChannel>(fd.release(), address);
 }
 
 LinuxRfcommServerProfile::~LinuxRfcommServerProfile() {

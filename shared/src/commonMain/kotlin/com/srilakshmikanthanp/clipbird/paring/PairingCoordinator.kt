@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.paring
 
+import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothChannel
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
@@ -53,14 +54,20 @@ class PairingCoordinator(
 
   private suspend fun onNewChannel(channel: BluetoothChannel) {
     pairingSemaphore.withPermit {
-      channel.use { channel ->
-        service.upsert(responder.respond(channel))
+      try {
+        channel.use { service.upsert(responder.respond(it)) }
+      } catch (e: Exception) {
+        Logger.e("Error pairing to channel: ${e.message}", e, TAG)
       }
     }
   }
 
   private suspend fun doCollect() {
-    pairingServer.channels.collect { onNewChannel(it) }
+    try {
+      pairingServer.channels.collect { onNewChannel(it) }
+    } catch (e: Exception) {
+      Logger.e("Error collecting channels: ${e.message}", e, TAG)
+    }
   }
 
   fun start() {
@@ -71,5 +78,9 @@ class PairingCoordinator(
     if (serverJobDelegate.isInitialized()) {
       serverJob.cancel()
     }
+  }
+
+  companion object {
+    const val TAG = "PairingCoordinator"
   }
 }

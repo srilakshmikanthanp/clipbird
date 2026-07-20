@@ -12,6 +12,7 @@ androidx-testExt = "1.3.0"
 composeMultiplatform = "1.11.0"
 composenativetray = "2.0.3"
 junit = "4.13.2"
+kermit = "2.1.0"
 kotlin = "2.3.21"
 kotlinx-coroutines = "1.11.0"
 material3 = "1.11.0-alpha07"
@@ -26,6 +27,7 @@ koinAnnotations = "2.3.1"
 
 [libraries]
 composenativetray = { module = "dev.nucleusframework:composenativetray", version.ref = "composenativetray" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 nucleus-darkmode-detector = { module = "dev.nucleusframework:nucleus.darkmode-detector", version.ref = "composenativetray" }
 nucleus-decorated-window-material3 = { module = "dev.nucleusframework:nucleus.decorated-window-material3", version.ref = "composenativetray" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

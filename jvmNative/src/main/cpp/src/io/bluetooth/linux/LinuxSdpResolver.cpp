@@ -44,10 +44,7 @@ using SdpRecordList   = std::unique_ptr<sdp_list_t, SdpRecordListDeleter>;
 
 namespace clipbird::io::bluetooth {
 
-LinuxSdpResolver::LinuxSdpResolver(const bdaddr_t& remote, const boost::uuids::uuid& serviceUuid)
-  : remote(remote), serviceUuid(serviceUuid) {}
-
-std::optional<uint8_t> LinuxSdpResolver::rfcommChannel() {
+std::optional<uint8_t> LinuxSdpResolver::rfcommChannel(const bdaddr_t& remote, const boost::uuids::uuid& serviceUuid) {
   bdaddr_t local = {{0, 0, 0, 0, 0, 0}};
   SdpSession session{sdp_connect(&local, &remote, SDP_RETRY_IF_BUSY)};
   if (!session) throw io::IOException("Failed to connect to SDP server");

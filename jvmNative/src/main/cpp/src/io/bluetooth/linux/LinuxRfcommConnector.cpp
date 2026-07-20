@@ -1,7 +1,6 @@
 #include "io/IOException.hpp"
 #include "io/bluetooth/BluetoothInvalidDeviceAddressException.hpp"
 #include "LinuxRfcommConnector.hpp"
-#include "LinuxSdpResolver.hpp"
 
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
@@ -27,8 +26,7 @@ int LinuxRfcommConnector::getFd() {
     throw io::IOException("Failed to create RFCOMM socket");
   }
 
-  auto resolver = LinuxSdpResolver(remote, serviceUuid);
-  auto channel = resolver.rfcommChannel();
+  auto channel = resolver.rfcommChannel(remote, serviceUuid);
 
   if (!channel) {
     throw io::IOException("No RFCOMM channel found for the requested service");

@@ -1,13 +1,12 @@
 package com.srilakshmikanthanp.clipbird.ffi.error
 
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
+import com.srilakshmikanthanp.clipbird.ffi.extensions.orThrow
 import java.lang.foreign.MemorySegment
 
 object NativeErrorHandle {
   fun lastErrorMessage(): String {
-    val ptr = Clipbird.clipbird_error_last_error_message()
-    if (ptr == MemorySegment.NULL) throw IllegalStateException("Failed to get last error message")
-    return ptr.getString(0)
+    return Clipbird.clipbird_error_last_error_message().orThrow { IllegalStateException("Failed to get last error message") }.getString(0)
   }
 
   fun lastErrorCode(): Int {

@@ -56,6 +56,7 @@ if(UNIX)
     clipbird
     PRIVATE
     log/Log.cpp
+    log/backend/LogCallbackBackend.cpp
     log/log.cxx
     advertiser/ble/linux/LinuxBleAdvertisementData.cpp
     advertiser/ble/linux/LinuxBleAdvertiser.cpp

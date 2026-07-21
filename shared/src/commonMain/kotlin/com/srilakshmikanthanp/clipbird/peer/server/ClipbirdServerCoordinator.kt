@@ -3,6 +3,7 @@ package com.srilakshmikanthanp.clipbird.peer.server
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ClipbirdServerCoordinator(
@@ -10,8 +11,8 @@ class ClipbirdServerCoordinator(
   private val server: ClipbirdServer,
   private val scope: CoroutineScope,
 ) {
-  private val advertiserJobDelegate = lazy { scope.launch { doAdvertise() } }
-  private val serverJobDelegate = lazy { scope.launch { doServe() } }
+  private var advertiserJob: Job? = null
+  private var serverJob: Job? = null
 
   private suspend fun doAdvertise() {
     try {
@@ -30,13 +31,15 @@ class ClipbirdServerCoordinator(
   }
 
   fun start() {
-    advertiserJobDelegate.value
-    serverJobDelegate.value
+    advertiserJob = scope.launch { doAdvertise() }
+    serverJob = scope.launch { doServe() }
   }
 
   fun stop() {
-    if (advertiserJobDelegate.isInitialized()) advertiserJobDelegate.value.cancel()
-    if (serverJobDelegate.isInitialized()) serverJobDelegate.value.cancel()
+    advertiserJob?.cancel()
+    serverJob?.cancel()
+    advertiserJob = null
+    serverJob = null
   }
 
   companion object {

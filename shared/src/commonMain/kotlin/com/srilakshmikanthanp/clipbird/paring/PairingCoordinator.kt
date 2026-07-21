@@ -6,6 +6,7 @@ import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingCandidate
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,8 +29,7 @@ class PairingCoordinator(
 
   private val pairingSemaphore = Semaphore(1)
 
-  private val serverJobDelegate = lazy { scope.launch { doCollect() } }
-  private val serverJob by serverJobDelegate
+  private var serverJob: Job? = null
 
   private suspend fun doPair(candidate: BluetoothPairingCandidate): BluetoothPairedDevice {
     return bluetoothPairer.pair(candidate).also {
@@ -71,13 +71,12 @@ class PairingCoordinator(
   }
 
   fun start() {
-    serverJob
+    serverJob = scope.launch { doCollect() }
   }
 
   fun stop() {
-    if (serverJobDelegate.isInitialized()) {
-      serverJob.cancel()
-    }
+    serverJob?.cancel()
+    serverJob = null
   }
 
   companion object {

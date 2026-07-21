@@ -8,12 +8,14 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.srilakshmikanthanp.clipbird.pairing.PairingNotificationManager
 import com.srilakshmikanthanp.clipbird.paring.PairingCoordinator
+import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerCoordinator
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 
 class ClipbirdService : Service(), KoinComponent {
   private val pairingNotificationManager by lazy { PairingNotificationManager(this) }
   private val pairingCoordinator: PairingCoordinator by inject()
+  private val serverCoordinator: ClipbirdServerCoordinator by inject()
 
   private fun startForeground() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -34,10 +36,12 @@ class ClipbirdService : Service(), KoinComponent {
     startForeground()
     pairingNotificationManager.start()
     pairingCoordinator.start()
+    serverCoordinator.start()
     return START_STICKY
   }
 
   override fun onDestroy() {
+    serverCoordinator.stop()
     pairingCoordinator.stop()
     pairingNotificationManager.stop()
     super.onDestroy()

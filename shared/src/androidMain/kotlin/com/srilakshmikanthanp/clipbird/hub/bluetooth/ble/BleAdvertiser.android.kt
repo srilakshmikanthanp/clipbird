@@ -7,12 +7,13 @@ import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.content.Context
 import androidx.annotation.RequiresPermission
+import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
-import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -21,26 +22,23 @@ import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 
 @OptIn(ExperimentalUuidApi::class)
-actual class BleAdvertiser(private val context: Context, private val serviceUuid: Uuid, private val device: BleHubDevice) : Advertiser<BleHubDevice> {
+actual class BleAdvertiser(
+  private val context: Context,
+  private val serviceUuid: Uuid,
+  private val hostDeviceProvider: HostDeviceProvider,
+) : Advertiser {
   private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
-  private var advertiseCallback: AdvertiseCallback? = null
 
-  private val _advertisedDevice: MutableStateFlow<BleHubDevice?> = MutableStateFlow(null)
-  actual override val advertisedDevice = _advertisedDevice.asStateFlow()
+  @Volatile private var activeCallback: AdvertiseCallback? = null
 
   @RequiresPermission(permission.BLUETOOTH_ADVERTISE)
-  actual override suspend fun startAdvertising() {
-    if (_advertisedDevice.value != null) {
-      throw AdvertisingException("Already advertising")
-    }
-
+  actual override suspend fun advertise() {
+    val device = BleHubDevice(hostDeviceProvider.get().id)
     val adapter = bluetoothManager.adapter ?: throw AdvertisingException("BLE adapter not available")
 
-    if (!adapter.isEnabled) {
-      throw AdvertisingException("Bluetooth is disabled")
-    }
+    if (!adapter.isEnabled) throw AdvertisingException("Bluetooth is disabled")
 
-    val advertiser = adapter.bluetoothLeAdvertiser ?: throw AdvertisingException("BLE advertiser not available")
+    val bleAdvertiser = adapter.bluetoothLeAdvertiser ?: throw AdvertisingException("BLE advertiser not available")
 
     val javaUuid = serviceUuid.toJavaUuid()
     val manufacturerData = ByteBuffer.allocate(24)
@@ -64,38 +62,32 @@ actual class BleAdvertiser(private val context: Context, private val serviceUuid
     suspendCancellableCoroutine { continuation ->
       val callback = object : AdvertiseCallback() {
         override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-          advertiseCallback = this
-          _advertisedDevice.value = device
+          activeCallback = this
           if (continuation.isActive) continuation.resume(Unit)
         }
 
         override fun onStartFailure(errorCode: Int) {
-          if (continuation.isActive) {
-            continuation.resumeWithException(
-              AdvertisingException("Failed to start advertising. errorCode=$errorCode")
-            )
-          }
+          if (continuation.isActive) continuation.resumeWithException(
+            AdvertisingException("Failed to start advertising. errorCode=$errorCode")
+          )
         }
       }
 
-      advertiser.startAdvertising(settings, advertiseData, callback)
+      bleAdvertiser.startAdvertising(settings, advertiseData, callback)
 
       continuation.invokeOnCancellation {
-        advertiser.stopAdvertising(callback)
+        bleAdvertiser.stopAdvertising(callback)
+        activeCallback = null
       }
     }
-  }
 
-  @RequiresPermission(permission.BLUETOOTH_ADVERTISE)
-  actual override suspend fun stopAdvertising() {
-    val adapter = bluetoothManager.adapter ?: throw AdvertisingException("BLE adapter not available")
-    val advertiser = adapter.bluetoothLeAdvertiser ?: throw AdvertisingException("BLE advertiser not available")
-
-    advertiseCallback?.let {
-      advertiser.stopAdvertising(it)
+    try {
+      awaitCancellation()
+    } finally {
+      withContext(NonCancellable) {
+        activeCallback?.let { bleAdvertiser.stopAdvertising(it) }
+        activeCallback = null
+      }
     }
-
-    advertiseCallback = null
-    _advertisedDevice.value = null
   }
 }

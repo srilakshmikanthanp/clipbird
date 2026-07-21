@@ -5,8 +5,8 @@ import com.srilakshmikanthanp.clipbird.hub.Discoverer
 import com.srilakshmikanthanp.clipbird.hub.Hub
 
 class BleHub(
-  private val advertiser: Advertiser<BleHubDevice>,
+  private val advertiser: Advertiser,
   private val discoverer: Discoverer<BleHubDevice>
 ) : Hub<BleHubDevice>,
-    Advertiser<BleHubDevice> by advertiser,
+    Advertiser by advertiser,
     Discoverer<BleHubDevice> by discoverer

@@ -7,13 +7,13 @@ import kotlinx.coroutines.SupervisorJob
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
-/** App-wide infrastructure and host identity. */
 @Module
 class CoreModule {
   @Single
-  fun coroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+  fun hostDeviceProvider(dao: HostDeviceDao, bluetoothManager: BluetoothManager): HostDeviceProvider = HostDeviceProvider(
+    dao, bluetoothManager.name
+  )
 
   @Single
-  fun hostDeviceProvider(dao: HostDeviceDao, bluetoothManager: BluetoothManager): HostDeviceProvider =
-    HostDeviceProvider(dao, bluetoothManager.name)
+  fun coroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 }

@@ -1,3 +1,3 @@
 package com.srilakshmikanthanp.clipbird.hub
 
-interface Hub<T: HubDevice>: Advertiser<T>, Discoverer<T>
+interface Hub<T: HubDevice>: Advertiser, Discoverer<T>

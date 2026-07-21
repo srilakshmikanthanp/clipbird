@@ -7,8 +7,10 @@ import com.srilakshmikanthanp.clipbird.database.DatabasePlatformModule
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
 import com.srilakshmikanthanp.clipbird.ffi.loader.NativeClipbirdLoader
 import com.srilakshmikanthanp.clipbird.ffi.log.LogHandle
+import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleAdvertiserModule
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothPlatformModule
 import com.srilakshmikanthanp.clipbird.paring.PairingModule
+import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerModule
 import com.srilakshmikanthanp.clipbird.ui.device.DeviceModule
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.module
@@ -37,6 +39,8 @@ fun initKoin() {
       PairingModule().module,
       DeviceModule().module,
       BluetoothPlatformModule().module,
+      BleAdvertiserModule().module,
+      ClipbirdServerModule().module,
     )
   }
 }

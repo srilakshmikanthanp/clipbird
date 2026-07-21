@@ -41,7 +41,7 @@ class DeviceViewModel(
   ) { paired, devices, pairing ->
     DeviceState(
       discovered = devices.map { DiscoveredDevice(it, isPairing = it in pairing) },
-      devices = paired.map { Device(pairedDevice = it, connected = true) }
+      devices = paired.map { Device(pairedDevice = it, connected = false) }
     )
   }.stateIn(
     viewModelScope,

@@ -1,26 +1,22 @@
 package com.srilakshmikanthanp.clipbird.authentication
 
 import com.srilakshmikanthanp.clipbird.common.Device
-import com.srilakshmikanthanp.clipbird.common.HostDevice
+import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.packet.*
 import com.srilakshmikanthanp.clipbird.utility.Nonce
 
-class Authenticator(private val hostDevice: HostDevice) {
+class Authenticator(private val hostDeviceProvider: HostDeviceProvider) {
   suspend fun authenticate(channel: Channel, remoteDevice: Device) {
-    // Generate local nonce and send it to the remote device
+    val hostDevice = hostDeviceProvider.get()
+
     val localNonce = NoncePacket(Nonce.generateNonce())
     channel.sendPacket(localNonce)
 
-    // Receive remote nonce, sign it with the host device's
-    // private key and send the signature back to the remote
-    // device
     val remoteNonce = channel.nextPacket().asPacket<NoncePacket>();
     val localSign = SignaturePacket(Nonce.signNonce(hostDevice.privateKey, remoteNonce.nonce))
     channel.sendPacket(localSign)
 
-    // Receive the signature of the remote nonce and verify
-    // it using the remote device's public key
     val remoteSign = channel.nextPacket().asPacket<SignaturePacket>()
 
     if (!Nonce.verifyNonce(remoteDevice.publicKey, localNonce.nonce, remoteSign.signature)) {

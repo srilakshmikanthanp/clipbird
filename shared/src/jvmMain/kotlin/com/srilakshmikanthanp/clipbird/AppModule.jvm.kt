@@ -18,7 +18,7 @@ fun initKoin() {
 
   NativeClipbirdLoader.load()
 
-  LogHandle.setLogCallback { level, message ->
+  LogHandle.setCallback { level, message ->
     when (level) {
       Clipbird.CLIPBIRD_LOG_LEVEL_TRACE() -> nativeLogger.v { message }
       Clipbird.CLIPBIRD_LOG_LEVEL_DEBUG() -> nativeLogger.d { message }

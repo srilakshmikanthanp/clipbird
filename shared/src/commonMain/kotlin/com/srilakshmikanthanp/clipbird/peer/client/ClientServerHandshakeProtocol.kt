@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.client
+package com.srilakshmikanthanp.clipbird.peer.client
 
 import com.srilakshmikanthanp.clipbird.authentication.Authenticator
 import com.srilakshmikanthanp.clipbird.common.HostDevice

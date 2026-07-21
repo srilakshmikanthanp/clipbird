@@ -1,7 +1,7 @@
-package com.srilakshmikanthanp.clipbird.client.bluetooth
+package com.srilakshmikanthanp.clipbird.peer.client.bluetooth
 
-import com.srilakshmikanthanp.clipbird.client.ClientServerConnector
-import com.srilakshmikanthanp.clipbird.client.ClientServerHandshakeProtocol
+import com.srilakshmikanthanp.clipbird.peer.client.ClientServerConnector
+import com.srilakshmikanthanp.clipbird.peer.client.ClientServerHandshakeProtocol
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerEndpoint

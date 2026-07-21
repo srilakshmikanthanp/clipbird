@@ -1,6 +1,6 @@
-package com.srilakshmikanthanp.clipbird.server.bluetooth
+package com.srilakshmikanthanp.clipbird.peer.server.bluetooth
 
-import com.srilakshmikanthanp.clipbird.server.ClipbirdServer
+import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServer
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig

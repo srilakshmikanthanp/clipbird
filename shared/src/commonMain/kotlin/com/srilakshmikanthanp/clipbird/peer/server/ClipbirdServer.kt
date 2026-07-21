@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.server
+package com.srilakshmikanthanp.clipbird.peer.server
 
 import com.srilakshmikanthanp.clipbird.io.Channel
 import kotlinx.coroutines.flow.Flow

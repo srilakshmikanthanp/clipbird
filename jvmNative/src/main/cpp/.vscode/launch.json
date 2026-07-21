@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to JVM (C++ native)",
+      "request": "attach",
+      "type": "cppdbg",
+      "processId": "${command:pickProcess}",
+      "program": "${env:CLIPBIRD_JAVA_PATH}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+    }
+  ]
+}

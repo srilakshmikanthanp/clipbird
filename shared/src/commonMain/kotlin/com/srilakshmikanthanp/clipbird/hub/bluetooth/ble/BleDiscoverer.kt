@@ -1,6 +1,7 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
 import com.juul.kable.Advertisement
+import com.juul.kable.Filter.ManufacturerData
 import com.juul.kable.Scanner
 import com.srilakshmikanthanp.clipbird.hub.Discoverer
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent

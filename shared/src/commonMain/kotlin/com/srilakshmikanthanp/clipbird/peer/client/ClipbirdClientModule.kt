@@ -1,0 +1,75 @@
+package com.srilakshmikanthanp.clipbird.peer.client
+
+import com.srilakshmikanthanp.clipbird.authentication.Authenticator
+import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
+import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
+import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer
+import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
+import com.srilakshmikanthanp.clipbird.paring.PairedActiveDeviceProvider
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.ble.BlePairedActiveDeviceProvider
+import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
+import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClientServerConnector
+import kotlinx.coroutines.CoroutineScope
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
+import kotlin.time.Duration.Companion.seconds
+import kotlin.uuid.ExperimentalUuidApi
+
+@Module
+class ClipbirdClientModule {
+  @OptIn(ExperimentalUuidApi::class)
+  @Single
+  fun bleDiscoverer(): BleDiscoverer = BleDiscoverer(
+    serviceUuid = BluetoothConstants.clipbirdServiceUuid,
+    deviceTimeout = 5.seconds,
+  )
+
+  @Single
+  fun blePairedActiveDeviceProvider(
+    discoverer: BleDiscoverer,
+    service: BluetoothPairedDeviceService,
+    scope: CoroutineScope,
+  ): BlePairedActiveDeviceProvider = BlePairedActiveDeviceProvider(discoverer, service, scope)
+
+  @Single
+  fun pairedActiveDeviceProvider(
+    provider: BlePairedActiveDeviceProvider,
+  ): PairedActiveDeviceProvider<BluetoothPairedDevice> = provider
+
+  @Single
+  fun connectionInitiationDecider(
+    hostDeviceProvider: HostDeviceProvider,
+  ): ClientServerConnectionInitiationDecider = ClientServerConnectionInitiationDecider(hostDeviceProvider)
+
+  @Single
+  fun clientServerHandshakeProtocol(
+    authenticator: Authenticator,
+    hostDeviceProvider: HostDeviceProvider,
+  ): ClientServerHandshakeProtocol = ClientServerHandshakeProtocol(authenticator, hostDeviceProvider)
+
+  @OptIn(ExperimentalUuidApi::class)
+  @Single
+  fun bluetoothClientServerConnector(
+    manager: BluetoothManager
+  ): BluetoothClientServerConnector = BluetoothClientServerConnector(
+    manager,
+    BluetoothConstants.clipbirdServiceUuid,
+  )
+
+  @Single
+  fun clipbirdClientCoordinator(
+    activeDeviceProvider: BlePairedActiveDeviceProvider,
+    connector: BluetoothClientServerConnector,
+    decider: ClientServerConnectionInitiationDecider,
+    connectionChecker: ChannelConnectionChecker,
+    handshakeProtocol: ClientServerHandshakeProtocol,
+  ): ClipbirdClientCoordinator = ClipbirdClientCoordinator(
+    activeDeviceProvider,
+    connector,
+    decider,
+    connectionChecker,
+    handshakeProtocol
+  )
+}

@@ -7,4 +7,7 @@ open class PairedDevice(
   override val id: Long,
   override val name: String,
   override val publicKey: PublicKey,
-) : Device
+) : Device {
+  override fun hashCode(): Int = id.hashCode()
+  override fun equals(other: Any?): Boolean = other is PairedDevice && id == other.id
+}

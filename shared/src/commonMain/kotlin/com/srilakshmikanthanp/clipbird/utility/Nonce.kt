@@ -6,7 +6,7 @@ import java.security.SecureRandom
 import java.security.Signature
 
 object Nonce {
-  private val signature = Signature.getInstance("Ed25519")
+  private val signature = Signature.getInstance(KeyAlgorithm.KEY_ALGORITHM)
 
   fun generateNonce(size: Int = 32): ByteArray {
     val nonce = ByteArray(size)

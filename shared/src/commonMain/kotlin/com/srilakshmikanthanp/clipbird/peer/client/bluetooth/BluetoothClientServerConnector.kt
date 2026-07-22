@@ -13,11 +13,8 @@ import kotlin.uuid.Uuid
 class BluetoothClientServerConnector(
   private val bluetoothManager: BluetoothManager,
   private val serviceUuid: Uuid,
-  private val handshakeProtocol: ClientServerHandshakeProtocol
 ) : ClientServerConnector<BluetoothPairedDevice> {
   override suspend fun connect(pairedDevice: BluetoothPairedDevice): Channel {
-    val channel = bluetoothManager.connect(BluetoothServerEndpoint(pairedDevice.address, serviceUuid))
-    handshakeProtocol.handshake(channel, pairedDevice)
-    return channel
+    return bluetoothManager.connect(BluetoothServerEndpoint(pairedDevice.address, serviceUuid))
   }
 }

@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.common
 
+import com.srilakshmikanthanp.clipbird.authentication.Authenticator
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +14,9 @@ class CoreModule {
   fun hostDeviceProvider(dao: HostDeviceDao, bluetoothManager: BluetoothManager): HostDeviceProvider = HostDeviceProvider(
     dao, bluetoothManager.name
   )
+
+  @Single
+  fun authenticator(hostDeviceProvider: HostDeviceProvider): Authenticator = Authenticator(hostDeviceProvider)
 
   @Single
   fun coroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)

@@ -3,6 +3,7 @@ package com.srilakshmikanthanp.clipbird.ui.device
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.srilakshmikanthanp.clipbird.paring.*
+import com.srilakshmikanthanp.clipbird.peer.ChannelHub
 import com.srilakshmikanthanp.clipbird.ui.device.DeviceViewModel.PairingEvent.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 class DeviceViewModel(
   private val pairedDeviceService: PairedDeviceService<out PairedDevice>,
   private val coordinator: PairingCoordinator,
+  channelHub: ChannelHub,
 ) : ViewModel() {
   sealed interface PairingEvent {
     data class AlreadyPairing(val deviceName: String) : PairingEvent
@@ -38,10 +40,15 @@ class DeviceViewModel(
     pairedDeviceService.getAll(),
     coordinator.devices,
     coordinator.pairing,
-  ) { paired, devices, pairing ->
+    channelHub.devices,
+  ) { paired, devices, pairing, connected ->
+    val connectedIds = connected.asSequence()
+      .map { it.device.id }
+      .toHashSet()
+
     DeviceState(
       discovered = devices.map { DiscoveredDevice(it, isPairing = it in pairing) },
-      devices = paired.map { Device(pairedDevice = it, connected = false) }
+      devices = paired.map { Device(pairedDevice = it, connected = it.id in connectedIds ) }
     )
   }.stateIn(
     viewModelScope,

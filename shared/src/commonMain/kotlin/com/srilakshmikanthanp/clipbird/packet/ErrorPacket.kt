@@ -9,6 +9,7 @@ class ErrorPacket(
 ) : Packet {
   public enum class ErrorCode {
     AUTHENTICATION_FAILED,
-    DEVICE_NOT_PAIRED
+    DEVICE_NOT_PAIRED,
+    ALREADY_CONNECTED,
   }
 }

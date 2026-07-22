@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.paring.PairingCandidate
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -96,11 +97,6 @@ private fun AvailableDevices(
   devices: List<DeviceViewModel.DiscoveredDevice>,
   onPair: (PairingCandidate) -> Unit,
 ) {
-  if (devices.isEmpty()) {
-    EmptyGroup("No available devices")
-    return
-  }
-
   devices.forEachIndexed { index, device ->
     if (index > 0) HorizontalDivider()
     ListItem(
@@ -109,11 +105,7 @@ private fun AvailableDevices(
       headlineContent = { Text(device.candidate.name) },
       leadingContent = { DeviceAvatar(device.candidate.name) },
       supportingContent = { Text(if (device.isPairing) "Pairing…" else "Tap to pair") },
-      trailingContent = {
-        if (device.isPairing) {
-          CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp)
-        }
-      },
+      trailingContent = { if (device.isPairing) CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp) },
     )
   }
 }
@@ -123,9 +115,19 @@ private fun PairedDevices(
   devices: List<DeviceViewModel.Device>,
   onRemove: (Long) -> Unit,
 ) {
-  if (devices.isEmpty()) {
-    EmptyGroup("No paired devices")
-    return
+  @Composable
+  fun RemoveDevice(device: PairedDevice) {
+    IconButton(onClick = { onRemove(device.id) }) {
+      Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.name}")
+    }
+  }
+
+  @Composable
+  fun ActiveStatus() {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+      Box(Modifier.size(8.dp).background(Color(0xFF4CAF50), CircleShape))
+      Text("Active", style = MaterialTheme.typography.bodySmall)
+    }
   }
 
   devices.forEachIndexed { index, device ->
@@ -134,19 +136,8 @@ private fun PairedDevices(
       headlineContent = { Text(device.pairedDevice.name) },
       leadingContent = { DeviceAvatar(device.pairedDevice.name) },
       colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-      supportingContent = {
-        val color = if (device.connected) Color(0xFF4CAF50) else MaterialTheme.colorScheme.outline
-        val label = if (device.connected) "Connected" else "Disconnected"
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-          Box(Modifier.size(8.dp).background(color, CircleShape))
-          Text(label, style = MaterialTheme.typography.bodySmall, color = color)
-        }
-      },
-      trailingContent = {
-        IconButton(onClick = { onRemove(device.pairedDevice.id) }) {
-          Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.pairedDevice.name}")
-        }
-      },
+      supportingContent = { if (device.connected) ActiveStatus() },
+      trailingContent = { RemoveDevice(device.pairedDevice) },
     )
   }
 }
@@ -170,13 +161,21 @@ fun DevicesScreen(
     ) {
       item {
         DeviceGroup(title = "Available") {
-          AvailableDevices(devices = state.discovered, onPair = viewModel::pair)
+          if (state.discovered.isNotEmpty()) {
+            AvailableDevices(devices = state.discovered, onPair = viewModel::pair)
+          } else {
+            EmptyGroup("No available devices")
+          }
         }
       }
 
       item {
         DeviceGroup(title = "Paired") {
-          PairedDevices(devices = state.devices, onRemove = viewModel::unpair)
+          if (state.devices.isNotEmpty()) {
+            PairedDevices(devices = state.devices, onRemove = viewModel::unpair)
+          } else {
+            EmptyGroup("No paired devices")
+          }
         }
       }
     }

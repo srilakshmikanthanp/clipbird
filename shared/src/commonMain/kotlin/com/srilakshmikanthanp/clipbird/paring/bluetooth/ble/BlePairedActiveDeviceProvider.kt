@@ -15,10 +15,10 @@ class BlePairedActiveDeviceProvider(
   service: BluetoothPairedDeviceService,
   private val scope: CoroutineScope
 ) : PairedActiveDeviceProvider<BluetoothPairedDevice> {
-  private val activeDeviceIds = discoverer.events.scan(emptySet<Long>()) { activeDevices, event ->
+  private val activeDeviceIds = discoverer.events.scan(emptySet<Long>()) { activeDevicesIds, event ->
     when (event) {
-      is Found -> activeDevices + event.device.id
-      is Lost -> activeDevices - event.device.id
+      is Found -> activeDevicesIds + event.device.id
+      is Lost -> activeDevicesIds - event.device.id
     }
   }.stateIn(
     scope = scope,
@@ -26,12 +26,11 @@ class BlePairedActiveDeviceProvider(
     initialValue = emptySet()
   )
 
-  @OptIn(ExperimentalUuidApi::class)
   override val devices: StateFlow<Collection<BluetoothPairedDevice>> = combine(
     service.getAll(),
     activeDeviceIds
-  ) { pairedDevices, activeDevices ->
-    pairedDevices.filter { it.id in activeDevices }
+  ) { pairedDevices, activeDevicesIds ->
+    pairedDevices.filter { it.id in activeDevicesIds }
   }.stateIn(
     scope = scope,
     started = SharingStarted.WhileSubscribed(),

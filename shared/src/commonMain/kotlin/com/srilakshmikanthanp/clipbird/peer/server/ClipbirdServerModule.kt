@@ -1,11 +1,13 @@
 package com.srilakshmikanthanp.clipbird.peer.server
 
+import com.srilakshmikanthanp.clipbird.authentication.Authenticator
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
 import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.ClipbirdBluetoothServer
-import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import kotlin.uuid.ExperimentalUuidApi
@@ -23,9 +25,15 @@ class ClipbirdServerModule {
   fun clipbirdServer(server: ClipbirdBluetoothServer): ClipbirdServer = server
 
   @Single
+  fun clipbirdServerHandshakeProtocol(
+    service: BluetoothPairedDeviceService,
+    authenticator: Authenticator,
+  ): ClipbirdServerHandshakeProtocol<BluetoothPairedDevice> = ClipbirdServerHandshakeProtocol(service, authenticator)
+
+  @Single
   fun clipbirdServerCoordinator(
     advertiser: Advertiser,
     server: ClipbirdServer,
-    scope: CoroutineScope,
-  ): ClipbirdServerCoordinator = ClipbirdServerCoordinator(advertiser, server, scope)
+    handshakeProtocol: ClipbirdServerHandshakeProtocol<BluetoothPairedDevice>,
+  ): ClipbirdServerCoordinator = ClipbirdServerCoordinator(advertiser, server, handshakeProtocol)
 }

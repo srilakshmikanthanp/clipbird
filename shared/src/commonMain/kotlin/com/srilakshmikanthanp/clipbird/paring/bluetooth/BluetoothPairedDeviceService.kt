@@ -11,6 +11,12 @@ class BluetoothPairedDeviceService(
   private val pairedDao: PairedDeviceEntityDao,
   private val bleDao: BluetoothPairedDeviceDao,
 ) : PairedDeviceService<BluetoothPairedDevice> {
+  @Transaction
+  private suspend fun upsert(pairedDevice: PairedDeviceEntity, blePairedDevice: BluetoothPairedDeviceEntity) {
+    pairedDao.upsert(pairedDevice)
+    bleDao.upsert(blePairedDevice)
+  }
+
   override suspend fun findById(id: Long): BluetoothPairedDevice? {
     return bleDao.findById(id)?.toBluetoothPairedDevice()
   }
@@ -19,13 +25,7 @@ class BluetoothPairedDeviceService(
     return bleDao.getAll().map { bleDevices -> bleDevices.map { it.toBluetoothPairedDevice() } }
   }
 
-  @Transaction
-  suspend fun upsert(pairedDevice: PairedDeviceEntity, blePairedDevice: BluetoothPairedDeviceEntity) {
-    pairedDao.upsert(pairedDevice)
-    bleDao.upsert(blePairedDevice)
-  }
-
-  suspend fun upsert(device: BluetoothPairedDevice) {
+  override suspend fun upsert(device: BluetoothPairedDevice) {
     val pairedDeviceEntity = PairedDeviceEntity(id = device.id, name = device.name, publicKey = device.publicKey.encoded)
     val blePairedDeviceEntity = BluetoothPairedDeviceEntity(id = device.id, address = device.address)
     upsert(pairedDeviceEntity, blePairedDeviceEntity)

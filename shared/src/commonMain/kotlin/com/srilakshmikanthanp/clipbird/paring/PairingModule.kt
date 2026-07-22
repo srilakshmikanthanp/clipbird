@@ -5,13 +5,7 @@ import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothChannel
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceDao
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairer
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingCandidateProvider
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingServer
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingServerResponder
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.*
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -96,7 +90,7 @@ class PairingModule {
     service: BluetoothPairedDeviceService,
     scope: CoroutineScope,
     responder: PairingResponder<BluetoothChannel, BluetoothPairedDevice>,
-  ): PairingCoordinator = PairingCoordinator(
+  ): BluetoothPairingCoordinator = BluetoothPairingCoordinator(
     provider,
     pairer,
     server,

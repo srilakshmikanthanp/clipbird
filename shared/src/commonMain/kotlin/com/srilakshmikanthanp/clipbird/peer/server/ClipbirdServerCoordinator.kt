@@ -1,12 +1,9 @@
 package com.srilakshmikanthanp.clipbird.peer.server
 
 import co.touchlab.kermit.Logger
-import com.srilakshmikanthanp.clipbird.authentication.AuthenticationException
+import com.srilakshmikanthanp.clipbird.common.closeQuietly
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.io.Channel
-import com.srilakshmikanthanp.clipbird.io.closeQuietly
-import com.srilakshmikanthanp.clipbird.packet.ErrorPacket
-import com.srilakshmikanthanp.clipbird.packet.sendPacket
 import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.ConnectedDevice
 import kotlinx.coroutines.coroutineScope
@@ -16,10 +13,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-class ClipbirdServerCoordinator(
+open class ClipbirdServerCoordinator<P: PairedDevice>(
   private val advertiser: Advertiser,
   private val server: ClipbirdServer,
-  private val handshakeProtocol: ClipbirdServerHandshakeProtocol<out PairedDevice>
+  private val handshakeProtocol: ClipbirdServerHandshakeProtocol<P>
 ) {
   private val _devices = MutableSharedFlow<ConnectedDevice>(extraBufferCapacity = 64)
   val devices: SharedFlow<ConnectedDevice> = _devices.asSharedFlow()

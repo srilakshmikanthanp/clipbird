@@ -7,9 +7,10 @@ class ErrorPacket(
   val errorCode: ErrorCode,
   val errorMessage: String
 ) : Packet {
-  public enum class ErrorCode {
+  enum class ErrorCode {
     AUTHENTICATION_FAILED,
     DEVICE_NOT_PAIRED,
     ALREADY_CONNECTED,
+    INVALID_PACKET
   }
 }

@@ -5,12 +5,13 @@ import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
-import com.srilakshmikanthanp.clipbird.paring.PairedActiveDeviceProvider
+import com.srilakshmikanthanp.clipbird.paring.ActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.ble.BlePairedActiveDeviceProvider
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.ble.BleActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClientServerConnector
+import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientCoordinator
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -31,12 +32,12 @@ class ClipbirdClientModule {
     discoverer: BleDiscoverer,
     service: BluetoothPairedDeviceService,
     scope: CoroutineScope,
-  ): BlePairedActiveDeviceProvider = BlePairedActiveDeviceProvider(discoverer, service, scope)
+  ): BleActivePairedDeviceProvider = BleActivePairedDeviceProvider(discoverer, service, scope)
 
   @Single
   fun pairedActiveDeviceProvider(
-    provider: BlePairedActiveDeviceProvider,
-  ): PairedActiveDeviceProvider<BluetoothPairedDevice> = provider
+    provider: BleActivePairedDeviceProvider,
+  ): ActivePairedDeviceProvider<BluetoothPairedDevice> = provider
 
   @Single
   fun connectionInitiationDecider(
@@ -60,12 +61,12 @@ class ClipbirdClientModule {
 
   @Single
   fun clipbirdClientCoordinator(
-    activeDeviceProvider: BlePairedActiveDeviceProvider,
+    activeDeviceProvider: BleActivePairedDeviceProvider,
     connector: BluetoothClientServerConnector,
     decider: ClientServerConnectionInitiationDecider,
     connectionChecker: ChannelConnectionChecker,
     handshakeProtocol: ClientServerHandshakeProtocol,
-  ): ClipbirdClientCoordinator = ClipbirdClientCoordinator(
+  ): BluetoothClipbirdClientCoordinator = BluetoothClipbirdClientCoordinator(
     activeDeviceProvider,
     connector,
     decider,

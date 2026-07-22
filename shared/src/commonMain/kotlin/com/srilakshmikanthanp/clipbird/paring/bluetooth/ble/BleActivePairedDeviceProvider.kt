@@ -3,18 +3,17 @@ package com.srilakshmikanthanp.clipbird.paring.bluetooth.ble
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent.Found
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent.Lost
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer
-import com.srilakshmikanthanp.clipbird.paring.PairedActiveDeviceProvider
+import com.srilakshmikanthanp.clipbird.paring.ActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
-import kotlin.uuid.ExperimentalUuidApi
 
-class BlePairedActiveDeviceProvider(
+class BleActivePairedDeviceProvider(
   discoverer: BleDiscoverer,
   service: BluetoothPairedDeviceService,
   private val scope: CoroutineScope
-) : PairedActiveDeviceProvider<BluetoothPairedDevice> {
+) : ActivePairedDeviceProvider<BluetoothPairedDevice> {
   private val activeDeviceIds = discoverer.events.scan(emptySet<Long>()) { activeDevicesIds, event ->
     when (event) {
       is Found -> activeDevicesIds + event.device.id

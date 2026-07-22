@@ -8,8 +8,13 @@ import kotlin.uuid.Uuid
 @Serializable
 class ClipboardSyncingPacket(
   override val id: Uuid,
-  val datum: List<ClipboardData>
+  val datum: ClipboardDatum
 ) : RoutedPacket
+
+@Serializable
+class ClipboardDatum(
+  private val datum: List<ClipboardData>
+)
 
 @Serializable
 class ClipboardData(

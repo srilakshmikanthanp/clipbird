@@ -1,9 +1,9 @@
 package com.srilakshmikanthanp.clipbird.peer
 
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
-import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientCoordinator
-import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerCoordinator
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientCoordinator
+import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.BluetoothClipbirdServerCoordinator
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -12,22 +12,22 @@ import org.koin.core.annotation.Single
 class PeerModule {
   @Single
   fun channelHub(
-    pairedDeviceService: PairedDeviceService<out PairedDevice>,
+    pairedDeviceService: PairedDeviceService<BluetoothPairedDevice>,
     scope: CoroutineScope,
-  ): ChannelHub = ChannelHub(pairedDeviceService, scope)
+  ): BluetoothChannelHub = BluetoothChannelHub(pairedDeviceService, scope)
 
   @Single
   fun channelConnectionChecker(
-    hub: ChannelHub,
+    hub: BluetoothChannelHub,
   ): ChannelConnectionChecker = ChannelHubConnectionChecker(hub)
 
   @Single
   fun channelCoordinator(
-    serverCoordinator: ClipbirdServerCoordinator,
-    clientCoordinator: ClipbirdClientCoordinator,
-    channelHub: ChannelHub,
+    serverCoordinator: BluetoothClipbirdServerCoordinator,
+    clientCoordinator: BluetoothClipbirdClientCoordinator,
+    channelHub: BluetoothChannelHub,
     scope: CoroutineScope,
-  ): ChannelCollector = ChannelCollector(
+  ): BluetoothChannelCollector = BluetoothChannelCollector(
     serverCoordinator,
     clientCoordinator,
     channelHub,

@@ -1,9 +1,8 @@
 package com.srilakshmikanthanp.clipbird.ui.device
 
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
-import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.PairingCoordinator
-import com.srilakshmikanthanp.clipbird.peer.ChannelHub
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
+import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingCoordinator
+import com.srilakshmikanthanp.clipbird.peer.BluetoothChannelHub
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Module
 
@@ -11,8 +10,11 @@ import org.koin.core.annotation.Module
 class DeviceModule {
   @KoinViewModel
   fun pairingViewModel(
-    coordinator: PairingCoordinator,
-    pairedDeviceService: PairedDeviceService<out PairedDevice>,
-    channelHub: ChannelHub,
-  ): DeviceViewModel = DeviceViewModel(pairedDeviceService, coordinator, channelHub)
+    coordinator: BluetoothPairingCoordinator,
+    pairedDeviceService: BluetoothPairedDeviceService,
+    channelHub: BluetoothChannelHub,
+  ): BluetoothDeviceViewModel = BluetoothDeviceViewModel(
+    pairedDeviceService,
+    coordinator, channelHub
+  )
 }

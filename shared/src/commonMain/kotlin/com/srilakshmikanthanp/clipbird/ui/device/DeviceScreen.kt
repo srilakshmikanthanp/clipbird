@@ -93,9 +93,9 @@ private fun DeviceAvatar(name: String) {
 }
 
 @Composable
-private fun AvailableDevices(
-  devices: List<DeviceViewModel.DiscoveredDevice>,
-  onPair: (PairingCandidate) -> Unit,
+private fun <C: PairingCandidate> AvailableDevices(
+  devices: List<DeviceViewModel.DiscoveredDevice<C>>,
+  onPair: (C) -> Unit,
 ) {
   devices.forEachIndexed { index, device ->
     if (index > 0) HorizontalDivider()
@@ -111,12 +111,12 @@ private fun AvailableDevices(
 }
 
 @Composable
-private fun PairedDevices(
-  devices: List<DeviceViewModel.Device>,
+private fun <D: PairedDevice> PairedDevices(
+  devices: List<DeviceViewModel.Device<D>>,
   onRemove: (Long) -> Unit,
 ) {
   @Composable
-  fun RemoveDevice(device: PairedDevice) {
+  fun RemoveDevice(device: D) {
     IconButton(onClick = { onRemove(device.id) }) {
       Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.name}")
     }
@@ -145,7 +145,7 @@ private fun PairedDevices(
 @Composable
 fun DevicesScreen(
   snackBarHostState: SnackbarHostState,
-  viewModel: DeviceViewModel = koinViewModel(),
+  viewModel: BluetoothDeviceViewModel = koinViewModel(),
 ) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
 

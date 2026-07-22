@@ -2,6 +2,6 @@ package com.srilakshmikanthanp.clipbird.paring
 
 import kotlinx.coroutines.flow.StateFlow
 
-interface PairedActiveDeviceProvider<P : PairedDevice> {
+interface ActivePairedDeviceProvider<P : PairedDevice> {
   val devices: StateFlow<Collection<P>>
 }

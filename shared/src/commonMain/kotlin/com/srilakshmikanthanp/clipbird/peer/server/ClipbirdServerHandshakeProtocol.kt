@@ -26,6 +26,9 @@ class ClipbirdServerHandshakeProtocol<T: PairedDevice>(
     } catch (e: AuthenticationException) {
       channel.sendPacket(ErrorPacket(ErrorCode.AUTHENTICATION_FAILED, "Authentication failed."))
       throw e
+    } catch (e: PeerException) {
+      channel.sendPacket(e.toErrorPacket())
+      throw e
     }
   }
 }

@@ -7,6 +7,7 @@ import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
+import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.BluetoothClipbirdServerCoordinator
 import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.ClipbirdBluetoothServer
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -35,5 +36,9 @@ class ClipbirdServerModule {
     advertiser: Advertiser,
     server: ClipbirdServer,
     handshakeProtocol: ClipbirdServerHandshakeProtocol<BluetoothPairedDevice>,
-  ): ClipbirdServerCoordinator = ClipbirdServerCoordinator(advertiser, server, handshakeProtocol)
+  ): BluetoothClipbirdServerCoordinator = BluetoothClipbirdServerCoordinator(
+    advertiser,
+    server,
+    handshakeProtocol
+  )
 }

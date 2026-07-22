@@ -2,9 +2,9 @@ package com.srilakshmikanthanp.clipbird.peer.client
 
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.io.Channel
-import com.srilakshmikanthanp.clipbird.io.closeQuietly
-import com.srilakshmikanthanp.clipbird.paring.PairedActiveDeviceProvider
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.common.closeQuietly
+import com.srilakshmikanthanp.clipbird.paring.ActivePairedDeviceProvider
+import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.ConnectedDevice
 import kotlinx.coroutines.CancellationException
@@ -16,9 +16,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-class ClipbirdClientCoordinator(
-  private val activeDeviceProvider: PairedActiveDeviceProvider<BluetoothPairedDevice>,
-  private val connector: ClientServerConnector<BluetoothPairedDevice>,
+open class ClipbirdClientCoordinator<P : PairedDevice>(
+  private val activeDeviceProvider: ActivePairedDeviceProvider<P>,
+  private val connector: ClientServerConnector<P>,
   private val decider: ClientServerConnectionInitiationDecider,
   private val connectionChecker: ChannelConnectionChecker,
   private val handshakeProtocol: ClientServerHandshakeProtocol
@@ -27,9 +27,9 @@ class ClipbirdClientCoordinator(
   val devices: SharedFlow<ConnectedDevice> = _devices.asSharedFlow()
 
   @Volatile
-  private var activeDevices: Set<BluetoothPairedDevice> = emptySet()
+  private var activeDevices: Set<P> = emptySet()
 
-  private suspend fun connect(device: BluetoothPairedDevice) {
+  private suspend fun connect(device: P) {
     var channel: Channel? = null
     try {
       if (!decider.shouldInitiateConnection(device)) return

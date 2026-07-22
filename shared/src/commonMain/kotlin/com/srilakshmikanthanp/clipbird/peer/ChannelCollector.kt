@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.peer
 
+import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientCoordinator
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerCoordinator
 import kotlinx.coroutines.CoroutineScope
@@ -7,10 +8,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-class ChannelCollector(
-  private val serverCoordinator: ClipbirdServerCoordinator,
-  private val clientCoordinator: ClipbirdClientCoordinator,
-  private val channelHub: ChannelHub,
+open class ChannelCollector<P: PairedDevice>(
+  private val serverCoordinator: ClipbirdServerCoordinator<P>,
+  private val clientCoordinator: ClipbirdClientCoordinator<P>,
+  private val channelHub: ChannelHub<P>,
   private val scope: CoroutineScope,
 ) {
   private suspend fun collectServerChannels() {

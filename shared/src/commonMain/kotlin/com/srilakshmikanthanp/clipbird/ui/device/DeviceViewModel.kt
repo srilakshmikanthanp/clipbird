@@ -9,10 +9,10 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class DeviceViewModel(
-  private val pairedDeviceService: PairedDeviceService<out PairedDevice>,
-  private val coordinator: PairingCoordinator,
-  channelHub: ChannelHub,
+open class DeviceViewModel<C : PairingCandidate, D : PairedDevice>(
+  private val pairedDeviceService: PairedDeviceService<D>,
+  private val coordinator: PairingCoordinator<C, D>,
+  channelHub: ChannelHub<D>,
 ) : ViewModel() {
   sealed interface PairingEvent {
     data class AlreadyPairing(val deviceName: String) : PairingEvent
@@ -21,30 +21,28 @@ class DeviceViewModel(
     data class Error(val deviceName: String, val cause: Throwable) : PairingEvent
   }
 
-  data class DiscoveredDevice(
-    val candidate: PairingCandidate,
+  data class DiscoveredDevice<C: PairingCandidate>(
+    val candidate: C,
     val isPairing: Boolean,
   )
 
-  data class Device(
-    val pairedDevice: PairedDevice,
+  data class Device<D: PairedDevice>(
+    val pairedDevice: D,
     val connected: Boolean
   )
 
-  data class DeviceState(
-    val discovered: List<DiscoveredDevice> = emptyList(),
-    val devices: List<Device> = emptyList(),
+  data class DeviceState<C: PairingCandidate, D: PairedDevice>(
+    val discovered: List<DiscoveredDevice<C>> = emptyList(),
+    val devices: List<Device<D>> = emptyList(),
   )
 
-  val uiState: StateFlow<DeviceState> = combine(
+  val uiState: StateFlow<DeviceState<C, D>> = combine(
     pairedDeviceService.getAll(),
     coordinator.devices,
     coordinator.pairing,
     channelHub.devices,
   ) { paired, devices, pairing, connected ->
-    val connectedIds = connected.asSequence()
-      .map { it.device.id }
-      .toHashSet()
+    val connectedIds = connected.asSequence().map { it.id }.toHashSet()
 
     DeviceState(
       discovered = devices.map { DiscoveredDevice(it, isPairing = it in pairing) },
@@ -66,7 +64,7 @@ class DeviceViewModel(
     else -> Error(candidate.name, this)
   }
 
-  fun pair(candidate: PairingCandidate) = viewModelScope.launch {
+  fun pair(candidate: C) = viewModelScope.launch {
     runCatching { coordinator.pair(candidate) }.onFailure { _events.send(it.toEvent(candidate)) }
   }
 

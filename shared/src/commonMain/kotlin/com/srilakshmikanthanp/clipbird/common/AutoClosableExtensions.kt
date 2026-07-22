@@ -1,8 +1,8 @@
-package com.srilakshmikanthanp.clipbird.io
+package com.srilakshmikanthanp.clipbird.common
 
 import co.touchlab.kermit.Logger
 
-fun Channel.closeQuietly() {
+fun AutoCloseable.closeQuietly() {
   try {
     close()
   } catch (e: Exception) {

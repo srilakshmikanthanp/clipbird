@@ -7,11 +7,14 @@ import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.ConnectedDevice
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.Duration.Companion.seconds
 
 open class ClipbirdServerCoordinator<P: PairedDevice>(
   private val advertiser: Advertiser,
@@ -33,19 +36,29 @@ open class ClipbirdServerCoordinator<P: PairedDevice>(
     }
   }
 
-  private suspend fun doAdvertise() {
-    try {
-      advertiser.advertise()
-    } catch (e: Exception) {
-      Logger.e("Error in BLE advertising: ${e.message}", e, TAG)
+  private suspend fun doAdvertise() = coroutineScope {
+    while (isActive) {
+      try {
+        advertiser.advertise()
+      } catch (e: CancellationException) {
+        throw e
+      } catch (e: Exception) {
+        Logger.e("Error in BLE advertising: ${e.message}", e, TAG)
+        delay(5.seconds)
+      }
     }
   }
 
   private suspend fun doServe() = coroutineScope {
-    try {
-      server.channels.collect { channel -> this@coroutineScope.launch { handleChannel(channel) } }
-    } catch (e: Exception) {
-      Logger.e("Error collecting server channels: ${e.message}", e, TAG)
+    while (isActive) {
+      try {
+        server.channels.collect { channel -> this@coroutineScope.launch { handleChannel(channel) } }
+      } catch (e: CancellationException) {
+        throw e
+      } catch (e: Exception) {
+        Logger.e("Error collecting server channels: ${e.message}", e, TAG)
+        delay(5.seconds)
+      }
     }
   }
 

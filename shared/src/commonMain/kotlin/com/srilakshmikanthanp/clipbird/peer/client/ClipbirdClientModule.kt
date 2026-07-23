@@ -12,7 +12,6 @@ import com.srilakshmikanthanp.clipbird.paring.bluetooth.ble.BleActivePairedDevic
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClientServerConnector
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientCoordinator
-import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
@@ -31,8 +30,7 @@ class ClipbirdClientModule {
   fun blePairedActiveDeviceProvider(
     discoverer: BleDiscoverer,
     service: BluetoothPairedDeviceService,
-    scope: CoroutineScope,
-  ): BleActivePairedDeviceProvider = BleActivePairedDeviceProvider(discoverer, service, scope)
+  ): BleActivePairedDeviceProvider = BleActivePairedDeviceProvider(discoverer, service)
 
   @Single
   fun pairedActiveDeviceProvider(

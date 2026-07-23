@@ -52,7 +52,7 @@ open class ClipbirdClientCoordinator<P : PairedDevice>(
     }
   }
 
-  suspend fun run(): Unit = coroutineScope {
+  private suspend fun CoroutineScope.doRun() {
     activeDeviceProvider.devices.collect { devices ->
       val current = devices.associateBy { it.id }
       val removed = jobs.keys - current.keys
@@ -62,7 +62,20 @@ open class ClipbirdClientCoordinator<P : PairedDevice>(
       }
 
       current.forEach { (id, device) ->
-        if (id !in jobs) jobs[id] = this@coroutineScope.job(device)
+        if (id !in jobs) jobs[id] = this.job(device)
+      }
+    }
+  }
+
+  suspend fun run(): Unit = coroutineScope {
+    while (isActive) {
+      try {
+        this.doRun()
+      } catch (e: CancellationException) {
+        throw e
+      } catch (e: Exception) {
+        Logger.e("Error in client coordinator: ${e.message}", e, TAG)
+        delay(RETRY_DELAY)
       }
     }
   }

@@ -19,7 +19,7 @@ actual class BluetoothManager : ClientFactory<BluetoothServerEndpoint>, ServerFa
 
   init {
     nativeBluetoothManager.setBondedDevicesChangedCallback {
-      _boundedDevices.value = nativeBluetoothManager.bondedDevices()
+      runCatching { nativeBluetoothManager.bondedDevices() }.onSuccess { _boundedDevices.value = it }
     }
   }
 

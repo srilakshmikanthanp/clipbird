@@ -39,7 +39,11 @@ object BluetoothManagerHandle {
   }
 
   fun bondedDevices(manager: MemorySegment): BluetoothDeviceList {
-    return BluetoothDeviceList(Clipbird.clipbird_bluetooth_manager_bonded_devices(manager))
+    return BluetoothDeviceList(
+      Clipbird.clipbird_bluetooth_manager_bonded_devices(manager).orThrow {
+        IOException("Failed to get bonded Bluetooth devices: ${NativeErrorHandle.lastErrorMessage()}")
+      }
+    )
   }
 
   fun localName(manager: MemorySegment): String {

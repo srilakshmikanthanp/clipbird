@@ -8,6 +8,7 @@ import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.ConnectedDevice
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -28,6 +29,12 @@ open class ClipbirdClientCoordinator<P : PairedDevice>(
   private val _devices = MutableSharedFlow<ConnectedDevice>(extraBufferCapacity = 64)
   val devices: SharedFlow<ConnectedDevice> = _devices.asSharedFlow()
   private val jobs = mutableMapOf<Long, Job>()
+
+  private fun CoroutineScope.job(device: P): Job = launch {
+    while (isActive) {
+      connect(device).also { delay(RETRY_DELAY) }
+    }
+  }
 
   private suspend fun connect(device: P) {
     var channel: Channel? = null
@@ -55,14 +62,7 @@ open class ClipbirdClientCoordinator<P : PairedDevice>(
       }
 
       current.forEach { (id, device) ->
-        if (id !in jobs) {
-          jobs[id] = this@coroutineScope.launch {
-            while (isActive) {
-              connect(device)
-              delay(RETRY_DELAY)
-            }
-          }
-        }
+        if (id !in jobs) jobs[id] = this@coroutineScope.job(device)
       }
     }
   }

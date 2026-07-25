@@ -1,17 +1,21 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
 import android.Manifest.permission
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.annotation.RequiresPermission
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
@@ -85,10 +89,28 @@ actual class BleAdvertiser(
       }
     }
 
+    val deferred = CompletableDeferred<Unit>()
+
+    val bluetoothStateReceiver = object : BroadcastReceiver() {
+      override fun onReceive(ctx: Context, intent: Intent) {
+        if (intent.action != BluetoothAdapter.ACTION_STATE_CHANGED) return
+        val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
+        if (state == BluetoothAdapter.STATE_TURNING_OFF || state == BluetoothAdapter.STATE_OFF) {
+          deferred.completeExceptionally(AdvertisingException("Bluetooth was turned off during advertising"))
+        }
+      }
+    }
+
+    context.registerReceiver(
+      bluetoothStateReceiver,
+      IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+    )
+
     try {
-      awaitCancellation()
+      deferred.await()
     } finally {
       withContext(NonCancellable) {
+        context.unregisterReceiver(bluetoothStateReceiver)
         bleAdvertiser.stopAdvertising(callback)
       }
     }

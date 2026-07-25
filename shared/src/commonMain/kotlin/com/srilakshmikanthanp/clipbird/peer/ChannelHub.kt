@@ -47,8 +47,6 @@ open class ChannelHub<P: PairedDevice>(
     }
   }
 
-  private var job: Job? = null
-
   private suspend fun handleInvalidPacket(connectedDevice: ConnectedDevice, packet: Packet) {
     try {
       Logger.w("Invalid packet received from ${connectedDevice.device.name}: $packet", null, TAG)
@@ -132,18 +130,14 @@ open class ChannelHub<P: PairedDevice>(
     }
   }
 
-  fun start() {
-    job = scope.launch {
+  suspend fun run() {
+    try {
       observePairedDevices()
+    } finally {
+      val devices = _devices.value
+      _devices.value = emptyList()
+      devices.forEach(DeviceState::close)
     }
-  }
-
-  fun stop() {
-    job?.cancel()
-    job = null
-    val devices = _devices.value
-    _devices.value = emptyList()
-    devices.forEach(DeviceState::close)
   }
 
   companion object {

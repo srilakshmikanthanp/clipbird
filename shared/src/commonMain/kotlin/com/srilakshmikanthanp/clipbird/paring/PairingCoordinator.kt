@@ -3,7 +3,6 @@ package com.srilakshmikanthanp.clipbird.paring
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothChannel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +22,6 @@ open class PairingCoordinator<Candidate: PairingCandidate, Device: PairedDevice>
   val pairing: StateFlow<Set<Candidate>> = _pairing.asStateFlow()
   val devices: StateFlow<Collection<Candidate>> = bluetoothProvider.devices
   private val pairingSemaphore = Semaphore(1)
-  private var serverJob: Job? = null
 
   suspend fun pair(candidate: Candidate): Device = pairingSemaphore.withPermit {
     _pairing.value += candidate
@@ -51,13 +49,8 @@ open class PairingCoordinator<Candidate: PairingCandidate, Device: PairedDevice>
     }
   }
 
-  fun start() {
-    serverJob = scope.launch { doCollect() }
-  }
-
-  fun stop() {
-    serverJob?.cancel()
-    serverJob = null
+  suspend fun run() {
+    doCollect()
   }
 
   companion object {

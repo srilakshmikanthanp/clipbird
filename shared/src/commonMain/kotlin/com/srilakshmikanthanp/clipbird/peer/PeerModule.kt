@@ -26,11 +26,9 @@ class PeerModule {
     serverCoordinator: BluetoothClipbirdServerCoordinator,
     clientCoordinator: BluetoothClipbirdClientCoordinator,
     channelHub: BluetoothChannelHub,
-    scope: CoroutineScope,
   ): BluetoothChannelCollector = BluetoothChannelCollector(
     serverCoordinator,
     clientCoordinator,
     channelHub,
-    scope,
   )
 }

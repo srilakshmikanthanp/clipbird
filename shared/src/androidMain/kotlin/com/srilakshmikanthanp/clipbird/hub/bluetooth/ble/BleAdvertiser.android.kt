@@ -29,18 +29,20 @@ actual class BleAdvertiser(
 ) : Advertiser {
   private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
 
-  @Volatile private var activeCallback: AdvertiseCallback? = null
-
   @RequiresPermission(permission.BLUETOOTH_ADVERTISE)
   actual override suspend fun advertise() {
-    val device = BleHubDevice(hostDeviceProvider.get().id)
     val adapter = bluetoothManager.adapter ?: throw AdvertisingException("BLE adapter not available")
+    val device = BleHubDevice(hostDeviceProvider.get().id)
 
-    if (!adapter.isEnabled) throw AdvertisingException("Bluetooth is disabled")
+    if (!adapter.isEnabled) {
+      throw AdvertisingException("Bluetooth is disabled")
+    }
 
-    val bleAdvertiser = adapter.bluetoothLeAdvertiser ?: throw AdvertisingException("BLE advertiser not available")
+    val bleAdvertiser = adapter.bluetoothLeAdvertiser
+      ?: throw AdvertisingException("BLE advertiser not available")
 
     val javaUuid = serviceUuid.toJavaUuid()
+
     val manufacturerData = ByteBuffer.allocate(24)
       .putLong(javaUuid.mostSignificantBits)
       .putLong(javaUuid.leastSignificantBits)
@@ -59,17 +61,20 @@ actual class BleAdvertiser(
       .setIncludeTxPowerLevel(false)
       .build()
 
-    suspendCancellableCoroutine { continuation ->
+    val callback = suspendCancellableCoroutine<AdvertiseCallback> { continuation ->
       val callback = object : AdvertiseCallback() {
         override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-          activeCallback = this
-          if (continuation.isActive) continuation.resume(Unit)
+          if (continuation.isActive) {
+            continuation.resume(this)
+          }
         }
 
         override fun onStartFailure(errorCode: Int) {
-          if (continuation.isActive) continuation.resumeWithException(
-            AdvertisingException("Failed to start advertising. errorCode=$errorCode")
-          )
+          if (continuation.isActive) {
+            continuation.resumeWithException(
+              AdvertisingException("Failed to start advertising. errorCode=$errorCode")
+            )
+          }
         }
       }
 
@@ -77,7 +82,6 @@ actual class BleAdvertiser(
 
       continuation.invokeOnCancellation {
         bleAdvertiser.stopAdvertising(callback)
-        activeCallback = null
       }
     }
 
@@ -85,8 +89,7 @@ actual class BleAdvertiser(
       awaitCancellation()
     } finally {
       withContext(NonCancellable) {
-        activeCallback?.let { bleAdvertiser.stopAdvertising(it) }
-        activeCallback = null
+        bleAdvertiser.stopAdvertising(callback)
       }
     }
   }

@@ -19,7 +19,7 @@ class PeerModule {
   @Single
   fun channelConnectionChecker(
     hub: BluetoothChannelHub,
-  ): ChannelConnectionChecker = ChannelHubConnectionChecker(hub)
+  ): ChannelConnectionChecker = HubConnectionChecker(hub)
 
   @Single
   fun channelCoordinator(

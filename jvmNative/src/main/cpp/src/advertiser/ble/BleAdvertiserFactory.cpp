@@ -1,11 +1,11 @@
 #include "advertiser/ble/BleAdvertiserFactory.hpp"
 
-#include <stdexcept>
-
 #if defined(__linux__)
 #include "linux/LinuxBleAdvertiser.hpp"
 #elif defined(_WIN32)
-#include "windows/WindowsBleAdvertiser.hpp"
+  #error "BLE advertiser is not implemented on Windows."
+#else
+  #error "BLE advertiser is not implemented on this platform."
 #endif
 
 namespace clipbird::advertiser::ble {
@@ -15,13 +15,7 @@ std::unique_ptr<Advertiser> createBleAdvertiser(
   const std::vector<std::uint8_t>& serviceData,
   AdvertiserListener& events
 ) {
-#if defined(__linux__)
   return std::make_unique<LinuxBleAdvertiser>(serviceUuid, serviceData, events);
-#elif defined(_WIN32)
-  return std::make_unique<WindowsBleAdvertiser>(serviceUuid, serviceData, events);
-#else
-  throw std::runtime_error("Unsupported platform for BLE advertiser.");
-#endif
 }
 
 }  // namespace clipbird::advertiser::ble

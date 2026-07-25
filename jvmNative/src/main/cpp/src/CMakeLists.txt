@@ -88,13 +88,4 @@ if(UNIX)
 
   target_link_directories(clipbird PRIVATE ${BLUEZ_LIBRARY_DIRS})
 
-elseif(WIN32)
-  target_sources(
-    clipbird
-    PRIVATE
-    advertiser/ble/windows/WindowsBleAdvertiser.cpp
-    io/bluetooth/windows/WindowsBluetoothManager.cpp
-    io/bluetooth/windows/WindowsRfcommChannel.cpp
-    io/bluetooth/windows/WindowsRfcommServer.cpp
-  )
 endif()

@@ -16,6 +16,7 @@ target_sources(
   advertiser/advertiser.cxx
   advertiser/ble/BleAdvertiserFactory.cpp
   advertiser/ble/ble_advertiser_factory.cxx
+  discoverer/discoverer.cxx
   io/bluetooth/BluetoothManagerFactory.cpp
   io/bluetooth/bluetooth_manager_factory.cxx
   io/bluetooth/bluetooth_manager.cxx
@@ -60,6 +61,9 @@ if(UNIX)
     log/log.cxx
     advertiser/ble/linux/LinuxBleAdvertisementData.cpp
     advertiser/ble/linux/LinuxBleAdvertiser.cpp
+    discoverer/ble/BleDiscovererFactory.cpp
+    discoverer/ble/linux/LinuxBleDiscoverer.cpp
+    discoverer/ble/ble_discoverer_factory.cxx
     io/bluetooth/linux/LinuxBluetoothManager.cpp
     io/bluetooth/linux/LinuxRfcommChannel.cpp
     io/bluetooth/linux/LinuxRfcommConnector.cpp

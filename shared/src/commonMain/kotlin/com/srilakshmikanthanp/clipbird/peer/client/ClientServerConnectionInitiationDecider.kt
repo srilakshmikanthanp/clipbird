@@ -5,6 +5,6 @@ import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 
 class ClientServerConnectionInitiationDecider(private val hostDeviceProvider: HostDeviceProvider) {
   suspend fun shouldInitiateConnection(remoteDevice: PairedDevice): Boolean {
-    return hostDeviceProvider.get().id < remoteDevice.id
+    return hostDeviceProvider.get().id > remoteDevice.id
   }
 }

@@ -1,0 +1,7 @@
+#pragma once
+
+enum clipbird_discoverer_ble_error_code {
+  CLIPBIRD_DISCOVERER_BLE_ALREADY_DISCOVERING = 1,
+  CLIPBIRD_DISCOVERER_BLE_ADAPTER_NOT_FOUND   = 2,
+  CLIPBIRD_DISCOVERER_BLE_START_FAILED        = 3
+};

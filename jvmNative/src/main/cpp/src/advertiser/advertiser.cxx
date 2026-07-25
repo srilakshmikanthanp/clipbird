@@ -22,7 +22,7 @@ bool clipbird_advertiser_start(clipbird_advertiser_t* advertiser) {
     error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, e.what());
     return false;
   } catch (...) {
-    error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, "INTERNAL_ERROR error occurred while starting BLE advertising.");
+    error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, "Unknown error occurred while starting BLE advertising.");
     return false;
   }
 }
@@ -40,25 +40,7 @@ bool clipbird_advertiser_stop(clipbird_advertiser_t* advertiser) {
     error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, e.what());
     return false;
   } catch (...) {
-    error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, "INTERNAL_ERROR error occurred while stopping BLE advertising.");
-    return false;
-  }
-}
-
-bool clipbird_advertiser_is_advertising(const clipbird_advertiser_t* advertiser, bool* is_advertising) {
-  if (!advertiser || !advertiser->impl || !is_advertising) {
-    error::setLastError(CLIPBIRD_ADVERTISER_INVALID_ARGUMENT, "Invalid argument: advertiser and is_advertising must not be null.");
-    return false;
-  }
-  try {
-    *is_advertising = advertiser->impl->isAdvertising();
-    error::clearLastError();
-    return true;
-  } catch (const std::exception& e) {
-    error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, e.what());
-    return false;
-  } catch (...) {
-    error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, "INTERNAL_ERROR error occurred while checking BLE advertising status.");
+    error::setLastError(CLIPBIRD_ADVERTISER_INTERNAL_ERROR, "Unknown error occurred while stopping BLE advertising.");
     return false;
   }
 }

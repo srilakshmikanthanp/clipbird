@@ -23,7 +23,7 @@ class ClipbirdClientModule {
   @Single
   fun bleDiscoverer(): BleDiscoverer = BleDiscoverer(
     serviceUuid = BluetoothConstants.clipbirdServiceUuid,
-    deviceTimeout = 5.seconds,
+    deviceTimeout = 30.seconds,
   )
 
   @Single

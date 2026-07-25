@@ -62,7 +62,9 @@ open class ClipbirdClientCoordinator<P : PairedDevice>(
       }
 
       current.forEach { (id, device) ->
-        if (id !in jobs) jobs[id] = this.job(device)
+        if (id !in jobs) {
+          jobs[id] = this.job(device)
+        }
       }
     }
   }

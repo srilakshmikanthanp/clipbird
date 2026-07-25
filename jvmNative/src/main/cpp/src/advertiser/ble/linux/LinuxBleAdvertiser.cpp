@@ -1,34 +1,12 @@
 #include "LinuxBleAdvertiser.hpp"
 
-#include <future>
 #include <map>
-#include <optional>
 #include <stdexcept>
 #include <string>
-#include <utility>
+
+#include "advertiser/ble/ble_advertiser_code.h"
 
 namespace clipbird::advertiser::ble {
-LinuxBleAdvertiser::LinuxBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData)
-  : connection(sdbus::createSystemBusConnection()),
-    bluezProxy(sdbus::createProxy(
-      *connection,
-      sdbus::ServiceName(kBluezService),
-      sdbus::ObjectPath(kRootPath)
-    )),
-    advertisementData(std::make_unique<LinuxBleAdvertisementData>(
-      *connection,
-      sdbus::ObjectPath(kAdvertisementPath),
-      serviceUuid,
-      serviceData,
-      [this]() { this->advertising = false; }
-    )) {
-  connection->enterEventLoopAsync();
-}
-
-LinuxBleAdvertiser::~LinuxBleAdvertiser() {
-  this->stopAdvertising();
-  connection->leaveEventLoop();
-}
 
 sdbus::ObjectPath LinuxBleAdvertiser::getAdvertisingManagerAdapterPath() {
   using Properties = std::map<sdbus::PropertyName, sdbus::Variant>;
@@ -51,53 +29,103 @@ sdbus::ObjectPath LinuxBleAdvertiser::getAdvertisingManagerAdapterPath() {
   throw std::runtime_error("No Bluetooth adapter with LEAdvertisingManager1 interface found");
 }
 
-void LinuxBleAdvertiser::startAdvertising() {
-  if (this->isAdvertising()) {
-    throw std::runtime_error("Already advertising");
+void LinuxBleAdvertiser::onReleaseAdvertisement() {
+  if (advertising.exchange(false)) {
+    listener.onAdvertisingStopped();
   }
-
-  const auto adapterPath = getAdvertisingManagerAdapterPath();
-
-  auto advertisingManagerProxy = sdbus::createProxy(
-    *connection,
-    sdbus::ServiceName(kBluezService),
-    adapterPath
-  );
-
-  auto options = std::map<std::string, sdbus::Variant>{};
-
-  advertisingManagerProxy->callMethodAsync("RegisterAdvertisement")
-    .onInterface(kAdvertisingManagerInterface)
-    .withArguments(advertisementData->getObjectPath(), options)
-    .getResultAsFuture()
-    .get();
-
-  this->advertising = true;
 }
 
-bool LinuxBleAdvertiser::isAdvertising() const {
-  return advertising;
+void LinuxBleAdvertiser::onAdapterPropertiesChanged(
+  const std::string& ifaceName,
+  const std::map<std::string, sdbus::Variant>& changedProps,
+  const std::vector<std::string>& invalidated
+) {
+  if (ifaceName == kAdapterInterface) {
+    auto it = changedProps.find("Powered");
+    if (it != changedProps.end() && !it->second.get<bool>()) {
+      if (advertising.exchange(false)) {
+        listener.onAdvertisingStopped();
+      }
+    }
+  }
 }
 
-void LinuxBleAdvertiser::stopAdvertising() {
-  if (!this->isAdvertising()) {
+LinuxBleAdvertiser::LinuxBleAdvertiser(
+  const boost::uuids::uuid& serviceUuid,
+  const std::vector<std::uint8_t>& serviceData,
+  AdvertiserListener& events
+):  Advertiser(events),
+    connection(sdbus::createSystemBusConnection()),
+    bluezProxy(sdbus::createProxy(*connection, sdbus::ServiceName(kBluezService), sdbus::ObjectPath(kRootPath))),
+    data(std::make_unique<LinuxBleAdvertisementData>(
+      *connection,
+      sdbus::ObjectPath(kAdvertisementPath),
+      serviceUuid,
+      serviceData,
+      std::bind(&LinuxBleAdvertiser::onReleaseAdvertisement, this)
+    )) {
+  connection->enterEventLoopAsync();
+}
+
+void LinuxBleAdvertiser::startAdvertising() {
+  if (advertising.exchange(true)) {
+    listener.onAdvertisingFailed(clipbird_advertiser_ble_error_code::CLIPBIRD_ADVERTISER_BLE_ALREADY_ADVERTISING, "Already advertising");
     return;
   }
 
-  const auto adapterPath = getAdvertisingManagerAdapterPath();
+  sdbus::ObjectPath adapterPath;
 
-  auto advertisingManagerProxy = sdbus::createProxy(
+  try {
+    adapterPath = getAdvertisingManagerAdapterPath();
+  } catch (const std::exception& e) {
+    advertising = false;
+    listener.onAdvertisingFailed(clipbird_advertiser_ble_error_code::CLIPBIRD_ADVERTISER_BLE_ADAPTER_NOT_FOUND, e.what());
+    return;
+  }
+
+  advertisingManagerProxy = sdbus::createProxy(
     *connection,
     sdbus::ServiceName(kBluezService),
     adapterPath
   );
 
+  advertisingManagerProxy->uponSignal("PropertiesChanged")
+    .onInterface("org.freedesktop.DBus.Properties")
+    .call([this](const std::string& ifaceName, const std::map<std::string, sdbus::Variant>& changedProps, const std::vector<std::string>& invalidated) {
+      onAdapterPropertiesChanged(ifaceName, changedProps, invalidated);
+    });
+
+  auto registerCallback = [this](std::optional<sdbus::Error> error) {
+    if (error) {
+      advertising = false;
+      listener.onAdvertisingFailed(clipbird_advertiser_ble_error_code::CLIPBIRD_ADVERTISER_BLE_REGISTRATION_FAILED, error->getMessage());
+    } else {
+      advertising = true;
+      listener.onAdvertisingStarted();
+    }
+  };
+
+  advertisingManagerProxy->callMethodAsync("RegisterAdvertisement")
+    .onInterface(kAdvertisingManagerInterface)
+    .withArguments(data->getObjectPath(), std::map<std::string, sdbus::Variant>{})
+    .uponReplyInvoke(registerCallback);
+}
+
+void LinuxBleAdvertiser::stopAdvertising() {
+  if (!advertising.exchange(false)) return;
+
   advertisingManagerProxy->callMethodAsync("UnregisterAdvertisement")
     .onInterface(kAdvertisingManagerInterface)
-    .withArguments(advertisementData->getObjectPath())
+    .withArguments(data->getObjectPath())
     .getResultAsFuture()
     .get();
 
-  this->advertising = false;
+  listener.onAdvertisingStopped();
 }
-}  // namespace clipbird
+
+LinuxBleAdvertiser::~LinuxBleAdvertiser() {
+  this->stopAdvertising();
+  connection->leaveEventLoop();
+}
+
+}  // namespace clipbird::advertiser::ble

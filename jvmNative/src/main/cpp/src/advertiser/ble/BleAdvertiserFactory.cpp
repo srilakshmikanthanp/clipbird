@@ -8,17 +8,20 @@
 #include "windows/WindowsBleAdvertiser.hpp"
 #endif
 
-
 namespace clipbird::advertiser::ble {
 
-std::unique_ptr<Advertiser> createBleAdvertiser(const boost::uuids::uuid& serviceUuid, const std::vector<std::uint8_t>& serviceData) {
+std::unique_ptr<Advertiser> createBleAdvertiser(
+  const boost::uuids::uuid& serviceUuid,
+  const std::vector<std::uint8_t>& serviceData,
+  AdvertiserListener& events
+) {
 #if defined(__linux__)
-  return std::make_unique<LinuxBleAdvertiser>(serviceUuid, serviceData);
+  return std::make_unique<LinuxBleAdvertiser>(serviceUuid, serviceData, events);
 #elif defined(_WIN32)
-  return std::make_unique<WindowsBleAdvertiser>(serviceUuid, serviceData);
+  return std::make_unique<WindowsBleAdvertiser>(serviceUuid, serviceData, events);
 #else
   throw std::runtime_error("Unsupported platform for BLE advertiser.");
 #endif
 }
 
-}  // namespace clipbird
+}  // namespace clipbird::advertiser::ble

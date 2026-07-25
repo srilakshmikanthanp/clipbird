@@ -1,6 +1,8 @@
-package com.srilakshmikanthanp.clipbird.packet
+package com.srilakshmikanthanp.clipbird.packet.interceptor
 
 import com.srilakshmikanthanp.clipbird.io.Channel
+import com.srilakshmikanthanp.clipbird.packet.Packet
+import com.srilakshmikanthanp.clipbird.packet.RoutedPacket
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

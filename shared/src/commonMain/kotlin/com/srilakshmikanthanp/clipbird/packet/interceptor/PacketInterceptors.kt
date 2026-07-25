@@ -1,6 +1,7 @@
-package com.srilakshmikanthanp.clipbird.packet
+package com.srilakshmikanthanp.clipbird.packet.interceptor
 
 import com.srilakshmikanthanp.clipbird.io.Channel
+import com.srilakshmikanthanp.clipbird.packet.Packet
 
 class PacketInterceptors(private vararg val interceptors: PacketInterceptor) : PacketInterceptor {
   override suspend fun intercept(channel: Channel,packet: Packet): Packet? {

@@ -1,6 +1,8 @@
 package com.srilakshmikanthanp.clipbird.packet
 
+import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.io.Channel
+import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketInterceptor
 import java.nio.ByteBuffer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -33,5 +35,13 @@ fun Channel.readPackets(
     if (packet != null) {
       emit(packet)
     }
+  }
+}
+
+suspend fun Channel.trySendPacket(packet: Packet) {
+  try {
+    sendPacket(packet)
+  } catch (e: Exception) {
+    Logger.e("Failed to send packet: ${e.message}", e)
   }
 }

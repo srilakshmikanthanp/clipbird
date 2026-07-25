@@ -1,6 +1,9 @@
-package com.srilakshmikanthanp.clipbird.packet
+package com.srilakshmikanthanp.clipbird.packet.interceptor
 
 import com.srilakshmikanthanp.clipbird.io.Channel
+import com.srilakshmikanthanp.clipbird.packet.Packet
+import com.srilakshmikanthanp.clipbird.packet.RoutedPacket
+import com.srilakshmikanthanp.clipbird.packet.sendPacket
 
 class PacketReRouter(
   private val channels: () -> List<Channel>,

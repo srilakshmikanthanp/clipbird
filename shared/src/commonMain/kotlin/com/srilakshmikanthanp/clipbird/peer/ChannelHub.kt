@@ -4,6 +4,10 @@ import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.common.closeQuietly
 import com.srilakshmikanthanp.clipbird.packet.*
 import com.srilakshmikanthanp.clipbird.packet.ErrorPacket.ErrorCode
+import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketDeduplicator
+import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketInterceptor
+import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketInterceptors
+import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketReRouter
 import com.srilakshmikanthanp.clipbird.paring.PairedDevice
 import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +22,12 @@ open class ChannelHub<P: PairedDevice>(
   private val pairedDeviceService: PairedDeviceService<P>,
   private val scope: CoroutineScope
 ) {
+  private data class DeviceState(val connectedDevice: ConnectedDevice, val readerJob: Job) : AutoCloseable {
+    override fun close() {
+      readerJob.cancel().also { connectedDevice.channel.closeQuietly() }
+    }
+  }
+
   private val _devices = MutableStateFlow<List<DeviceState>>(emptyList())
   val devices: StateFlow<List<PairedDevice>> = _devices.map {
     devices -> devices.map { it.connectedDevice.device }
@@ -37,34 +47,13 @@ open class ChannelHub<P: PairedDevice>(
 
   private val mutex = Mutex()
 
-  private data class DeviceState(
-    val connectedDevice: ConnectedDevice,
-    val readerJob: Job
-  ) : AutoCloseable {
-    override fun close() {
-      readerJob.cancel()
-      connectedDevice.channel.closeQuietly()
-    }
-  }
-
-  private suspend fun handleInvalidPacket(connectedDevice: ConnectedDevice, packet: Packet) {
-    try {
-      Logger.w("Invalid packet received from ${connectedDevice.device.name}: $packet", null, TAG)
-      connectedDevice.channel.sendPacket(ErrorPacket(ErrorCode.INVALID_PACKET, "Invalid packet"))
-    } catch (e: Exception) {
-      Logger.e("Failed to send error packet to ${connectedDevice.device.name}: ${e.message}", e, TAG)
-    } finally {
-      this.remove(connectedDevice)
-    }
-  }
-
   private suspend fun observeChannelPackets(connectedDevice: ConnectedDevice) {
     try {
       connectedDevice.channel.readPackets(packetInterceptor).collect { dispatchPacket(it) }
     } catch (e: CancellationException) {
       throw e
     } catch (e: PeerException) {
-      this.handleInvalidPacket(connectedDevice, e.toErrorPacket())
+      connectedDevice.channel.trySendPacket(e.toErrorPacket())
     } catch (e: Exception) {
       Logger.e("Error while reading packets from ${connectedDevice.device.name}: ${e.message}", e, TAG)
     } finally {
@@ -122,7 +111,7 @@ open class ChannelHub<P: PairedDevice>(
 
     try {
       Logger.w("Duplicate connection for ${connectedDevice.device.name}, closing new channel", null, TAG)
-      connectedDevice.channel.sendPacket(ErrorPacket(ErrorPacket.ErrorCode.ALREADY_CONNECTED, "Duplicate connection"))
+      connectedDevice.channel.trySendPacket(ErrorPacket(ErrorPacket.ErrorCode.ALREADY_CONNECTED, "Duplicate connection"))
     } catch (e: Exception) {
       Logger.e("Failed to send error packet to ${connectedDevice.device.name}: ${e.message}", e, TAG)
     } finally {
@@ -134,9 +123,7 @@ open class ChannelHub<P: PairedDevice>(
     try {
       observePairedDevices()
     } finally {
-      val devices = _devices.value
-      _devices.value = emptyList()
-      devices.forEach(DeviceState::close)
+      _devices.value.forEach { it.close() }.also { _devices.value = emptyList()}
     }
   }
 

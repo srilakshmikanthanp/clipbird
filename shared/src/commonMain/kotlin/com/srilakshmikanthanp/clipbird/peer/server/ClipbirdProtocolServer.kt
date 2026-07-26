@@ -26,8 +26,8 @@ open class ClipbirdProtocolServer<P: PairedDevice>(
 
   private suspend fun handleChannel(channel: Channel) {
     try {
-      val device = handshakeProtocol.handshake(channel)
-      _devices.emit(PeerConnection(device, channel))
+      val (device, secureChannel) = handshakeProtocol.handshake(channel)
+      _devices.emit(PeerConnection(device, secureChannel))
     } catch (e: CancellationException) {
       throw e
     } catch (e: Exception) {

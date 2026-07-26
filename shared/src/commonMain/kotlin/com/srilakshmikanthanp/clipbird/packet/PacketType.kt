@@ -9,6 +9,7 @@ enum class PacketType(val value: Int) {
   NoncePacketType(0x03),
   SignaturePacketType(0x04),
   ClipboardDataPacketType(0x05),
+  EphemeralKeyPacketType(0x06),
   ErrorPacketType(0xFF);
 
   companion object {

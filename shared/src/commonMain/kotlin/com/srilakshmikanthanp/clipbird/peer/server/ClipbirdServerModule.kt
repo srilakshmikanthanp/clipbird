@@ -1,6 +1,6 @@
 package com.srilakshmikanthanp.clipbird.peer.server
 
-import com.srilakshmikanthanp.clipbird.authentication.Authenticator
+import com.srilakshmikanthanp.clipbird.peer.authentication.Authenticator
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager

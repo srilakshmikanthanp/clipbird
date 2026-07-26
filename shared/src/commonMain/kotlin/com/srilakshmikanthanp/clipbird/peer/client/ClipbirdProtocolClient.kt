@@ -42,8 +42,8 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
       if (!decider.shouldInitiateConnection(device)) return
       if (connectionChecker.isConnected(device)) return
       channel = connector.connect(device)
-      handshakeProtocol.handshake(channel, device)
-      _devices.emit(PeerConnection(device, channel))
+      val secureChannel = handshakeProtocol.handshake(channel, device)
+      _devices.emit(PeerConnection(device, secureChannel))
     } catch (e: CancellationException) {
       throw e
     } catch (e: Exception) {

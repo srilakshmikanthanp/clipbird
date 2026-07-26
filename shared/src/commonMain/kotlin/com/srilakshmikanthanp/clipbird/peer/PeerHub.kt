@@ -32,6 +32,7 @@ open class PeerHub<P: PairedDevice>(
   )
 
   private val devicesMutex = Mutex()
+  private val sendMutex = Mutex()
 
   private val packetInterceptor: PacketInterceptor = PacketInterceptors(
     PacketDeduplicator(),
@@ -77,7 +78,10 @@ open class PeerHub<P: PairedDevice>(
     }
   }
 
-  suspend fun sendClipboard(clipboardContent: ClipboardContent, progressListener: ProgressListener = ProgressListener.NO_OP) {
+  suspend fun sendClipboard(
+    clipboardContent: ClipboardContent,
+    progressListener: ProgressListener = ProgressListener.NO_OP
+  ) = sendMutex.withLock {
     val connections = devicesMutex.withLock { _devices.value.values.toList() }
     val packet = ClipboardSyncingPacket.create(clipboardContent)
     connections.forEach { it.channel.sendPacket(packet, progressListener) }

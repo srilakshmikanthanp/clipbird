@@ -17,8 +17,8 @@ class NativeBluetoothChannel(private val channel: MemorySegment) : BluetoothChan
     BluetoothChannelHandle.readExactly(channel, size)
   }
 
-  override suspend fun write(data: ByteArray) = withContext(Dispatchers.IO) {
-    BluetoothChannelHandle.write(channel, data)
+  override suspend fun write(data: ByteArray, offset: Int, length: Int) = withContext(Dispatchers.IO) {
+    BluetoothChannelHandle.write(channel, data, offset, length.toLong())
   }
 
   override fun close() {

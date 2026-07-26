@@ -12,16 +12,18 @@ class EncryptedChannel(private val channel: Channel, key: ByteArray) : Channel {
   private var readBuffer = ByteArray(0)
   private var bufferPos = 0
 
+  private fun encrypt(data: ByteArray, offset: Int, length: Int, iv: ByteArray): ByteArray {
+    val cipher = Cipher.getInstance(TRANSFORMATION)
+    cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(TAG_BITS, iv))
+    val output = ByteArray(cipher.getOutputSize(length))
+    val written = cipher.doFinal(data, offset, length, output, 0)
+    return if (written == output.size) output else output.copyOf(written)
+  }
+
   private fun decrypt(ciphertext: ByteArray, iv: ByteArray): ByteArray {
     val cipher = Cipher.getInstance(TRANSFORMATION)
     cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(TAG_BITS, iv))
     return cipher.doFinal(ciphertext)
-  }
-
-  private fun encrypt(data: ByteArray, iv: ByteArray): ByteArray {
-    val cipher = Cipher.getInstance(TRANSFORMATION)
-    cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(TAG_BITS, iv))
-    return cipher.doFinal(data)
   }
 
   override suspend fun readExactly(size: Int): ByteArray {
@@ -43,9 +45,9 @@ class EncryptedChannel(private val channel: Channel, key: ByteArray) : Channel {
     }
   }
 
-  override suspend fun write(data: ByteArray) {
+  override suspend fun write(data: ByteArray, offset: Int, length: Int) {
     val iv = ByteArray(IV_LENGTH).also(random::nextBytes)
-    val ciphertext = encrypt(data, iv)
+    val ciphertext = encrypt(data, offset, length, iv)
     val frame = ByteBuffer.allocate(Int.SIZE_BYTES + Byte.SIZE_BYTES + iv.size + ciphertext.size)
       .putInt(Byte.SIZE_BYTES + iv.size + ciphertext.size)
       .put(iv.size.toByte())

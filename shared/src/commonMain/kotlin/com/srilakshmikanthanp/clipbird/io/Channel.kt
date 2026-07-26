@@ -20,7 +20,7 @@ interface Channel : AutoCloseable {
    * @throws IOException for failures during write
    */
   @Throws(IOException::class)
-  suspend fun write(data: ByteArray)
+  suspend fun write(data: ByteArray, offset: Int = 0, length: Int = data.size - offset)
 
   /**
    * Closes the channel and unblocks pending operations.

@@ -28,9 +28,9 @@ class RfcommBluetoothChannel(
     }.getOrThrow()
   }
 
-  override suspend fun write(data: ByteArray) = withContext(Dispatchers.IO) {
+  override suspend fun write(data: ByteArray, offset: Int, length: Int) = withContext(Dispatchers.IO) {
     runCatching {
-      output.write(data)
+      output.write(data, offset, length)
       output.flush()
     }.onFailure {
       close()

@@ -2,6 +2,7 @@ package com.srilakshmikanthanp.clipbird.peer
 
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardContent
+import com.srilakshmikanthanp.clipbird.io.ProgressListener
 import com.srilakshmikanthanp.clipbird.packet.*
 import com.srilakshmikanthanp.clipbird.packet.ErrorPacket.ErrorCode
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketDeduplicator
@@ -76,10 +77,10 @@ open class PeerHub<P: PairedDevice>(
     }
   }
 
-  suspend fun sendClipboard(clipboardContent: ClipboardContent) {
-    val packet = ClipboardSyncingPacket.create(clipboardContent)
+  suspend fun sendClipboard(clipboardContent: ClipboardContent, progressListener: ProgressListener = ProgressListener.NO_OP) {
     val connections = devicesMutex.withLock { _devices.value.values.toList() }
-    connections.forEach { it.channel.sendPacket(packet) }
+    val packet = ClipboardSyncingPacket.create(clipboardContent)
+    connections.forEach { it.channel.sendPacket(packet, progressListener) }
   }
 
   suspend fun consume(connection: PeerConnection) {

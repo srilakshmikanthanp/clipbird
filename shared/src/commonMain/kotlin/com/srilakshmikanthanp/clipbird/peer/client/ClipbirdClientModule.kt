@@ -11,7 +11,7 @@ import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceSer
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.ble.BleActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClientServerConnector
-import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientCoordinator
+import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdProtocolClient
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
@@ -64,7 +64,7 @@ class ClipbirdClientModule {
     decider: ClientServerConnectionInitiationDecider,
     connectionChecker: ChannelConnectionChecker,
     handshakeProtocol: ClientServerHandshakeProtocol,
-  ): BluetoothClipbirdClientCoordinator = BluetoothClipbirdClientCoordinator(
+  ): BluetoothClipbirdProtocolClient = BluetoothClipbirdProtocolClient(
     activeDeviceProvider,
     connector,
     decider,

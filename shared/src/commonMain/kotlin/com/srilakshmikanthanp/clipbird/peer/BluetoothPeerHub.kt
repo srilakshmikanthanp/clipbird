@@ -4,10 +4,10 @@ import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
 import kotlinx.coroutines.CoroutineScope
 
-class BluetoothChannelHub(
+class BluetoothPeerHub(
   pairedDeviceService: PairedDeviceService<BluetoothPairedDevice>,
   scope: CoroutineScope
-) : ChannelHub<BluetoothPairedDevice>(
+) : PeerHub<BluetoothPairedDevice>(
   pairedDeviceService,
   scope
 )

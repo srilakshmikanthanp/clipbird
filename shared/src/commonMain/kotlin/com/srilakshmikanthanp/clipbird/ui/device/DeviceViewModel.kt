@@ -2,17 +2,18 @@ package com.srilakshmikanthanp.clipbird.ui.device
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.paring.*
-import com.srilakshmikanthanp.clipbird.peer.ChannelHub
+import com.srilakshmikanthanp.clipbird.peer.PeerHub
 import com.srilakshmikanthanp.clipbird.ui.device.DeviceViewModel.PairingEvent.*
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel as KChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-open class DeviceViewModel<C : PairingCandidate, D : PairedDevice>(
+open class DeviceViewModel<PC : PairingCandidate, D : PairedDevice, C: Channel>(
   private val pairedDeviceService: PairedDeviceService<D>,
-  private val coordinator: PairingCoordinator<C, D>,
-  channelHub: ChannelHub<D>,
+  private val coordinator: PairingService<PC, D, C>,
+  peerHub: PeerHub<D>,
 ) : ViewModel() {
   sealed interface PairingEvent {
     data class AlreadyPairing(val deviceName: String) : PairingEvent
@@ -36,11 +37,11 @@ open class DeviceViewModel<C : PairingCandidate, D : PairedDevice>(
     val devices: List<Device<D>> = emptyList(),
   )
 
-  val uiState: StateFlow<DeviceState<C, D>> = combine(
+  val uiState: StateFlow<DeviceState<PC, D>> = combine(
     pairedDeviceService.getAll(),
     coordinator.devices,
     coordinator.pairing,
-    channelHub.devices,
+    peerHub.devices,
   ) { paired, devices, pairing, connected ->
     val connectedIds = connected.asSequence().map { it.id }.toHashSet()
 
@@ -54,7 +55,7 @@ open class DeviceViewModel<C : PairingCandidate, D : PairedDevice>(
     DeviceState()
   )
 
-  private val _events = Channel<PairingEvent>(Channel.BUFFERED)
+  private val _events = KChannel<PairingEvent>(KChannel.BUFFERED)
   val events: Flow<PairingEvent> = _events.receiveAsFlow()
 
   private fun Throwable.toEvent(candidate: PairingCandidate): PairingEvent = when (this) {
@@ -64,7 +65,7 @@ open class DeviceViewModel<C : PairingCandidate, D : PairedDevice>(
     else -> Error(candidate.name, this)
   }
 
-  fun pair(candidate: C) = viewModelScope.launch {
+  fun pair(candidate: PC) = viewModelScope.launch {
     runCatching { coordinator.pair(candidate) }.onFailure { _events.send(it.toEvent(candidate)) }
   }
 

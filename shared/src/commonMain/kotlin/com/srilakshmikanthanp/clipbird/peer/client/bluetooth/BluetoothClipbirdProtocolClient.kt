@@ -6,15 +6,15 @@ import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.client.ClientServerConnectionInitiationDecider
 import com.srilakshmikanthanp.clipbird.peer.client.ClientServerConnector
 import com.srilakshmikanthanp.clipbird.peer.client.ClientServerHandshakeProtocol
-import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientCoordinator
+import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdProtocolClient
 
-class BluetoothClipbirdClientCoordinator (
+class BluetoothClipbirdProtocolClient (
   activeDeviceProvider: ActivePairedDeviceProvider<BluetoothPairedDevice>,
   connector: ClientServerConnector<BluetoothPairedDevice>,
   decider: ClientServerConnectionInitiationDecider,
   connectionChecker: ChannelConnectionChecker,
   handshakeProtocol: ClientServerHandshakeProtocol
-) : ClipbirdClientCoordinator<BluetoothPairedDevice>(
+) : ClipbirdProtocolClient<BluetoothPairedDevice>(
   activeDeviceProvider,
   connector,
   decider,

@@ -22,13 +22,17 @@ class PairingModule {
   )
 
   @Single
-  fun pairedDeviceService(service: BluetoothPairedDeviceService): PairedDeviceService<out PairedDevice> = service
+  fun pairedDeviceService(
+    service: BluetoothPairedDeviceService
+  ): PairedDeviceService<out PairedDevice> = service
 
   @Single
   fun blockingPairingVerifier(): PairingDeferredVerifier = PairingDeferredVerifier()
 
   @Single
-  fun pairingVerifier(verifier: PairingDeferredVerifier): PairingVerifier = verifier
+  fun pairingVerifier(
+    verifier: PairingDeferredVerifier
+  ): PairingVerifier = verifier
 
   @Single
   fun bluetoothPairingCandidateProvider(
@@ -80,22 +84,27 @@ class PairingModule {
   @Single
   fun pairingServer(
     server: BluetoothPairingServer
-  ): PairingServer<BluetoothChannel> = server
+  ): PairingServer<BluetoothChannel> = RetryingPairingServer(server)
 
   @Single
   fun pairingCoordinator(
     provider: BluetoothPairingCandidateProvider,
     pairer: BluetoothPairer,
-    server: PairingServer<BluetoothChannel>,
     service: BluetoothPairedDeviceService,
-    scope: CoroutineScope,
     responder: PairingResponder<BluetoothChannel, BluetoothPairedDevice>,
-  ): BluetoothPairingCoordinator = BluetoothPairingCoordinator(
+  ): BluetoothPairingService = BluetoothPairingService(
     provider,
     pairer,
-    server,
     service,
-    scope,
     responder,
+  )
+
+  @Single
+  fun pairingChannelCollector(
+    pairingServer : BluetoothPairingServer,
+    service: BluetoothPairingService
+  ): BluetoothPairingChannelCollector = BluetoothPairingChannelCollector(
+    pairingServer,
+    service
   )
 }

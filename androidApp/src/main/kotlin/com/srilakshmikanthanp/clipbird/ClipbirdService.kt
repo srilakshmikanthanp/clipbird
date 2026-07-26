@@ -7,9 +7,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.srilakshmikanthanp.clipbird.pairing.PairingNotificationManager
-import com.srilakshmikanthanp.clipbird.paring.PairingCoordinator
-import com.srilakshmikanthanp.clipbird.peer.ChannelCollector
-import com.srilakshmikanthanp.clipbird.peer.ChannelHub
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 

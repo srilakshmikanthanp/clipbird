@@ -5,7 +5,7 @@ import com.srilakshmikanthanp.clipbird.common.closeQuietly
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.paring.PairedDevice
-import com.srilakshmikanthanp.clipbird.peer.ConnectedDevice
+import com.srilakshmikanthanp.clipbird.peer.PeerConnection
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,18 +16,18 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.seconds
 
-open class ClipbirdServerCoordinator<P: PairedDevice>(
+open class ClipbirdProtocolServer<P: PairedDevice>(
   private val advertiser: Advertiser,
   private val server: ClipbirdServer,
   private val handshakeProtocol: ClipbirdServerHandshakeProtocol<P>
 ) {
-  private val _devices = MutableSharedFlow<ConnectedDevice>(extraBufferCapacity = 64)
-  val devices: SharedFlow<ConnectedDevice> = _devices.asSharedFlow()
+  private val _devices = MutableSharedFlow<PeerConnection>(extraBufferCapacity = 64)
+  val devices: SharedFlow<PeerConnection> = _devices.asSharedFlow()
 
   private suspend fun handleChannel(channel: Channel) {
     try {
       val device = handshakeProtocol.handshake(channel)
-      _devices.emit(ConnectedDevice(device, channel))
+      _devices.emit(PeerConnection(device, channel))
     } catch (e: CancellationException) {
       throw e
     } catch (e: Exception) {
@@ -68,6 +68,6 @@ open class ClipbirdServerCoordinator<P: PairedDevice>(
   }
 
   companion object {
-    const val TAG = "ClipbirdServerCoordinator"
+    const val TAG = "ClipbirdProtocolServer"
   }
 }

@@ -1,8 +1,6 @@
 package com.srilakshmikanthanp.clipbird
 
 import com.srilakshmikanthanp.clipbird.pairing.PairingDialogManager
-import com.srilakshmikanthanp.clipbird.paring.PairingCoordinator
-import com.srilakshmikanthanp.clipbird.peer.ChannelCollector
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

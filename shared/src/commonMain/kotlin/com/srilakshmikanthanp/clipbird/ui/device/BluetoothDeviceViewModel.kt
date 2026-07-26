@@ -1,17 +1,18 @@
 package com.srilakshmikanthanp.clipbird.ui.device
 
+import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothChannel
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingCandidate
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.PairingCoordinator
-import com.srilakshmikanthanp.clipbird.peer.ChannelHub
+import com.srilakshmikanthanp.clipbird.paring.PairingService
+import com.srilakshmikanthanp.clipbird.peer.PeerHub
 
 class BluetoothDeviceViewModel(
   pairedDeviceService: PairedDeviceService<BluetoothPairedDevice>,
-  pairingCoordinator: PairingCoordinator<BluetoothPairingCandidate, BluetoothPairedDevice>,
-  channelHub: ChannelHub<BluetoothPairedDevice>
-): DeviceViewModel<BluetoothPairingCandidate, BluetoothPairedDevice>(
+  pairingService: PairingService<BluetoothPairingCandidate, BluetoothPairedDevice, BluetoothChannel>,
+  peerHub: PeerHub<BluetoothPairedDevice>
+): DeviceViewModel<BluetoothPairingCandidate, BluetoothPairedDevice, BluetoothChannel>(
   pairedDeviceService,
-  pairingCoordinator,
-  channelHub
+  pairingService,
+  peerHub
 )

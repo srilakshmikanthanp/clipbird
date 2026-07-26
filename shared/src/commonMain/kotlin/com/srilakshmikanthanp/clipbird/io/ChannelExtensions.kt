@@ -2,13 +2,11 @@ package com.srilakshmikanthanp.clipbird.io
 
 suspend fun Channel.readByte(): Byte = readExactly(1).first()
 
-interface ProgressListener {
+fun interface ProgressListener {
   fun onProgress(progress: Int, total: Int)
 
   companion object {
-    val NO_OP = object : ProgressListener {
-      override fun onProgress(progress: Int, total: Int) {}
-    }
+    val NO_OP = ProgressListener { progress, total -> }
   }
 }
 

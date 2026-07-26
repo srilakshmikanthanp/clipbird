@@ -4,6 +4,7 @@ plugins {
   alias(libs.plugins.androidApplication)
   alias(libs.plugins.composeMultiplatform)
   alias(libs.plugins.composeCompiler)
+  alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -16,12 +17,18 @@ dependencies {
   implementation(projects.shared)
 
   implementation(libs.koin.android)
+  implementation(libs.koin.annotations)
+  ksp(libs.koin.ksp.compiler)
   implementation(libs.androidx.activity.compose)
   implementation(libs.compose.foundation)
   implementation(libs.compose.material3)
 
   implementation(libs.compose.uiToolingPreview)
   debugImplementation(libs.compose.uiTooling)
+}
+
+ksp {
+  arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
 }
 
 android {

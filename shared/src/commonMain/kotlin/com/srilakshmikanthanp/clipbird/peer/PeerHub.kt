@@ -34,6 +34,9 @@ open class PeerHub<P: PairedDevice>(
   private val devicesMutex = Mutex()
   private val sendMutex = Mutex()
 
+  private val _transferState = MutableStateFlow<TransferState>(TransferState.Success)
+  val transferState: StateFlow<TransferState> = _transferState.asStateFlow()
+
   private val packetInterceptor: PacketInterceptor = PacketInterceptors(
     PacketDeduplicator(),
     PacketReRouter { _devices.value.values.map { it.channel } }
@@ -78,13 +81,22 @@ open class PeerHub<P: PairedDevice>(
     }
   }
 
-  suspend fun sendClipboard(
-    clipboardContent: ClipboardContent,
-    progressListener: ProgressListener = ProgressListener.NO_OP
-  ) = sendMutex.withLock {
-    val connections = devicesMutex.withLock { _devices.value.values.toList() }
-    val packet = ClipboardSyncingPacket.create(clipboardContent)
-    connections.forEach { it.channel.sendPacket(packet, progressListener) }
+  suspend fun sendClipboard(clipboardContent: ClipboardContent) {
+    sendMutex.withLock {
+      val listener = ProgressListener { p, t -> _transferState.value = TransferState.Progress(p, t) }
+      _transferState.value = TransferState.Progress(0, 0)
+      try {
+        val connections = devicesMutex.withLock { _devices.value.values.toList() }
+        val packet = ClipboardSyncingPacket.create(clipboardContent)
+        connections.forEach { it.channel.sendPacket(packet, listener) }
+        _transferState.value = TransferState.Success
+      } catch (e: CancellationException) {
+        _transferState.value = TransferState.Success
+        throw e
+      } catch (e: Exception) {
+        _transferState.value = TransferState.Failure(e)
+      }
+    }
   }
 
   suspend fun consume(connection: PeerConnection) {

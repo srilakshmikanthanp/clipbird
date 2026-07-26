@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.srilakshmikanthanp.clipbird.handlers.SendHandler
+import com.srilakshmikanthanp.clipbird.notification.TransferNotificationManager
 import com.srilakshmikanthanp.clipbird.pairing.PairingNotificationManager
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
@@ -16,6 +17,7 @@ import org.koin.core.component.KoinComponent
 class ClipbirdService : Service(), KoinComponent {
   private val pairingNotificationManager by lazy { PairingNotificationManager(this) }
   private val appRuntime by inject<AppRuntime>()
+  private val transferNotificationManager by inject<TransferNotificationManager>()
 
   private fun startForeground() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -42,6 +44,7 @@ class ClipbirdService : Service(), KoinComponent {
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
     startForeground()
     pairingNotificationManager.start()
+    transferNotificationManager.start()
     appRuntime.start()
     return START_STICKY
   }
@@ -49,6 +52,7 @@ class ClipbirdService : Service(), KoinComponent {
   override fun onDestroy() {
     appRuntime.stop()
     pairingNotificationManager.stop()
+    transferNotificationManager.stop()
     super.onDestroy()
   }
 

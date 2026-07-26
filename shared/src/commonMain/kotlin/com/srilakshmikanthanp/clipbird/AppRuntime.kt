@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird
 
+import com.srilakshmikanthanp.clipbird.clipboard.replication.bluetooth.BluetoothClipboardReplicator
 import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingChannelCollector
 import com.srilakshmikanthanp.clipbird.peer.BluetoothChannelCollector
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
@@ -11,6 +12,7 @@ class AppRuntime : KoinComponent {
   private val pairingChannelCollector: BluetoothPairingChannelCollector by inject()
   private val channelCollector: BluetoothChannelCollector by inject()
   private val channelHub: BluetoothPeerHub by inject()
+  private val clipboardSyncer: BluetoothClipboardReplicator by inject()
 
   private val scope = CoroutineScope(SupervisorJob())
   private var job: Job? = null
@@ -20,6 +22,7 @@ class AppRuntime : KoinComponent {
       coroutineScope {
         launch { pairingChannelCollector.run() }
         launch { channelCollector.run() }
+        launch { clipboardSyncer.run() }
       }
     }
   }

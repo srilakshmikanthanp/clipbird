@@ -1,9 +1,11 @@
 package com.srilakshmikanthanp.clipbird
 
 import android.content.Context
+import com.srilakshmikanthanp.clipbird.clipboard.ClipboardModule
 import com.srilakshmikanthanp.clipbird.common.CoreModule
 import com.srilakshmikanthanp.clipbird.database.DatabaseModule
 import com.srilakshmikanthanp.clipbird.database.DatabasePlatformModule
+import com.srilakshmikanthanp.clipbird.clipboard.ClipboardPlatformModule
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleAdvertiserModule
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothPlatformModule
 import com.srilakshmikanthanp.clipbird.paring.PairingModule
@@ -24,6 +26,8 @@ fun initKoin(context: Context) {
       DatabasePlatformModule().module,
       PairingModule().module,
       DeviceModule().module,
+      ClipboardModule().module,
+      ClipboardPlatformModule().module,
       BluetoothPlatformModule().module,
       BleAdvertiserModule().module,
       ClipbirdServerModule().module,

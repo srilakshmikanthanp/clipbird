@@ -1,9 +1,11 @@
 package com.srilakshmikanthanp.clipbird
 
 import co.touchlab.kermit.Logger
+import com.srilakshmikanthanp.clipbird.clipboard.ClipboardModule
 import com.srilakshmikanthanp.clipbird.common.CoreModule
 import com.srilakshmikanthanp.clipbird.database.DatabaseModule
 import com.srilakshmikanthanp.clipbird.database.DatabasePlatformModule
+import com.srilakshmikanthanp.clipbird.clipboard.ClipboardPlatformModule
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
 import com.srilakshmikanthanp.clipbird.ffi.loader.NativeClipbirdLoader
 import com.srilakshmikanthanp.clipbird.ffi.log.LogHandle
@@ -40,6 +42,8 @@ fun initKoin() {
       DatabasePlatformModule().module,
       PairingModule().module,
       DeviceModule().module,
+      ClipboardModule().module,
+      ClipboardPlatformModule().module,
       BluetoothPlatformModule().module,
       BleAdvertiserModule().module,
       ClipbirdServerModule().module,

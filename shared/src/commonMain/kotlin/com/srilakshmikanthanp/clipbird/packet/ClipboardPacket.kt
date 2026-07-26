@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.packet
 
+import com.srilakshmikanthanp.clipbird.clipboard.ClipboardContent
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -8,16 +9,11 @@ import kotlin.uuid.Uuid
 @Serializable
 class ClipboardSyncingPacket(
   override val id: Uuid,
-  val datum: ClipboardDatum
-) : RoutedPacket
-
-@Serializable
-class ClipboardDatum(
-  private val datum: List<ClipboardData>
-)
-
-@Serializable
-class ClipboardData(
-  val mimeType: String,
-  val data: ByteArray,
-)
+  val content: ClipboardContent
+) : RoutedPacket {
+  companion object {
+    fun create(content: ClipboardContent): ClipboardSyncingPacket {
+      return ClipboardSyncingPacket(id = Uuid.random(), content = content)
+    }
+  }
+}

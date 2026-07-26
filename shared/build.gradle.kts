@@ -46,6 +46,7 @@ kotlin {
       implementation(libs.androidx.room.sqlite.wrapper)
       implementation(libs.koin.android)
       implementation(libs.androidx.activity.compose)
+      implementation(libs.androidx.core.ktx)
     }
 
     commonMain.dependencies {

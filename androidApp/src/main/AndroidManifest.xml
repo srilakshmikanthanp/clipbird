@@ -46,6 +46,32 @@
         android:exported="false"
         android:foregroundServiceType="connectedDevice" />
 
+    <activity
+        android:name=".handlers.SendHandler"
+        android:exported="false"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+    <activity
+        android:name=".handlers.ShareHandler"
+        android:exported="true"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="android.intent.action.SEND" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:mimeType="text/plain" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.SEND" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:mimeType="image/*" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.PROCESS_TEXT" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:mimeType="text/plain" />
+      </intent-filter>
+    </activity>
+
     <receiver
         android:name=".pairing.PairingVerificationReceiver"
         android:exported="false" />

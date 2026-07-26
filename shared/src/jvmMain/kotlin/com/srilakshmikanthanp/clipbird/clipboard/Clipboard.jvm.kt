@@ -26,19 +26,19 @@ class JvmClipboard : Clipboard {
 
     if (transferable.isDataFlavorSupported(ClipboardTransferable.htmlFlavor)) {
       runCatching { transferable.getTransferData(ClipboardTransferable.htmlFlavor) as String }.onSuccess {
-        items.add(ClipboardItem(ClipboardTransferable.MIME_HTML, it.toByteArray(Charsets.UTF_8)))
+        items.add(ClipboardItem(ClipboardMimeType.MIME_HTML, it.toByteArray(Charsets.UTF_8)))
       }
     }
 
     if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
       runCatching { transferable.getTransferData(DataFlavor.stringFlavor) as String }.onSuccess {
-        items.add(ClipboardItem(ClipboardTransferable.MIME_TEXT, it.toByteArray(Charsets.UTF_8)))
+        items.add(ClipboardItem(ClipboardMimeType.MIME_TEXT, it.toByteArray(Charsets.UTF_8)))
       }
     }
 
     if (transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
       runCatching { transferable.getTransferData(DataFlavor.imageFlavor) as BufferedImage }.onSuccess { img ->
-        items.add(ClipboardItem(ClipboardTransferable.MIME_PNG, img.toPngBytes()))
+        items.add(ClipboardItem(ClipboardMimeType.MIME_PNG, img.toPngBytes()))
       }
     }
 

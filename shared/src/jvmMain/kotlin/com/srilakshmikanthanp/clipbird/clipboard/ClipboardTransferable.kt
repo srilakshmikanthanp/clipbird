@@ -9,9 +9,9 @@ class ClipboardTransferable(private val content: ClipboardContent) : Transferabl
   private val itemsByFlavor = content.items.mapNotNull { item -> toFlavor(item.mimeType)?.let { it to item } }.toMap()
 
   private fun toFlavor(mimeType: String): DataFlavor? = when (mimeType) {
-    MIME_TEXT -> DataFlavor.stringFlavor
-    MIME_HTML -> htmlFlavor
-    MIME_PNG -> DataFlavor.imageFlavor
+    ClipboardMimeType.MIME_TEXT -> DataFlavor.stringFlavor
+    ClipboardMimeType.MIME_HTML -> htmlFlavor
+    ClipboardMimeType.MIME_PNG -> DataFlavor.imageFlavor
     else -> null
   }
 
@@ -35,8 +35,5 @@ class ClipboardTransferable(private val content: ClipboardContent) : Transferabl
 
   companion object {
     val htmlFlavor = DataFlavor("text/html;charset=UTF-8;class=java.lang.String")
-    const val MIME_TEXT = "text/plain"
-    const val MIME_PNG = "image/png"
-    const val MIME_HTML = "text/html"
   }
 }

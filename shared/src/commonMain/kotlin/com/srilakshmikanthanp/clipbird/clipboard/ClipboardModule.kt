@@ -8,6 +8,9 @@ import org.koin.core.annotation.Single
 @Module
 class ClipboardModule {
   @Single
+  fun clipboardHistory(): ClipboardHistory = ClipboardHistory()
+
+  @Single
   fun replicator(
     peerHub: BluetoothPeerHub,
     clipboard: Clipboard,

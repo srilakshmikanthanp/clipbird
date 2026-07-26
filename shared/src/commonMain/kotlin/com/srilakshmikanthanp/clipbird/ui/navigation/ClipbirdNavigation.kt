@@ -45,6 +45,7 @@ import kotlinx.coroutines.launch
 
 enum class NavigationDrawerDestination(val label: String, val route: Any) {
   DEVICES("Devices", DevicesRoute),
+  HISTORY("History", HistoryRoute),
 }
 
 @Composable
@@ -58,8 +59,13 @@ private fun NavigationDrawerHeader() {
       contentDescription = "Clipbird logo",
       modifier = Modifier.size(72.dp),
     )
+
     Spacer(Modifier.height(12.dp))
-    Text(text = "Clipbird", style = MaterialTheme.typography.headlineSmall)
+
+    Text(
+      text = "Clipbird",
+      style = MaterialTheme.typography.headlineSmall
+    )
   }
 }
 

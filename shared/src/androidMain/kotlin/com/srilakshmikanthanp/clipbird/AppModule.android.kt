@@ -13,6 +13,7 @@ import com.srilakshmikanthanp.clipbird.peer.PeerModule
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientModule
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerModule
 import com.srilakshmikanthanp.clipbird.ui.device.DeviceModule
+import com.srilakshmikanthanp.clipbird.ui.history.HistoryModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.module
@@ -26,6 +27,7 @@ fun initKoin(context: Context) {
       DatabasePlatformModule().module,
       PairingModule().module,
       DeviceModule().module,
+      HistoryModule().module,
       ClipboardModule().module,
       ClipboardPlatformModule().module,
       BluetoothPlatformModule().module,

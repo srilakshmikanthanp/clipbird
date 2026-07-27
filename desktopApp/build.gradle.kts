@@ -30,5 +30,6 @@ nucleus.application {
     targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
     packageName = "com.srilakshmikanthanp.clipbird"
     packageVersion = providers.gradleProperty("app.version").get()
+    linux { iconFile.set(project.file("src/main/resources/logo.png")) }
   }
 }

@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
 plugins {
   alias(libs.plugins.kotlinMultiplatform)
@@ -7,6 +8,7 @@ plugins {
   alias(libs.plugins.composeCompiler)
   alias(libs.plugins.kotlinSerialization)
   alias(libs.plugins.ksp)
+  alias(libs.plugins.buildkonfig)
 }
 
 kotlin {
@@ -92,4 +94,15 @@ dependencies {
 
 ksp {
   arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
+}
+
+buildkonfig {
+  packageName = "com.srilakshmikanthanp.clipbird"
+  defaultConfigs {
+    buildConfigField(STRING, "APP_VERSION", providers.gradleProperty("app.version").get())
+    buildConfigField(STRING, "APP_HOMEPAGE", providers.gradleProperty("app.homepage").get())
+    buildConfigField(STRING, "APP_SOURCE_PAGE", providers.gradleProperty("app.sourcePage").get())
+    buildConfigField(STRING, "APP_ISSUES_PAGE", providers.gradleProperty("app.issuesPage").get())
+    buildConfigField(STRING, "APP_DONATE_PAGE", providers.gradleProperty("app.donatePage").get())
+  }
 }

@@ -29,6 +29,6 @@ nucleus.application {
   nativeDistributions {
     targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
     packageName = "com.srilakshmikanthanp.clipbird"
-    packageVersion = "1.0.0"
+    packageVersion = providers.gradleProperty("app.version").get()
   }
 }

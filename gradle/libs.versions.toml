@@ -25,6 +25,7 @@ ksp = "2.3.2"  # Required for Koin Annotations 2.3.1
 navigationCompose = "2.9.2"
 composeIcons = "1.7.3"
 koinAnnotations = "2.3.1"
+buildkonfig = "0.15.2"
 
 [libraries]
 composenativetray = { module = "dev.nucleusframework:composenativetray", version.ref = "nucleus" }
@@ -78,4 +79,5 @@ kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 androidx-room = { id = "androidx.room", version.ref = "room" }

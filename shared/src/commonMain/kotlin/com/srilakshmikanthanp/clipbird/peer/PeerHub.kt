@@ -45,13 +45,6 @@ open class PeerHub<P: PairedDevice>(
   private val _clipboard = MutableSharedFlow<ClipboardContent>()
   val clipboard: Flow<ClipboardContent> = _clipboard.asSharedFlow()
 
-  private suspend fun onPacket(packet: Packet) {
-    when (packet) {
-      is ClipboardSyncingPacket -> _clipboard.emit(packet.content)
-      else -> throw PeerException(ErrorCode.INVALID_PACKET, "Invalid packet")
-    }
-  }
-
   private suspend fun observeChannelPackets(peerConnection: PeerConnection) {
     try {
       peerConnection.channel.readPackets(packetInterceptor).collect(::onPacket)
@@ -64,6 +57,19 @@ open class PeerHub<P: PairedDevice>(
     } finally {
       devicesMutex.withLock { _devices.value -= peerConnection.device.id }
       peerConnection.close()
+    }
+  }
+
+  private suspend fun onClipboardPacket(packet: ClipboardSyncingPacket) {
+    if (packet.content.items.isNotEmpty()) {
+      _clipboard.emit(packet.content)
+    }
+  }
+
+  private suspend fun onPacket(packet: Packet) {
+    when (packet) {
+      is ClipboardSyncingPacket -> onClipboardPacket(packet)
+      else -> throw PeerException(ErrorCode.INVALID_PACKET, "Invalid packet")
     }
   }
 
@@ -82,6 +88,7 @@ open class PeerHub<P: PairedDevice>(
   }
 
   suspend fun sendClipboard(clipboardContent: ClipboardContent) {
+    if (clipboardContent.items.isEmpty()) return
     sendMutex.withLock {
       val listener = ProgressListener { p, t -> _transferState.value = TransferState.Progress(p, t) }
       _transferState.value = TransferState.Progress(0, 0)

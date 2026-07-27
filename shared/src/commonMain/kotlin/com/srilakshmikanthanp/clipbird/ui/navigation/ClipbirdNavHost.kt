@@ -6,8 +6,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.srilakshmikanthanp.clipbird.ui.about.AboutScreen
 import com.srilakshmikanthanp.clipbird.ui.device.DevicesScreen
 import com.srilakshmikanthanp.clipbird.ui.history.HistoryScreen
+import com.srilakshmikanthanp.clipbird.ui.trust.TrustedScreen
 
 @Composable
 fun ClipbirdNavHost(
@@ -22,5 +24,7 @@ fun ClipbirdNavHost(
   ) {
     composable<DevicesRoute> { DevicesScreen(snackbarHostState) }
     composable<HistoryRoute> { HistoryScreen() }
+    composable<TrustedRoute> { TrustedScreen() }
+    composable<AboutRoute> { AboutScreen() }
   }
 }

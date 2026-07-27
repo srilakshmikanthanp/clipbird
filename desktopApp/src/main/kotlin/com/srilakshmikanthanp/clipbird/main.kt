@@ -33,7 +33,7 @@ fun main() {
     var isVisible by remember { mutableStateOf(true) }
     val isDark = isSystemInDarkMode()
 
-    val trayIcon = remember {
+    val appLogo = remember {
       BitmapPainter(ImageIO.read(Thread.currentThread().contextClassLoader.getResource("logo.png")).toComposeImageBitmap())
     }
 
@@ -48,7 +48,7 @@ fun main() {
     )
 
     Tray(
-      icon = trayIcon,
+      icon = appLogo,
       tooltip = "Clipbird",
       primaryAction = { isVisible = true },
       menuContent = {
@@ -63,6 +63,7 @@ fun main() {
         onCloseRequest = { isVisible = false },
         visible = isVisible,
         title = "Clipbird",
+        icon = appLogo,
       ) {
         TitleBar {
           Text(

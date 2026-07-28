@@ -55,8 +55,7 @@ open class PeerHub<P: PairedDevice>(
     } catch (e: Exception) {
       Logger.e("Error while reading packets from ${peerConnection.device.name}: ${e.message}", e, TAG)
     } finally {
-      devicesMutex.withLock { _devices.value -= peerConnection.device.id }
-      peerConnection.close()
+      remove(peerConnection)
     }
   }
 
@@ -77,13 +76,21 @@ open class PeerHub<P: PairedDevice>(
     pairedDeviceService.getAll().map {
       paired -> paired.map { it.id }.toSet()
     }.collect { pairedDeviceIds ->
-      val stale = devicesMutex.withLock {
-        val stale = _devices.value.filterKeys { it !in pairedDeviceIds }.values.toList()
-        _devices.value = _devices.value.filterKeys { it in pairedDeviceIds }
-        stale
+      devicesMutex.withLock {
+        _devices.value.filterKeys { it !in pairedDeviceIds }.values.toList()
+      }.forEach {
+        remove(it)
       }
+    }
+  }
 
-      stale.forEach(PeerConnection::close)
+  private suspend fun remove(connection: PeerConnection) {
+    devicesMutex.withLock {
+      if (_devices.value[connection.device.id] === connection) {
+        _devices.value -= connection.device.id
+      }
+    }.also {
+      connection.close()
     }
   }
 
@@ -105,20 +112,19 @@ open class PeerHub<P: PairedDevice>(
   }
 
   suspend fun consume(connection: PeerConnection) {
-    val added = devicesMutex.withLock {
+    val stale = devicesMutex.withLock {
       val present = _devices.value[connection.device.id]
-      if (present == null) _devices.value += connection.device.id to connection
-      present == null
+      _devices.value += connection.device.id to connection
+      present
     }
 
-    if (added) {
-      scope.launch { observeChannelPackets(connection) }
-      return
+    if (stale != null) {
+      Logger.w("Replacing stale connection for ${connection.device.name}", null, TAG)
+      stale.close()
     }
 
-    connection.use { connection ->
-      Logger.w("Duplicate connection for ${connection.device.name}, closing new channel", null, TAG)
-      connection.channel.trySendPacket(ErrorPacket(ErrorCode.ALREADY_CONNECTED, "Duplicate connection"))
+    scope.launch {
+      observeChannelPackets(connection)
     }
   }
 

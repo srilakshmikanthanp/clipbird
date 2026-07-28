@@ -10,7 +10,6 @@ class ErrorPacket(
   enum class ErrorCode {
     AUTHENTICATION_FAILED,
     DEVICE_NOT_PAIRED,
-    ALREADY_CONNECTED,
     INVALID_PACKET
   }
 }

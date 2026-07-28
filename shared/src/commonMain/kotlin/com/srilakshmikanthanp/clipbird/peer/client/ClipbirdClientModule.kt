@@ -1,10 +1,14 @@
 package com.srilakshmikanthanp.clipbird.peer.client
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
+import com.srilakshmikanthanp.clipbird.hub.Discoverer
+import com.srilakshmikanthanp.clipbird.hub.RetryingDiscoverer
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer
+import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleHubDevice
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.pairing.ActivePairedDeviceProvider
+import com.srilakshmikanthanp.clipbird.pairing.RetryingActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceService
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.ble.BleActivePairedDeviceProvider
@@ -27,8 +31,13 @@ class ClipbirdClientModule {
   )
 
   @Single
+  fun discoverer(
+    bleDiscoverer: BleDiscoverer,
+  ): Discoverer<BleHubDevice> = RetryingDiscoverer(bleDiscoverer)
+
+  @Single
   fun blePairedActiveDeviceProvider(
-    discoverer: BleDiscoverer,
+    discoverer: Discoverer<BleHubDevice>,
     service: BluetoothPairedDeviceService,
   ): BleActivePairedDeviceProvider = BleActivePairedDeviceProvider(
     discoverer,
@@ -38,7 +47,7 @@ class ClipbirdClientModule {
   @Single
   fun pairedActiveDeviceProvider(
     provider: BleActivePairedDeviceProvider,
-  ): ActivePairedDeviceProvider<BluetoothPairedDevice> = provider
+  ): ActivePairedDeviceProvider<BluetoothPairedDevice> = RetryingActivePairedDeviceProvider(provider)
 
   @Single
   fun connectionInitiationDecider(
@@ -67,7 +76,7 @@ class ClipbirdClientModule {
 
   @Single
   fun clipbirdClientCoordinator(
-    activeDeviceProvider: BleActivePairedDeviceProvider,
+    activeDeviceProvider: ActivePairedDeviceProvider<BluetoothPairedDevice>,
     connector: BluetoothClipbirdClientConnector,
     decider: ConnectionInitiationDecider,
     connectionChecker: ChannelConnectionChecker,

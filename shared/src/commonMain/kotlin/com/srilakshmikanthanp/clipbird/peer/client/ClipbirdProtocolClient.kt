@@ -58,6 +58,7 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
       val removed = jobs.keys - current.keys
 
       removed.forEach { id ->
+        Logger.i { "Removing job for device $id" }
         jobs.remove(id)?.cancel()
       }
 

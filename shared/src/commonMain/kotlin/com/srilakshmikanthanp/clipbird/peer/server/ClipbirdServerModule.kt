@@ -23,7 +23,7 @@ class ClipbirdServerModule {
   )
 
   @Single
-  fun clipbirdServer(server: ClipbirdBluetoothServer): ClipbirdServer = server
+  fun clipbirdServer(server: ClipbirdBluetoothServer): ClipbirdServer = RetryingClipbirdServer(server)
 
   @Single
   fun clipbirdServerHandshakeProtocol(

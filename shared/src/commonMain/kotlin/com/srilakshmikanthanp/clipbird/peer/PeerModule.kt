@@ -15,20 +15,4 @@ class PeerModule {
     pairedDeviceService: PairedDeviceService<BluetoothPairedDevice>,
     scope: CoroutineScope,
   ): BluetoothPeerHub = BluetoothPeerHub(pairedDeviceService, scope)
-
-  @Single
-  fun channelConnectionChecker(
-    hub: BluetoothPeerHub,
-  ): ChannelConnectionChecker = HubConnectionChecker(hub)
-
-  @Single
-  fun channelCoordinator(
-    serverCoordinator: BluetoothClipbirdProtocolServer,
-    clientCoordinator: BluetoothClipbirdProtocolClient,
-    channelHub: BluetoothPeerHub,
-  ): BluetoothChannelCollector = BluetoothChannelCollector(
-    serverCoordinator,
-    clientCoordinator,
-    channelHub,
-  )
 }

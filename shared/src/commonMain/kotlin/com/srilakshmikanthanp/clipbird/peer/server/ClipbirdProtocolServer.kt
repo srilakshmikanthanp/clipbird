@@ -6,6 +6,7 @@ import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.PeerConnection
+import com.srilakshmikanthanp.clipbird.peer.PeerHub
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,15 +17,13 @@ import kotlin.coroutines.cancellation.CancellationException
 open class ClipbirdProtocolServer<P: PairedDevice>(
   private val advertiser: Advertiser,
   private val server: ClipbirdServer,
-  private val handshakeProtocol: ClipbirdServerHandshakeProtocol<P>
+  private val handshakeProtocol: ClipbirdServerHandshakeProtocol<P>,
+  private val peerHub: PeerHub<P>
 ) {
-  private val _devices = MutableSharedFlow<PeerConnection>(extraBufferCapacity = 64)
-  val devices: SharedFlow<PeerConnection> = _devices.asSharedFlow()
-
   private suspend fun handleChannel(channel: Channel) {
     try {
       val (device, secureChannel) = handshakeProtocol.handshake(channel)
-      _devices.emit(PeerConnection(device, secureChannel))
+      peerHub.consume(PeerConnection(device, secureChannel))
     } catch (e: CancellationException) {
       throw e
     } catch (e: Exception) {

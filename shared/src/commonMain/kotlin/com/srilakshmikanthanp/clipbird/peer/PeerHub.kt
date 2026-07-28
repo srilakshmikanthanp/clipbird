@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.IOException
+import kotlin.collections.any
 import kotlin.coroutines.cancellation.CancellationException
 
 open class PeerHub<P: PairedDevice>(
@@ -129,6 +130,10 @@ open class PeerHub<P: PairedDevice>(
     scope.launch {
       observeChannelPackets(connection)
     }
+  }
+
+  fun isConnected(device: PairedDevice): Boolean {
+    return _devices.value.any { it.key == device.id }
   }
 
   override fun close() {

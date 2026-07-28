@@ -12,7 +12,7 @@ import com.srilakshmikanthanp.clipbird.pairing.RetryingActivePairedDeviceProvide
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceService
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.ble.BleActivePairedDeviceProvider
-import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
+import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientConnector
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdProtocolClient
 import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator
@@ -79,13 +79,13 @@ class ClipbirdClientModule {
     activeDeviceProvider: ActivePairedDeviceProvider<BluetoothPairedDevice>,
     connector: BluetoothClipbirdClientConnector,
     decider: ConnectionInitiationDecider,
-    connectionChecker: ChannelConnectionChecker,
     handshakeProtocol: ClipbirdClientHandshakeProtocol,
+    peerHub: BluetoothPeerHub,
   ): BluetoothClipbirdProtocolClient = BluetoothClipbirdProtocolClient(
     activeDeviceProvider,
     connector,
     decider,
-    connectionChecker,
-    handshakeProtocol
+    handshakeProtocol,
+    peerHub
   )
 }

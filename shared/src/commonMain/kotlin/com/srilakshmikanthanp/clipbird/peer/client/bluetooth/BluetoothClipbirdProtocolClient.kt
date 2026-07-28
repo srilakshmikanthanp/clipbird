@@ -2,7 +2,7 @@ package com.srilakshmikanthanp.clipbird.peer.client.bluetooth
 
 import com.srilakshmikanthanp.clipbird.pairing.ActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
-import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
+import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientConnector
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientHandshakeProtocol
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdProtocolClient
@@ -12,12 +12,12 @@ class BluetoothClipbirdProtocolClient(
   activeDeviceProvider: ActivePairedDeviceProvider<BluetoothPairedDevice>,
   connector: ClipbirdClientConnector<BluetoothPairedDevice>,
   decider: ConnectionInitiationDecider,
-  connectionChecker: ChannelConnectionChecker,
-  handshakeProtocol: ClipbirdClientHandshakeProtocol
+  handshakeProtocol: ClipbirdClientHandshakeProtocol,
+  peerHub: BluetoothPeerHub
 ) : ClipbirdProtocolClient<BluetoothPairedDevice>(
   activeDeviceProvider,
   connector,
   decider,
-  connectionChecker,
-  handshakeProtocol
+  handshakeProtocol,
+  peerHub
 )

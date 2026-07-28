@@ -5,16 +5,13 @@ import com.srilakshmikanthanp.clipbird.common.closeQuietly
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.pairing.ActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
-import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.PeerConnection
+import com.srilakshmikanthanp.clipbird.peer.PeerHub
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
@@ -23,11 +20,9 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
   private val activeDeviceProvider: ActivePairedDeviceProvider<P>,
   private val connector: ClipbirdClientConnector<P>,
   private val decider: ConnectionInitiationDecider,
-  private val connectionChecker: ChannelConnectionChecker,
-  private val handshakeProtocol: ClipbirdClientHandshakeProtocol
+  private val handshakeProtocol: ClipbirdClientHandshakeProtocol,
+  private val peerHub: PeerHub<P>,
 ) {
-  private val _devices = MutableSharedFlow<PeerConnection>(extraBufferCapacity = 64)
-  val devices: SharedFlow<PeerConnection> = _devices.asSharedFlow()
   private val jobs = mutableMapOf<Long, Job>()
 
   private fun CoroutineScope.job(device: P): Job = launch {
@@ -40,10 +35,10 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
     var channel: Channel? = null
     try {
       if (!decider.shouldInitiateConnection(device)) return
-      if (connectionChecker.isConnected(device)) return
+      if (peerHub.isConnected(device)) return
       channel = connector.connect(device)
       val secureChannel = handshakeProtocol.handshake(channel, device)
-      _devices.emit(PeerConnection(device, secureChannel))
+      peerHub.consume(PeerConnection(device, secureChannel))
     } catch (e: CancellationException) {
       throw e
     } catch (e: Exception) {

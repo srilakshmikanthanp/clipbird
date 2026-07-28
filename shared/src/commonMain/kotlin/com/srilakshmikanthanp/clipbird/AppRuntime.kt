@@ -17,7 +17,10 @@ class AppRuntime : KoinComponent {
   private val scope = CoroutineScope(SupervisorJob())
   private var job: Job? = null
 
+  @Synchronized
   fun start() {
+    if (job?.isActive == true) return
+
     job = scope.launch {
       coroutineScope {
         launch { pairingChannelCollector.run() }
@@ -27,6 +30,7 @@ class AppRuntime : KoinComponent {
     }
   }
 
+  @Synchronized
   fun stop() {
     channelHub.close()
     job?.cancel()

@@ -5,8 +5,8 @@ import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceService
 import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.BluetoothClipbirdProtocolServer
 import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.ClipbirdBluetoothServer
 import org.koin.core.annotation.Module

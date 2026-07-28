@@ -2,7 +2,7 @@ package com.srilakshmikanthanp.clipbird.clipboard.replication
 
 import com.srilakshmikanthanp.clipbird.clipboard.Clipboard
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardHistory
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.PeerHub
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch

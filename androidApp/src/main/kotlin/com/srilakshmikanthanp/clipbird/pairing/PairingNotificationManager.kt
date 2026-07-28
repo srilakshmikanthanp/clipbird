@@ -11,7 +11,7 @@ import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.BigTextStyle
 import androidx.core.app.NotificationCompat.Builder
-import com.srilakshmikanthanp.clipbird.paring.PairingDeferredVerifier
+import com.srilakshmikanthanp.clipbird.pairing.PairingDeferredVerifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import androidx.core.net.toUri
-import com.srilakshmikanthanp.clipbird.paring.PairingDeferredVerifier.VerificationRequest
+import com.srilakshmikanthanp.clipbird.pairing.PairingDeferredVerifier.VerificationRequest
 
 class PairingNotificationManager(private val context: Context) : KoinComponent {
   private val notificationManager = context.getSystemService(NotificationManager::class.java)

@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.peer.client.bluetooth
 
-import com.srilakshmikanthanp.clipbird.paring.ActivePairedDeviceProvider
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.ActivePairedDeviceProvider
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientConnector
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientHandshakeProtocol

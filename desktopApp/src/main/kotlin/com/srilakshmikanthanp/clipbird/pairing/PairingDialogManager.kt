@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.pairing
 
-import com.srilakshmikanthanp.clipbird.paring.PairingDeferredVerifier
-import com.srilakshmikanthanp.clipbird.paring.PairingDeferredVerifier.VerificationRequest
+import com.srilakshmikanthanp.clipbird.pairing.PairingDeferredVerifier
+import com.srilakshmikanthanp.clipbird.pairing.PairingDeferredVerifier.VerificationRequest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

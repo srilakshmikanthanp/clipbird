@@ -9,8 +9,8 @@ import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketDeduplicator
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketInterceptor
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketInterceptors
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketReRouter
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
-import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

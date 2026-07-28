@@ -4,10 +4,10 @@ import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
-import com.srilakshmikanthanp.clipbird.paring.ActivePairedDeviceProvider
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.ble.BleActivePairedDeviceProvider
+import com.srilakshmikanthanp.clipbird.pairing.ActivePairedDeviceProvider
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceService
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.ble.BleActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientConnector
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdProtocolClient

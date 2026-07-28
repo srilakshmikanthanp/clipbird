@@ -3,7 +3,7 @@ package com.srilakshmikanthanp.clipbird.ui.device
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.srilakshmikanthanp.clipbird.io.Channel
-import com.srilakshmikanthanp.clipbird.paring.*
+import com.srilakshmikanthanp.clipbird.pairing.*
 import com.srilakshmikanthanp.clipbird.peer.PeerHub
 import com.srilakshmikanthanp.clipbird.ui.device.DeviceViewModel.PairingEvent.*
 import kotlinx.coroutines.channels.Channel as KChannel

@@ -3,8 +3,8 @@ package com.srilakshmikanthanp.clipbird.peer.client
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.common.closeQuietly
 import com.srilakshmikanthanp.clipbird.io.Channel
-import com.srilakshmikanthanp.clipbird.paring.ActivePairedDeviceProvider
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.ActivePairedDeviceProvider
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.ChannelConnectionChecker
 import com.srilakshmikanthanp.clipbird.peer.PeerConnection
 import kotlinx.coroutines.CancellationException

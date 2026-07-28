@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.peer
 
 import com.srilakshmikanthanp.clipbird.io.Channel
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 
 open class PeerConnection(
   val device: PairedDevice,

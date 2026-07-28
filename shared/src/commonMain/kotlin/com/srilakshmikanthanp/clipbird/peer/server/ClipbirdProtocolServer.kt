@@ -4,7 +4,7 @@ import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.common.closeQuietly
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.io.Channel
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.PeerConnection
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay

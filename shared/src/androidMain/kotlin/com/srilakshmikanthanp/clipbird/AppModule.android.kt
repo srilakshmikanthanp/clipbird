@@ -8,7 +8,7 @@ import com.srilakshmikanthanp.clipbird.database.DatabasePlatformModule
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardPlatformModule
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleAdvertiserModule
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothPlatformModule
-import com.srilakshmikanthanp.clipbird.paring.PairingModule
+import com.srilakshmikanthanp.clipbird.pairing.PairingModule
 import com.srilakshmikanthanp.clipbird.peer.PeerModule
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientModule
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerModule

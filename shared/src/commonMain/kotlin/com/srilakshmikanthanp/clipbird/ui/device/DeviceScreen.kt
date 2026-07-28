@@ -35,8 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
-import com.srilakshmikanthanp.clipbird.paring.PairingCandidate
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairingCandidate
 import org.koin.compose.viewmodel.koinViewModel
 
 private fun DeviceViewModel.PairingEvent.toMessage(): String = when (this) {

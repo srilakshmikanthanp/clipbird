@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.peer
 
-import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceService
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
 import kotlinx.coroutines.CoroutineScope
 
 class BluetoothPeerHub(

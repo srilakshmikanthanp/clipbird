@@ -1,8 +1,8 @@
 package com.srilakshmikanthanp.clipbird.database
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceDao
-import com.srilakshmikanthanp.clipbird.paring.PairedDeviceEntityDao
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceDao
+import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceEntityDao
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceDao
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 

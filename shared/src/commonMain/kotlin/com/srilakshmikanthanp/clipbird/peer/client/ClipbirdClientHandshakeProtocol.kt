@@ -5,7 +5,7 @@ import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.io.EncryptedChannel
 import com.srilakshmikanthanp.clipbird.packet.IdentityPacket
 import com.srilakshmikanthanp.clipbird.packet.sendPacket
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.PeerException
 import com.srilakshmikanthanp.clipbird.peer.handshake.HandshakeProtocol
 import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator

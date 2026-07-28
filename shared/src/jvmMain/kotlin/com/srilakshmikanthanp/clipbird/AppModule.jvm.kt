@@ -11,7 +11,7 @@ import com.srilakshmikanthanp.clipbird.ffi.loader.NativeClipbirdLoader
 import com.srilakshmikanthanp.clipbird.ffi.log.LogHandle
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleAdvertiserModule
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothPlatformModule
-import com.srilakshmikanthanp.clipbird.paring.PairingModule
+import com.srilakshmikanthanp.clipbird.pairing.PairingModule
 import com.srilakshmikanthanp.clipbird.peer.PeerModule
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdClientModule
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerModule

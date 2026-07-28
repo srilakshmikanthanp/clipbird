@@ -1,6 +1,6 @@
 package com.srilakshmikanthanp.clipbird.peer
 
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.client.ClipbirdProtocolClient
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdProtocolServer
 import kotlinx.coroutines.coroutineScope

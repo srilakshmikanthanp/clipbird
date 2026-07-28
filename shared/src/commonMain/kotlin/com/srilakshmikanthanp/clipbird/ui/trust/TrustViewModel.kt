@@ -2,8 +2,8 @@ package com.srilakshmikanthanp.clipbird.ui.trust
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
-import com.srilakshmikanthanp.clipbird.paring.PairedDeviceService
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn

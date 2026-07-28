@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.peer.server.bluetooth
 
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServer
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdProtocolServer
 import com.srilakshmikanthanp.clipbird.peer.server.ClipbirdServerHandshakeProtocol

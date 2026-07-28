@@ -4,7 +4,7 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.srilakshmikanthanp.clipbird.paring.PairingDeferredVerifier
+import com.srilakshmikanthanp.clipbird.pairing.PairingDeferredVerifier
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

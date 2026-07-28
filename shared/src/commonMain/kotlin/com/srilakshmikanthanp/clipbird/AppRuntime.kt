@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird
 
 import com.srilakshmikanthanp.clipbird.clipboard.replication.bluetooth.BluetoothClipboardReplicator
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingChannelCollector
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairingChannelCollector
 import com.srilakshmikanthanp.clipbird.peer.BluetoothChannelCollector
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import kotlinx.coroutines.*

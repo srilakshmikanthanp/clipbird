@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.ui.device
 
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairedDeviceService
-import com.srilakshmikanthanp.clipbird.paring.bluetooth.BluetoothPairingService
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceService
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairingService
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Module

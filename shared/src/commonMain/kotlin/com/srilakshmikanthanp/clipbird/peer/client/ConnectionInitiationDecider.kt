@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.peer.client
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 
 class ConnectionInitiationDecider(private val hostDeviceProvider: HostDeviceProvider) {
   suspend fun shouldInitiateConnection(remoteDevice: PairedDevice): Boolean {

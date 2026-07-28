@@ -1,6 +1,6 @@
 package com.srilakshmikanthanp.clipbird.peer
 
-import com.srilakshmikanthanp.clipbird.paring.PairedDevice
+import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 
 class HubConnectionChecker<P: PairedDevice>(
   private val peerHub: PeerHub<P>

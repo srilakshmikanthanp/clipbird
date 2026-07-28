@@ -87,22 +87,20 @@ open class PeerHub<P: PairedDevice>(
     }
   }
 
-  suspend fun sendClipboard(clipboardContent: ClipboardContent) {
+  suspend fun sendClipboard(clipboardContent: ClipboardContent): Unit = sendMutex.withLock {
     if (clipboardContent.items.isEmpty()) return
-    sendMutex.withLock {
+    try {
       val listener = ProgressListener { p, t -> _transferState.value = TransferState.Progress(p, t) }
       _transferState.value = TransferState.Progress(0, 0)
-      try {
-        val connections = devicesMutex.withLock { _devices.value.values.toList() }
-        val packet = ClipboardSyncingPacket.create(clipboardContent)
-        connections.forEach { it.channel.sendPacket(packet, listener) }
-        _transferState.value = TransferState.Success
-      } catch (e: CancellationException) {
-        _transferState.value = TransferState.Success
-        throw e
-      } catch (e: Exception) {
-        _transferState.value = TransferState.Failure(e)
-      }
+      val connections = devicesMutex.withLock { _devices.value.values.toList() }
+      val packet = ClipboardSyncingPacket.create(clipboardContent)
+      connections.forEach { it.channel.sendPacket(packet, listener) }
+      _transferState.value = TransferState.Success
+    } catch (e: CancellationException) {
+      _transferState.value = TransferState.Success
+      throw e
+    } catch (e: Exception) {
+      _transferState.value = TransferState.Failure(e)
     }
   }
 

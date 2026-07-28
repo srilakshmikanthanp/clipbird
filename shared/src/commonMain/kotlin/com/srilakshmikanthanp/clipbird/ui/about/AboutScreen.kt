@@ -118,7 +118,7 @@ fun AboutScreen(viewModel: AboutViewModel = koinViewModel()) {
           Image(
             painter = painterResource(Res.drawable.logo),
             contentDescription = "Clipbird logo",
-            modifier = Modifier.size(140.dp),
+            modifier = Modifier.size(120.dp),
           )
           Text(
             text = "Version ${AppConstants.APP_VERSION}",
@@ -154,22 +154,22 @@ fun AboutScreen(viewModel: AboutViewModel = koinViewModel()) {
           modifier = itemModifier { showFingerprintDialog = true },
         )
         ActionItem(
-          icon = { Icon(Icons.Outlined.Language, contentDescription = null, modifier = Modifier.size(36.dp)) },
+          icon = { Icon(Icons.Outlined.Language, contentDescription = null, modifier = Modifier.size(32.dp)) },
           text = "Website",
           modifier = itemModifier { uriHandler.openUri(AppConstants.APP_HOMEPAGE) },
         )
         ActionItem(
-          icon = { Icon(Icons.Outlined.Code, contentDescription = null, modifier = Modifier.size(36.dp)) },
+          icon = { Icon(Icons.Outlined.Code, contentDescription = null, modifier = Modifier.size(32.dp)) },
           text = "Source Code",
           modifier = itemModifier { uriHandler.openUri(AppConstants.APP_SOURCE_PAGE) },
         )
         ActionItem(
-          icon = { Icon(Icons.Outlined.BugReport, contentDescription = null, modifier = Modifier.size(36.dp)) },
+          icon = { Icon(Icons.Outlined.BugReport, contentDescription = null, modifier = Modifier.size(32.dp)) },
           text = "Report Issue",
           modifier = itemModifier { uriHandler.openUri(AppConstants.APP_ISSUES_PAGE) },
         )
         ActionItem(
-          icon = { Icon(Icons.Outlined.Favorite, contentDescription = null, modifier = Modifier.size(36.dp)) },
+          icon = { Icon(Icons.Outlined.Favorite, contentDescription = null, modifier = Modifier.size(32.dp)) },
           text = "Donate",
           modifier = itemModifier { uriHandler.openUri(AppConstants.APP_DONATE_PAGE) },
         )

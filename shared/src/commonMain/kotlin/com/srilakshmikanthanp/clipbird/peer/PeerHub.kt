@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
 open class PeerHub<P: PairedDevice>(
@@ -52,6 +53,8 @@ open class PeerHub<P: PairedDevice>(
       throw e
     } catch (e: PeerException) {
       peerConnection.channel.trySendPacket(e.toErrorPacket())
+    } catch (e: IOException) {
+      Logger.i("Connection to ${peerConnection.device.name} closed: ${e.message}", null, TAG)
     } catch (e: Exception) {
       Logger.e("Error while reading packets from ${peerConnection.device.name}: ${e.message}", e, TAG)
     } finally {

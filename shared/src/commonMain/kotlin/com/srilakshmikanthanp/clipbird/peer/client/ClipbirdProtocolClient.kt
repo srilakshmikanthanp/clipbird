@@ -21,10 +21,10 @@ import kotlin.time.Duration.Companion.seconds
 
 open class ClipbirdProtocolClient<P : PairedDevice>(
   private val activeDeviceProvider: ActivePairedDeviceProvider<P>,
-  private val connector: ClientServerConnector<P>,
-  private val decider: ClientServerConnectionInitiationDecider,
+  private val connector: ClipbirdClientConnector<P>,
+  private val decider: ConnectionInitiationDecider,
   private val connectionChecker: ChannelConnectionChecker,
-  private val handshakeProtocol: ClientServerHandshakeProtocol
+  private val handshakeProtocol: ClipbirdClientHandshakeProtocol
 ) {
   private val _devices = MutableSharedFlow<PeerConnection>(extraBufferCapacity = 64)
   val devices: SharedFlow<PeerConnection> = _devices.asSharedFlow()

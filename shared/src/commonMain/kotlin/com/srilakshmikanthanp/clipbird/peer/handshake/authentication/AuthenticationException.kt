@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.peer.authentication
+package com.srilakshmikanthanp.clipbird.peer.handshake.authentication
 
 import com.srilakshmikanthanp.clipbird.packet.ErrorPacket.ErrorCode
 import com.srilakshmikanthanp.clipbird.peer.PeerException

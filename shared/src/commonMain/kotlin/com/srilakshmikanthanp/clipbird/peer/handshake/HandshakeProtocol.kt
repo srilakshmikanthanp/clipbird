@@ -1,11 +1,11 @@
-package com.srilakshmikanthanp.clipbird.peer
+package com.srilakshmikanthanp.clipbird.peer.handshake
 
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.packet.EphemeralKeyPacket
 import com.srilakshmikanthanp.clipbird.packet.asPacket
 import com.srilakshmikanthanp.clipbird.packet.nextPacket
 import com.srilakshmikanthanp.clipbird.packet.sendPacket
-import com.srilakshmikanthanp.clipbird.peer.authentication.ExchangedNonce
+import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.ExchangedNonce
 import com.srilakshmikanthanp.clipbird.utility.ByteArrayComparator
 import java.security.KeyFactory
 import java.security.KeyPairGenerator

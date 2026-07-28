@@ -1,4 +1,4 @@
-package com.srilakshmikanthanp.clipbird.peer.authentication
+package com.srilakshmikanthanp.clipbird.peer.handshake.authentication
 
 import com.srilakshmikanthanp.clipbird.common.Device
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider

@@ -1,18 +1,16 @@
 package com.srilakshmikanthanp.clipbird.peer.client
 
-import com.srilakshmikanthanp.clipbird.peer.authentication.AuthenticationException
-import com.srilakshmikanthanp.clipbird.peer.authentication.Authenticator
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.io.EncryptedChannel
-import com.srilakshmikanthanp.clipbird.packet.ErrorPacket
 import com.srilakshmikanthanp.clipbird.packet.IdentityPacket
 import com.srilakshmikanthanp.clipbird.packet.sendPacket
 import com.srilakshmikanthanp.clipbird.paring.PairedDevice
-import com.srilakshmikanthanp.clipbird.peer.HandshakeProtocol
 import com.srilakshmikanthanp.clipbird.peer.PeerException
+import com.srilakshmikanthanp.clipbird.peer.handshake.HandshakeProtocol
+import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator
 
-class ClientServerHandshakeProtocol(
+class ClipbirdClientHandshakeProtocol(
   private val authenticator: Authenticator,
   private val hostDeviceProvider: HostDeviceProvider
 ) : HandshakeProtocol() {

@@ -1,6 +1,6 @@
 package com.srilakshmikanthanp.clipbird.common
 
-import com.srilakshmikanthanp.clipbird.peer.authentication.Authenticator
+import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -17,6 +17,7 @@ import dev.nucleusframework.application.DecoratedWindow
 import dev.nucleusframework.application.NucleusBackend
 import dev.nucleusframework.application.nucleusApplication
 import dev.nucleusframework.composenativetray.tray.api.Tray
+import dev.nucleusframework.core.runtime.SingleInstanceManager
 import dev.nucleusframework.darkmodedetector.isSystemInDarkMode
 import dev.nucleusframework.window.NucleusDecoratedWindowTheme
 import dev.nucleusframework.window.TitleBar
@@ -30,8 +31,19 @@ fun main() {
 
   nucleusApplication(backend = NucleusBackend.Tao) {
     val clipbirdApplication = remember { ClipbirdApplication(::exitApplication) }
-    var isVisible by remember { mutableStateOf(true) }
+    var isWindowVisible by remember { mutableStateOf(true) }
     val isDark = isSystemInDarkMode()
+
+    val isSingleInstance = SingleInstanceManager.isSingleInstance(
+      onRestoreRequest = {
+        isWindowVisible = true
+      }
+    )
+
+    if (!isSingleInstance) {
+      exitApplication()
+      return@nucleusApplication
+    }
 
     val appLogo = remember {
       BitmapPainter(ImageIO.read(Thread.currentThread().contextClassLoader.getResource("logo.png")).toComposeImageBitmap())
@@ -50,19 +62,22 @@ fun main() {
     Tray(
       icon = appLogo,
       tooltip = "Clipbird",
-      primaryAction = { isVisible = true },
+      primaryAction = { isWindowVisible = true },
       menuContent = {
-        Item(label = "Show Window") { isVisible = true }
+        Item(label = "Show Window") { isWindowVisible = true }
         Divider()
         Item(label = "Exit") { clipbirdApplication.exit() }
       },
     )
 
-    NucleusDecoratedWindowTheme(isDark = isDark, titleBarStyle = titleBarStyle) {
+    NucleusDecoratedWindowTheme(
+      isDark = isDark,
+      titleBarStyle = titleBarStyle
+    ) {
       DecoratedWindow(
-        onCloseRequest = { isVisible = false },
-        visible = isVisible,
+        onCloseRequest = { isWindowVisible = false },
         title = "Clipbird",
+        visible = isWindowVisible,
         icon = appLogo,
       ) {
         TitleBar {

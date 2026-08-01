@@ -72,6 +72,8 @@ kotlin {
       implementation(libs.koin.compose.viewmodel)
       api(libs.koin.annotations)
       implementation(libs.kermit)
+      implementation(libs.aboutlibraries.core)
+      implementation(libs.aboutlibraries.compose.m3)
     }
 
     jvmMain.dependencies {

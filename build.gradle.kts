@@ -9,4 +9,5 @@ plugins {
   alias(libs.plugins.kotlinMultiplatform) apply false
   alias(libs.plugins.ksp)
   alias(libs.plugins.androidx.room)
+  alias(libs.plugins.aboutlibraries) apply false
 }

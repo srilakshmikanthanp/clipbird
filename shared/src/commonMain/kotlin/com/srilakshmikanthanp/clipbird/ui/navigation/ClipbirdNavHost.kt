@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.srilakshmikanthanp.clipbird.ui.about.AboutScreen
+import com.srilakshmikanthanp.clipbird.ui.license.LicensesScreen
 import com.srilakshmikanthanp.clipbird.ui.device.DevicesScreen
 import com.srilakshmikanthanp.clipbird.ui.history.HistoryScreen
 import com.srilakshmikanthanp.clipbird.ui.trust.TrustedScreen
@@ -25,6 +26,7 @@ fun ClipbirdNavHost(
     composable<DevicesRoute> { DevicesScreen(snackbarHostState) }
     composable<HistoryRoute> { HistoryScreen() }
     composable<TrustedRoute> { TrustedScreen() }
-    composable<AboutRoute> { AboutScreen() }
+    composable<AboutRoute> { AboutScreen(onNavigateToLicenses = { navController.navigate(LicensesRoute) }) }
+    composable<LicensesRoute> { LicensesScreen() }
   }
 }

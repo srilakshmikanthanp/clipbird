@@ -27,6 +27,7 @@ navigationCompose = "2.9.2"
 composeIcons = "1.7.3"
 koinAnnotations = "2.3.1"
 buildkonfig = "0.15.2"
+aboutlibraries = "15.0.4"
 
 [libraries]
 composenativetray = { module = "dev.nucleusframework:composenativetray", version.ref = "nucleus" }
@@ -62,6 +63,8 @@ compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMul
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
+aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 kable-core = { module = "com.juul.kable:kable-core", version = "0.43.0" }
 kable-default-permissions = { module = "com.juul.kable:kable-default-permissions", version = "0.43.0" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
@@ -83,3 +86,4 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -72,7 +73,10 @@ private fun ActionItem(
 }
 
 @Composable
-fun AboutScreen(viewModel: AboutViewModel = koinViewModel()) {
+fun AboutScreen(
+  onNavigateToLicenses: () -> Unit,
+  viewModel: AboutViewModel = koinViewModel(),
+) {
   val fingerprint by viewModel.fingerprint.collectAsStateWithLifecycle()
   var showFingerprintDialog by remember { mutableStateOf(false) }
   val uriHandler = LocalUriHandler.current
@@ -95,12 +99,13 @@ fun AboutScreen(viewModel: AboutViewModel = koinViewModel()) {
     )
   }
 
-  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+  Box(modifier = Modifier.fillMaxSize()) {
     Column(
       modifier = Modifier
         .widthIn(max = 600.dp)
         .fillMaxWidth()
-        .verticalScroll(rememberScrollState()),
+        .verticalScroll(rememberScrollState())
+        .align(Alignment.TopCenter),
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       Card(
@@ -172,6 +177,11 @@ fun AboutScreen(viewModel: AboutViewModel = koinViewModel()) {
           icon = { Icon(Icons.Outlined.Favorite, contentDescription = null, modifier = Modifier.size(32.dp)) },
           text = "Donate",
           modifier = itemModifier { uriHandler.openUri(AppConstants.APP_DONATE_PAGE) },
+        )
+        ActionItem(
+          icon = { Icon(Icons.AutoMirrored.Outlined.LibraryBooks, contentDescription = null, modifier = Modifier.size(32.dp)) },
+          text = "Licenses",
+          modifier = itemModifier { onNavigateToLicenses() },
         )
       }
     }

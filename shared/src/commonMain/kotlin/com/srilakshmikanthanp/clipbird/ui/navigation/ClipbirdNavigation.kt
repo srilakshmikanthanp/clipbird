@@ -8,12 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
-import clipbird.shared.generated.resources.Res
-import clipbird.shared.generated.resources.logo
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,14 +37,10 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import clipbird.shared.generated.resources.Res
+import clipbird.shared.generated.resources.logo
 import kotlinx.coroutines.launch
-
-enum class NavigationDrawerDestination(val label: String, val route: Any) {
-  DEVICES("Devices", DevicesRoute),
-  HISTORY("History", HistoryRoute),
-  TRUST("Trust", TrustedRoute),
-  ABOUT("About", AboutRoute),
-}
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 private fun NavigationDrawerHeader() {
@@ -60,9 +53,7 @@ private fun NavigationDrawerHeader() {
       contentDescription = "Clipbird logo",
       modifier = Modifier.size(72.dp),
     )
-
     Spacer(Modifier.height(12.dp))
-
     Text(
       text = "Clipbird",
       style = MaterialTheme.typography.headlineSmall
@@ -72,14 +63,14 @@ private fun NavigationDrawerHeader() {
 
 @Composable
 private fun NavigationDrawerElements(
-  selected: NavigationDrawerDestination,
-  onDestinationClick: (NavigationDrawerDestination) -> Unit,
+  currentRoute: ClipbirdRoute,
+  onRouteClick: (ClipbirdRoute) -> Unit,
 ) {
-  NavigationDrawerDestination.entries.forEach { destination ->
+  routes.filterIsInstance<DrawerRoute>().forEach { route ->
     NavigationDrawerItem(
-      label = { Text(destination.label) },
-      selected = destination == selected,
-      onClick = { onDestinationClick(destination) },
+      label = { Text(route.label) },
+      selected = route == currentRoute,
+      onClick = { onRouteClick(route) },
       modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
     )
   }
@@ -87,24 +78,29 @@ private fun NavigationDrawerElements(
 
 @Composable
 private fun NavigationDrawerContent(
-  selected: NavigationDrawerDestination,
-  onDestinationClick: (NavigationDrawerDestination) -> Unit,
+  currentRoute: ClipbirdRoute,
+  onRouteClick: (ClipbirdRoute) -> Unit,
 ) {
   ModalDrawerSheet {
     NavigationDrawerHeader()
-
-    HorizontalDivider(
-      modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
-
-    NavigationDrawerElements(
-      selected = selected,
-      onDestinationClick = onDestinationClick,
-    )
+    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+    NavigationDrawerElements(currentRoute = currentRoute, onRouteClick = onRouteClick)
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NavigationButton(
+  route: ClipbirdRoute,
+  onClick: () -> Unit
+) {
+  IconButton(onClick = onClick) {
+    when (route) {
+      is BackRoute -> Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+      is DrawerRoute -> Icon(Icons.Default.Menu, contentDescription = "Open navigation menu")
+    }
+  }
+}
+
 @Composable
 fun ClipbirdNavigation() {
   val snackBarHostState = remember { SnackbarHostState() }
@@ -113,12 +109,12 @@ fun ClipbirdNavigation() {
   val navController = rememberNavController()
   val currentBackStack by navController.currentBackStackEntryAsState()
 
-  val selected = NavigationDrawerDestination.entries.firstOrNull { item ->
-    currentBackStack?.destination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
-  } ?: NavigationDrawerDestination.DEVICES
+  val currentRoute: ClipbirdRoute = routes.firstOrNull { route ->
+    currentBackStack?.destination?.hierarchy?.any { it.hasRoute(route::class) } == true
+  } ?: DevicesRoute
 
-  fun navigateTo(destination: NavigationDrawerDestination) {
-    navController.navigate(destination.route) {
+  fun navigateTo(route: ClipbirdRoute) {
+    navController.navigate(route as Any) {
       popUpTo(navController.graph.findStartDestination().id) { saveState = true }
       restoreState = true
       launchSingleTop = true
@@ -129,25 +125,32 @@ fun ClipbirdNavigation() {
   }
 
   ModalNavigationDrawer(
+    gesturesEnabled = currentRoute is DrawerRoute,
     drawerState = drawerState,
     drawerContent = {
       NavigationDrawerContent(
-        selected = selected,
-        onDestinationClick = { navigateTo(it) },
+        currentRoute = currentRoute,
+        onRouteClick = { navigateTo(it) },
       )
     },
   ) {
     Scaffold(
-      snackbarHost = {
-        SnackbarHost(snackBarHostState)
-      },
+      snackbarHost = { SnackbarHost(snackBarHostState) },
       topBar = {
         TopAppBar(
-          title = { Text(selected.label) },
           navigationIcon = {
-            IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
-              Icon(Icons.Default.Menu, contentDescription = "Open navigation menu")
-            }
+            NavigationButton(
+              route = currentRoute,
+              onClick = {
+                when (currentRoute) {
+                  is BackRoute -> navController.popBackStack()
+                  is DrawerRoute -> coroutineScope.launch { drawerState.open() }
+                }
+              },
+            )
+          },
+          title = {
+            Text(currentRoute.label)
           },
         )
       },

@@ -16,14 +16,11 @@ Download the latest version from the [Releases](https://github.com/srilakshmikan
 1. Install Clipbird on each device you want to sync.
 2. Pair your devices using your operating system's Bluetooth settings.
 3. Open Clipbird and pair the devices within the app.
-4. Copy text on one device and send it:
-   - **Android**
-      - Tap **Send** from the History screen.
-      - Or use the **Send** action from the notification.
-   - **Linux**
-      - Click **Send** from the History screen.
-      - Or double-click the tray icon to open the quick window and click **Send**.
-5. The selected clipboard item is sent to all connected devices.
+4. Copy text on one device.
+5. Send it:
+   - **Android:** Tap **Send** from the History screen or use the **Send** action from the notification.
+   - **Linux:** Click **Send** from the History screen, or double-click the tray icon to open the quick window and click **Send**.
+6. The selected clipboard item is sent to all connected devices.
 
 ## Contributing
 

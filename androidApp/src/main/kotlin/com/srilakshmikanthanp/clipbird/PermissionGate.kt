@@ -1,8 +1,13 @@
 package com.srilakshmikanthanp.clipbird
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -24,58 +29,111 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import com.srilakshmikanthanp.clipbird.extension.startClipbirdService
+
+private fun Context.hasRequiredPermissions(permissions: Array<String>) = permissions.all {
+  checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+}
+
+private fun PowerManager.isIgnoringBatteryOptimizations(context: Context): Boolean {
+  return isIgnoringBatteryOptimizations(context.packageName)
+}
+
+private val RequiredPermissions: Array<String> get() = buildList {
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    add(Manifest.permission.POST_NOTIFICATIONS)
+  }
+
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    add(Manifest.permission.BLUETOOTH_CONNECT)
+    add(Manifest.permission.BLUETOOTH_SCAN)
+    add(Manifest.permission.BLUETOOTH_ADVERTISE)
+  }
+}.toTypedArray()
 
 @Composable
-private fun PermissionRequired(onGrant: () -> Unit) {
+private fun ActionRequired(message: String, action: String, onClick: () -> Unit) {
   Column(
     modifier = Modifier.fillMaxSize().padding(24.dp),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    Text(text = "Permission required to use this app", textAlign = TextAlign.Center)
+    Text(
+      text = message,
+      textAlign = TextAlign.Center,
+    )
+
     Spacer(Modifier.height(16.dp))
-    Button(onClick = onGrant) { Text("Grant permission") }
+
+    Button(onClick = onClick) {
+      Text(action)
+    }
   }
 }
 
+@SuppressLint("BatteryLife")
 @Composable
-fun PermissionGate(onGranted: () -> Unit, content: @Composable () -> Unit) {
-  val required = remember {
-    buildList {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        add(Manifest.permission.BLUETOOTH_CONNECT)
-        add(Manifest.permission.BLUETOOTH_SCAN)
-        add(Manifest.permission.BLUETOOTH_ADVERTISE)
-      }
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        add(Manifest.permission.POST_NOTIFICATIONS)
-      }
-    }.toTypedArray()
-  }
-
+fun PermissionGate(content: @Composable () -> Unit) {
   val context = LocalContext.current
 
-  fun isAllGranted() = required.all {
-    context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+  val powerManager = remember {
+    context.getSystemService(Context.POWER_SERVICE) as PowerManager
   }
 
-  var granted by remember { mutableStateOf(isAllGranted()) }
+  val permissions = remember {
+    RequiredPermissions
+  }
 
-  val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-    granted = isAllGranted()
+  var batteryOptimizationDisabled by remember {
+    mutableStateOf(powerManager.isIgnoringBatteryOptimizations(context))
+  }
+
+  var permissionsGranted by remember {
+    mutableStateOf(context.hasRequiredPermissions(permissions))
+  }
+
+  val batteryOptimizationDisableLauncher = rememberLauncherForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+  ) {
+    batteryOptimizationDisabled = powerManager.isIgnoringBatteryOptimizations(context)
+  }
+
+  val permissionGrantLauncher = rememberLauncherForActivityResult(
+    ActivityResultContracts.RequestMultiplePermissions()
+  ) {
+    permissionsGranted = context.hasRequiredPermissions(permissions)
+  }
+
+  LaunchedEffect(permissionsGranted, batteryOptimizationDisabled) {
+    if (permissionsGranted && batteryOptimizationDisabled) {
+      context.startClipbirdService()
+    }
   }
 
   LaunchedEffect(Unit) {
-    if (!granted) launcher.launch(required)
+    if (!permissionsGranted) {
+      permissionGrantLauncher.launch(permissions)
+    }
   }
 
-  LaunchedEffect(granted) {
-    if (granted) onGranted()
-  }
+  when {
+    !permissionsGranted -> ActionRequired(
+      message = "Clipbird requires Bluetooth and notification permissions.",
+      action = "Grant permissions",
+    ) {
+      permissionGrantLauncher.launch(permissions)
+    }
 
-  if (granted) {
-    content()
-  } else {
-    PermissionRequired { launcher.launch(required) }
+    !batteryOptimizationDisabled -> ActionRequired(
+      message = "Disable battery optimization so Clipbird can sync your clipboard while running in the background.",
+      action = "Open settings",
+    ) {
+      batteryOptimizationDisableLauncher.launch(
+        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply { data = "package:${context.packageName}".toUri() }
+      )
+    }
+
+    else -> content()
   }
 }

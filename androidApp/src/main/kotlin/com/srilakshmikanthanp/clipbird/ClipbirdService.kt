@@ -35,9 +35,9 @@ class ClipbirdService : Service(), KoinComponent {
       .setSmallIcon(R.drawable.ic_launcher_foreground)
       .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
       .setContentTitle(getString(R.string.app_name))
-      .setContentText("Running in background")
+      .setContentText("Tap to send clipboard to your devices")
       .setPriority(NotificationCompat.PRIORITY_LOW)
-      .addAction(R.drawable.ic_launcher_foreground, "Send", sendPendingIntent)
+      .setContentIntent(sendPendingIntent)
       .build().also { startForeground(NOTIFICATION_ID, it) }
   }
 

@@ -1,15 +1,17 @@
-package com.srilakshmikanthanp.clipbird
+package com.srilakshmikanthanp.clipbird.permission
 
-import android.Manifest
+import android.Manifest.permission
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.srilakshmikanthanp.clipbird.extension.startClipbirdService
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 private fun Context.hasRequiredPermissions(permissions: Array<String>) = permissions.all {
   checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
@@ -41,14 +43,14 @@ private fun PowerManager.isIgnoringBatteryOptimizations(context: Context): Boole
 }
 
 private val RequiredPermissions: Array<String> get() = buildList {
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    add(Manifest.permission.POST_NOTIFICATIONS)
+  if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+    add(permission.POST_NOTIFICATIONS)
   }
 
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-    add(Manifest.permission.BLUETOOTH_CONNECT)
-    add(Manifest.permission.BLUETOOTH_SCAN)
-    add(Manifest.permission.BLUETOOTH_ADVERTISE)
+  if (VERSION.SDK_INT >= VERSION_CODES.S) {
+    add(permission.BLUETOOTH_CONNECT)
+    add(permission.BLUETOOTH_SCAN)
+    add(permission.BLUETOOTH_ADVERTISE)
   }
 }.toTypedArray()
 
@@ -75,6 +77,7 @@ private fun ActionRequired(message: String, action: String, onClick: () -> Unit)
 @SuppressLint("BatteryLife")
 @Composable
 fun PermissionGate(content: @Composable () -> Unit) {
+  val permissionViewModel: PermissionViewModel = viewModel()
   val context = LocalContext.current
 
   val powerManager = remember {
@@ -94,21 +97,19 @@ fun PermissionGate(content: @Composable () -> Unit) {
   }
 
   val batteryOptimizationDisableLauncher = rememberLauncherForActivityResult(
-    ActivityResultContracts.StartActivityForResult()
+    StartActivityForResult()
   ) {
     batteryOptimizationDisabled = powerManager.isIgnoringBatteryOptimizations(context)
   }
 
   val permissionGrantLauncher = rememberLauncherForActivityResult(
-    ActivityResultContracts.RequestMultiplePermissions()
+    RequestMultiplePermissions()
   ) {
     permissionsGranted = context.hasRequiredPermissions(permissions)
   }
 
   LaunchedEffect(permissionsGranted, batteryOptimizationDisabled) {
-    if (permissionsGranted && batteryOptimizationDisabled) {
-      context.startClipbirdService()
-    }
+    permissionViewModel.setReady(permissionsGranted && batteryOptimizationDisabled)
   }
 
   LaunchedEffect(Unit) {

@@ -14,7 +14,7 @@ Get the latest release from the [releases page](https://github.com/srilakshmikan
 ## How It Works
 
 1. Install Clipbird on each device you want to sync.
-2. Open the app and pair your devices over Bluetooth.
+2. Pair your devices in your system Bluetooth settings, then pair them inside the Clipbird app.
 3. Copy something, then send it:
    - **Android** — tap the send button in the History screen or from the notification.
    - **Linux** — open the app and use the send button in the History screen, or double-tap the tray icon to open a quick window and click send.

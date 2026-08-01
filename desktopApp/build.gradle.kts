@@ -49,7 +49,8 @@ nucleus.application {
       debMaintainer = providers.gradleProperty("app.maintainerEmail").get()
       appCategory = "Utility"
       menuGroup = "Utility"
-      packageName = "clipbird"
+      appName = providers.gradleProperty("app.name").get()
+      packageName = providers.gradleProperty("app.packageName").get()
     }
   }
 }

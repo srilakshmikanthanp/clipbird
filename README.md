@@ -9,23 +9,28 @@ Share your clipboard between devices over Bluetooth — no internet, no account,
 
 ## Download
 
-Get the latest release from the [releases page](https://github.com/srilakshmikanthanp/clipbird/releases).
+Download the latest version from the [Releases](https://github.com/srilakshmikanthanp/clipbird/releases) page.
 
-## How It Works
+## Getting Started
 
 1. Install Clipbird on each device you want to sync.
-2. Pair your devices in your system Bluetooth settings, then pair them inside the Clipbird app.
-3. Copy something, then send it:
-   - **Android** — tap the send button in the History screen or from the notification.
-   - **Linux** — open the app and use the send button in the History screen, or double-tap the tray icon to open a quick window and click send.
-4. The clipboard content is pushed to all active devices.
+2. Pair your devices using your operating system's Bluetooth settings.
+3. Open Clipbird and pair the devices within the app.
+4. Copy text on one device and send it:
+   - **Android**
+      - Tap **Send** from the History screen.
+      - Or use the **Send** action from the notification.
+   - **Linux**
+      - Click **Send** from the History screen.
+      - Or double-click the tray icon to open the quick window and click **Send**.
+5. The selected clipboard item is sent to all connected devices.
 
 ## Contributing
 
-Found a bug or have a feature request? [Open an issue](https://github.com/srilakshmikanthanp/clipbird/issues).
+Found a bug or have an idea for a new feature? Please [open an issue](https://github.com/srilakshmikanthanp/clipbird/issues).
 
-Pull requests are welcome.
+Pull requests are always welcome.
 
 ## License
 
-[MIT](LICENSE)
+Licensed under the [MIT License](LICENSE).

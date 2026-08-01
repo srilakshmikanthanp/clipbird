@@ -46,7 +46,7 @@ fun NucleusApplicationScope.ClipbirdApplication() {
   val clipbirdApplication = remember { ClipbirdApplication(::exitApplication) }
   val autoLaunch = remember { AutoLaunch(appPackageName = AppConstants.APP_PACKAGE_NAME) }
   val coroutineScope = rememberCoroutineScope()
-  var isWindowVisible by remember { mutableStateOf(true) }
+  var isWindowVisible by remember { mutableStateOf(false) }
   var launchAtLogin by remember { mutableStateOf(false) }
   val isDark = isSystemInDarkMode()
   val trayAppState = rememberTrayAppState(initialWindowSize = DpSize(430.dp, 540.dp))

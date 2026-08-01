@@ -28,6 +28,7 @@ composeIcons = "1.7.3"
 koinAnnotations = "2.3.1"
 buildkonfig = "0.15.2"
 aboutlibraries = "15.0.4"
+autolaunch = "0.8.0"
 
 [libraries]
 composenativetray = { module = "dev.nucleusframework:composenativetray", version.ref = "nucleus" }
@@ -65,6 +66,7 @@ compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-previ
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
+autolaunch = { module = "io.github.vinceglb:auto-launch", version.ref = "autolaunch" }
 kable-core = { module = "com.juul.kable:kable-core", version = "0.43.0" }
 kable-default-permissions = { module = "com.juul.kable:kable-default-permissions", version = "0.43.0" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }

@@ -131,7 +131,7 @@ fun AboutScreen(
           )
           Spacer(modifier = Modifier.height(8.dp))
           Text(
-            text = "A cross-platform clipboard sharing application that syncs your clipboard seamlessly across devices.",
+            text = AppConstants.APP_DESCRIPTION,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),

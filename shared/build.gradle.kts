@@ -101,6 +101,9 @@ ksp {
 buildkonfig {
   packageName = "com.srilakshmikanthanp.clipbird"
   defaultConfigs {
+    buildConfigField(STRING, "APP_NAME", providers.gradleProperty("app.name").get())
+    buildConfigField(STRING, "APP_PACKAGE_NAME", providers.gradleProperty("app.packageName").get())
+    buildConfigField(STRING, "APP_DESCRIPTION", providers.gradleProperty("app.description").get())
     buildConfigField(STRING, "APP_VERSION", providers.gradleProperty("app.version").get())
     buildConfigField(STRING, "APP_HOMEPAGE", providers.gradleProperty("app.homepage").get())
     buildConfigField(STRING, "APP_SOURCE_PAGE", providers.gradleProperty("app.sourcePage").get())

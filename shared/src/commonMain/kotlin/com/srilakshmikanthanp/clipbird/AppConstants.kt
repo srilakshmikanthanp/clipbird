@@ -1,6 +1,9 @@
 package com.srilakshmikanthanp.clipbird
 
 object AppConstants {
+  val APP_NAME: String get() = BuildKonfig.APP_NAME
+  val APP_PACKAGE_NAME: String get() = BuildKonfig.APP_PACKAGE_NAME
+  val APP_DESCRIPTION: String get() = BuildKonfig.APP_DESCRIPTION
   val APP_VERSION: String get() = BuildKonfig.APP_VERSION
   val APP_HOMEPAGE: String get() = BuildKonfig.APP_HOMEPAGE
   val APP_SOURCE_PAGE: String get() = BuildKonfig.APP_SOURCE_PAGE

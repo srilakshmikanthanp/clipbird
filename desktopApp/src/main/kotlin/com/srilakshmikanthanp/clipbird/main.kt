@@ -36,8 +36,6 @@ import dev.nucleusframework.window.TitleBar
 import dev.nucleusframework.window.styling.TitleBarColors
 import dev.nucleusframework.window.styling.TitleBarMetrics
 import dev.nucleusframework.window.styling.TitleBarStyle
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PowerSettingsNew
 import dev.nucleusframework.composenativetray.menu.api.TrayMenuBuilder
 import io.github.vinceglb.autolaunch.AutoLaunch
 import kotlinx.coroutines.launch
@@ -90,7 +88,6 @@ fun NucleusApplicationScope.ClipbirdApplication() {
     CheckableItem(
       isEnabled = AutoLaunch.isRunningFromDistributable,
       label = "Launch at Login",
-      icon = Icons.Default.PowerSettingsNew,
       checked = launchAtLogin,
       onCheckedChange = { onAutoLaunchChange(it) }
     )

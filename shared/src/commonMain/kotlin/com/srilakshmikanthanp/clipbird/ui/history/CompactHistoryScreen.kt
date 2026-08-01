@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,19 +49,11 @@ import com.srilakshmikanthanp.clipbird.clipboard.ClipboardMimeType
 import com.srilakshmikanthanp.clipbird.peer.TransferState
 import org.koin.compose.viewmodel.koinViewModel
 
-internal expect fun decodeImageBitmap(data: ByteArray): ImageBitmap
-
 @Composable
-private fun HistoryItemContent(items: List<ClipboardItem>) {
-  val image = items.firstOrNull {
-    it.mimeType.startsWith("image/")
-  }
-
-  val text = items.firstOrNull {
-    it.mimeType == ClipboardMimeType.MIME_TEXT
-  } ?: items.firstOrNull {
-    it.mimeType == ClipboardMimeType.MIME_HTML
-  }
+private fun CompactItemContent(items: List<ClipboardItem>) {
+  val image = items.firstOrNull { it.mimeType.startsWith("image/") }
+  val text = items.firstOrNull { it.mimeType == ClipboardMimeType.MIME_TEXT }
+    ?: items.firstOrNull { it.mimeType == ClipboardMimeType.MIME_HTML }
 
   when {
     image != null -> {
@@ -72,14 +62,14 @@ private fun HistoryItemContent(items: List<ClipboardItem>) {
         bitmap = bitmap,
         contentDescription = "Image",
         contentScale = ContentScale.Fit,
-        modifier = Modifier.height(60.dp),
+        modifier = Modifier.height(40.dp),
       )
     }
     text != null -> {
       Text(
         text = text.data.decodeToString(),
-        style = MaterialTheme.typography.bodyMedium,
-        maxLines = 5,
+        style = MaterialTheme.typography.bodySmall,
+        maxLines = 2,
         overflow = TextOverflow.Ellipsis,
         modifier = Modifier.fillMaxWidth(),
       )
@@ -87,7 +77,7 @@ private fun HistoryItemContent(items: List<ClipboardItem>) {
     else -> {
       Text(
         text = "[Unknown]",
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
       )
     }
@@ -95,26 +85,25 @@ private fun HistoryItemContent(items: List<ClipboardItem>) {
 }
 
 @Composable
-private fun SendCard(state: TransferState, onSend: () -> Unit) {
+private fun CompactSendCard(state: TransferState, onSend: () -> Unit) {
   val isSending = state is TransferState.Progress
 
   Card(modifier = Modifier.fillMaxWidth()) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
           text = "Send clipboard to your devices",
-          style = MaterialTheme.typography.bodyMedium,
+          style = MaterialTheme.typography.bodySmall,
           modifier = Modifier.weight(1f),
         )
-        Spacer(
-          Modifier.width(12.dp)
-        )
+
+        Spacer(Modifier.width(8.dp))
 
         when (state) {
           is TransferState.Progress -> {
             Text(
               text = if (state.total > 0) "${(state.current.toFloat() / state.total * 100).toInt()}%" else "Sending…",
-              style = MaterialTheme.typography.labelMedium,
+              style = MaterialTheme.typography.labelSmall,
               color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
           }
@@ -127,21 +116,16 @@ private fun SendCard(state: TransferState, onSend: () -> Unit) {
                 Icons.Outlined.CheckCircle,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(14.dp),
               )
               Text(
                 text = "Sent",
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary,
               )
-              Spacer(
-                Modifier.width(4.dp)
-              )
-              Button(
-                onClick = onSend,
-                shape = CircleShape
-              ) {
-                Text("Send")
+              Spacer(Modifier.width(4.dp))
+              Button(onClick = onSend, shape = CircleShape) {
+                Text("Send", style = MaterialTheme.typography.labelSmall)
               }
             }
           }
@@ -154,21 +138,16 @@ private fun SendCard(state: TransferState, onSend: () -> Unit) {
                 Icons.Outlined.Error,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(14.dp),
               )
               Text(
                 text = "Failed",
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.error,
               )
-              Spacer(
-                Modifier.width(4.dp)
-              )
-              Button(
-                onClick = onSend,
-                shape = CircleShape
-              ) {
-                Text("Retry")
+              Spacer(Modifier.width(4.dp))
+              Button(onClick = onSend, shape = CircleShape) {
+                Text("Retry", style = MaterialTheme.typography.labelSmall)
               }
             }
           }
@@ -179,21 +158,14 @@ private fun SendCard(state: TransferState, onSend: () -> Unit) {
         visible = isSending,
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically(),
-        modifier = Modifier.padding(top = 16.dp)
+        modifier = Modifier.padding(top = 8.dp),
       ) {
         when (state) {
-          is TransferState.Progress -> {
-            LinearProgressIndicator(
-              progress = { state.current.toFloat() / state.total },
-              modifier = Modifier.fillMaxWidth()
-            )
-          }
-
-          else -> {
-            LinearProgressIndicator(
-              modifier = Modifier.fillMaxWidth()
-            )
-          }
+          is TransferState.Progress -> LinearProgressIndicator(
+            progress = { state.current.toFloat() / state.total },
+            modifier = Modifier.fillMaxWidth(),
+          )
+          else -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
       }
     }
@@ -201,14 +173,14 @@ private fun SendCard(state: TransferState, onSend: () -> Unit) {
 }
 
 @Composable
-private fun EmptyHistory() {
+private fun CompactEmptyHistory() {
   Box(
-    modifier = Modifier.fillMaxWidth().padding(vertical = 64.dp),
+    modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
     contentAlignment = Alignment.Center,
   ) {
     Text(
       text = "No clipboard history yet",
-      style = MaterialTheme.typography.bodyLarge,
+      style = MaterialTheme.typography.bodySmall,
       color = MaterialTheme.colorScheme.onSurfaceVariant,
       textAlign = TextAlign.Center,
     )
@@ -216,7 +188,7 @@ private fun EmptyHistory() {
 }
 
 @Composable
-private fun HistoryItem(
+private fun CompactHistoryItem(
   content: ClipboardContent,
   onCopy: () -> Unit,
   onDelete: () -> Unit,
@@ -225,45 +197,44 @@ private fun HistoryItem(
 
   Card(modifier = Modifier.fillMaxWidth()) {
     Column(
-      modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 4.dp),
+      modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 8.dp, bottom = 2.dp),
     ) {
-      HistoryItemContent(content.items)
+      CompactItemContent(content.items)
       Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
       ) {
-        IconButton(onClick = onCopy) {
-          Icon(Icons.Outlined.ContentCopy, contentDescription = "Copy")
+        IconButton(onClick = onCopy, modifier = Modifier.size(36.dp)) {
+          Icon(Icons.Outlined.ContentCopy, contentDescription = "Copy", modifier = Modifier.size(16.dp))
         }
-        IconButton(onClick = onDelete) {
-          Icon(Icons.Outlined.Delete, contentDescription = "Delete")
+        IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
+          Icon(Icons.Outlined.Delete, contentDescription = "Delete", modifier = Modifier.size(16.dp))
         }
       }
     }
   }
 }
 
-
 @Composable
-fun HistoryScreen(viewModel: HistoryViewModel = koinViewModel()) {
+fun CompactHistoryScreen(viewModel: HistoryViewModel = koinViewModel()) {
   val transferState by viewModel.transferState.collectAsStateWithLifecycle()
   val history by viewModel.history.collectAsStateWithLifecycle()
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     LazyColumn(
-      modifier = Modifier.widthIn(max = 600.dp).fillMaxWidth(),
-      contentPadding = PaddingValues(16.dp),
-      verticalArrangement = Arrangement.spacedBy(12.dp),
+      modifier = Modifier.fillMaxWidth(),
+      contentPadding = PaddingValues(8.dp),
+      verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
       item {
-        SendCard(state = transferState, onSend = viewModel::sendClipboard)
+        CompactSendCard(state = transferState, onSend = viewModel::sendClipboard)
       }
 
       if (history.isEmpty()) {
-        item { EmptyHistory() }
+        item { CompactEmptyHistory() }
       } else {
         itemsIndexed(history) { index, content ->
-          HistoryItem(
+          CompactHistoryItem(
             content = content,
             onCopy = { viewModel.copyToClipboard(index) },
             onDelete = { viewModel.deleteAt(index) },

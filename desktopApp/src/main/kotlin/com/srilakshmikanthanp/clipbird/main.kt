@@ -76,13 +76,8 @@ fun NucleusApplicationScope.ClipbirdApplication() {
 
   fun onAutoLaunchChange(enabled: Boolean) {
     coroutineScope.launch {
-      launchAtLogin = if (enabled) {
-        autoLaunch.enable()
-        true
-      } else {
-        autoLaunch.disable()
-        false
-      }
+      if (enabled) autoLaunch.enable() else autoLaunch.disable()
+      launchAtLogin = autoLaunch.isEnabled()
     }
   }
 

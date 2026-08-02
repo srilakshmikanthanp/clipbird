@@ -1,0 +1,15 @@
+.features {
+    margin: 12rem auto;
+
+    .features__list {
+        display: flex;
+        align-items: stretch;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4rem;
+
+        div {
+            max-width: 300px;
+        }
+    }
+}

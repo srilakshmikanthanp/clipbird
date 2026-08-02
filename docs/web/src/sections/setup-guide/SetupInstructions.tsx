@@ -28,7 +28,7 @@ const setupSteps: IStep[] = [
     {
         step_number: 3,
         icon: <MdOutlinePhonelinkSetup size={50} color="var(--color-secondary)" />,
-        title: 'Connect in ClipBird',
+        title: 'Pair in ClipBird',
         description: 'Open ClipBird on both devices and pair them within the app.'
     },
     {

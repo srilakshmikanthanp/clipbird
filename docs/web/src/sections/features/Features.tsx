@@ -38,7 +38,7 @@ export default function Features() {
                         <GoHistory size={60} />
                     </div>
                     <h3>Clipboard History</h3>
-                    <p>Access a history of your clipboard items and send any past entry to connected devices.</p>
+                    <p>Browse past clipboard items received from your peers.</p>
                 </Card>
             </div>
         </section>

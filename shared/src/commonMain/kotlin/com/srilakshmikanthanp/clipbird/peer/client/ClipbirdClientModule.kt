@@ -1,15 +1,11 @@
 package com.srilakshmikanthanp.clipbird.peer.client
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
-import com.srilakshmikanthanp.clipbird.hub.Discoverer
 import com.srilakshmikanthanp.clipbird.hub.RetryingDiscoverer
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer
-import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleHubDevice
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
-import com.srilakshmikanthanp.clipbird.pairing.ActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.pairing.RetryingActivePairedDeviceProvider
-import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceService
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.ble.BleActivePairedDeviceProvider
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
@@ -31,23 +27,13 @@ class ClipbirdClientModule {
   )
 
   @Single
-  fun discoverer(
-    bleDiscoverer: BleDiscoverer,
-  ): Discoverer<BleHubDevice> = RetryingDiscoverer(bleDiscoverer)
-
-  @Single
   fun blePairedActiveDeviceProvider(
-    discoverer: Discoverer<BleHubDevice>,
+    discoverer: BleDiscoverer,
     service: BluetoothPairedDeviceService,
   ): BleActivePairedDeviceProvider = BleActivePairedDeviceProvider(
-    discoverer,
+    RetryingDiscoverer(discoverer),
     service
   )
-
-  @Single
-  fun pairedActiveDeviceProvider(
-    provider: BleActivePairedDeviceProvider,
-  ): ActivePairedDeviceProvider<BluetoothPairedDevice> = RetryingActivePairedDeviceProvider(provider)
 
   @Single
   fun connectionInitiationDecider(
@@ -76,13 +62,13 @@ class ClipbirdClientModule {
 
   @Single
   fun clipbirdClientCoordinator(
-    activeDeviceProvider: ActivePairedDeviceProvider<BluetoothPairedDevice>,
+    activeDeviceProvider: BleActivePairedDeviceProvider,
     connector: BluetoothClipbirdClientConnector,
     decider: ConnectionInitiationDecider,
     handshakeProtocol: ClipbirdClientHandshakeProtocol,
     peerHub: BluetoothPeerHub,
   ): BluetoothClipbirdProtocolClient = BluetoothClipbirdProtocolClient(
-    activeDeviceProvider,
+    RetryingActivePairedDeviceProvider(activeDeviceProvider),
     connector,
     decider,
     handshakeProtocol,

@@ -1,9 +1,6 @@
 package com.srilakshmikanthanp.clipbird.peer
 
-import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceService
-import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDevice
-import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdProtocolClient
-import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.BluetoothClipbirdProtocolServer
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceService
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -12,7 +9,7 @@ import org.koin.core.annotation.Single
 class PeerModule {
   @Single
   fun channelHub(
-    pairedDeviceService: PairedDeviceService<BluetoothPairedDevice>,
+    pairedDeviceService: BluetoothPairedDeviceService,
     scope: CoroutineScope,
   ): BluetoothPeerHub = BluetoothPeerHub(pairedDeviceService, scope)
 }

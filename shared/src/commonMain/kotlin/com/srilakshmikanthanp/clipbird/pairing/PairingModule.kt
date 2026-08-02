@@ -2,7 +2,6 @@ package com.srilakshmikanthanp.clipbird.pairing
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
-import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothChannel
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.*
@@ -20,11 +19,6 @@ class PairingModule {
   ): BluetoothPairedDeviceService = BluetoothPairedDeviceService(
     pairedDao, bleDao
   )
-
-  @Single
-  fun pairedDeviceService(
-    service: BluetoothPairedDeviceService
-  ): PairedDeviceService<out PairedDevice> = service
 
   @Single
   fun blockingPairingVerifier(): PairingDeferredVerifier = PairingDeferredVerifier()
@@ -67,11 +61,6 @@ class PairingModule {
     verifier
   )
 
-  @Single
-  fun pairingResponder(
-    responder: BluetoothPairingResponder
-  ): PairingResponder<BluetoothChannel, BluetoothPairedDevice> = responder
-
   @OptIn(ExperimentalUuidApi::class)
   @Single
   fun bluetoothPairingServer(
@@ -86,7 +75,7 @@ class PairingModule {
     provider: BluetoothPairingCandidateProvider,
     pairer: BluetoothPairer,
     service: BluetoothPairedDeviceService,
-    responder: PairingResponder<BluetoothChannel, BluetoothPairedDevice>,
+    responder: BluetoothPairingResponder,
   ): BluetoothPairingService = BluetoothPairingService(
     provider,
     pairer,

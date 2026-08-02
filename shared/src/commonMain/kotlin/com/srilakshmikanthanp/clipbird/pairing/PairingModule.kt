@@ -82,11 +82,6 @@ class PairingModule {
   )
 
   @Single
-  fun pairingServer(
-    server: BluetoothPairingServer
-  ): PairingServer<BluetoothChannel> = RetryingPairingServer(server)
-
-  @Single
   fun pairingCoordinator(
     provider: BluetoothPairingCandidateProvider,
     pairer: BluetoothPairer,
@@ -101,10 +96,10 @@ class PairingModule {
 
   @Single
   fun pairingChannelCollector(
-    pairingServer : BluetoothPairingServer,
+    pairingServer: BluetoothPairingServer,
     service: BluetoothPairingService
   ): BluetoothPairingChannelCollector = BluetoothPairingChannelCollector(
-    pairingServer,
+    RetryingPairingServer(pairingServer),
     service
   )
 }

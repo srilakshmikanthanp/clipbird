@@ -2,6 +2,7 @@ package com.srilakshmikanthanp.clipbird.clipboard
 
 import com.srilakshmikanthanp.clipbird.clipboard.replication.bluetooth.BluetoothClipboardReplicator
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
@@ -14,10 +15,12 @@ class ClipboardModule {
   fun replicator(
     peerHub: BluetoothPeerHub,
     clipboard: Clipboard,
-    clipboardHistory: ClipboardHistory
+    clipboardHistory: ClipboardHistory,
+    scope: CoroutineScope,
   ): BluetoothClipboardReplicator = BluetoothClipboardReplicator(
     peerHub,
     clipboard,
-    clipboardHistory
+    clipboardHistory,
+    scope,
   )
 }

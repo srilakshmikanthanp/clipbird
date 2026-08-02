@@ -12,6 +12,7 @@ import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketReRouter
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceService
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -23,7 +24,7 @@ import kotlin.coroutines.cancellation.CancellationException
 open class PeerHub<P: PairedDevice>(
   private val pairedDeviceService: PairedDeviceService<P>,
   private val scope: CoroutineScope
-): AutoCloseable {
+) {
   private val _devices = MutableStateFlow<Map<Long, PeerConnection>>(emptyMap())
   val devices: StateFlow<List<PairedDevice>> = _devices.map {
     devices -> devices.values.map { it.device }
@@ -46,6 +47,8 @@ open class PeerHub<P: PairedDevice>(
 
   private val _clipboard = MutableSharedFlow<ClipboardContent>()
   val clipboard: Flow<ClipboardContent> = _clipboard.asSharedFlow()
+
+  private var job: Job? = null
 
   private suspend fun observeChannelPackets(peerConnection: PeerConnection) {
     try {
@@ -136,13 +139,15 @@ open class PeerHub<P: PairedDevice>(
     return _devices.value.any { it.key == device.id }
   }
 
-  override fun close() {
-    _devices.value.values.forEach(PeerConnection::close)
-    _devices.value = emptyMap()
+  fun start() {
+    if (job?.isActive == true) return
+    job = scope.launch { observePaired() }
   }
 
-  init {
-    scope.launch { observePaired() }
+  fun stop() {
+    _devices.value.values.forEach(PeerConnection::close)
+    _devices.value = emptyMap()
+    job?.cancel()
   }
 
   companion object {

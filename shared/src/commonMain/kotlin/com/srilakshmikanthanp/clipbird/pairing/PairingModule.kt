@@ -98,9 +98,11 @@ class PairingModule {
   @Single
   fun pairingChannelCollector(
     pairingServer: BluetoothPairingServer,
-    service: BluetoothPairingService
+    service: BluetoothPairingService,
+    scope: CoroutineScope
   ): BluetoothPairingChannelCollector = BluetoothPairingChannelCollector(
     RetryingPairingServer(pairingServer),
-    service
+    service,
+    scope
   )
 }

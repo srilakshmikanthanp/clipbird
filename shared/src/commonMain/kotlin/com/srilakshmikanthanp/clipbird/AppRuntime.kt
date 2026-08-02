@@ -5,7 +5,6 @@ import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairingChannel
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdProtocolClient
 import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.BluetoothClipbirdProtocolServer
-import kotlinx.coroutines.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -16,27 +15,21 @@ class AppRuntime : KoinComponent {
   private val channelHub: BluetoothPeerHub by inject()
   private val clipboardSyncer: BluetoothClipboardReplicator by inject()
 
-  private val scope = CoroutineScope(SupervisorJob())
-  private var job: Job? = null
-
   @Synchronized
   fun start() {
-    if (job?.isActive == true) return
-
-    job = scope.launch {
-      coroutineScope {
-        launch { pairingChannelCollector.run() }
-        launch { clipbirdProtocolServer.run() }
-        launch { clipbirdProtocolClient.run() }
-        launch { clipboardSyncer.run() }
-      }
-    }
+    clipbirdProtocolServer.start()
+    clipbirdProtocolClient.start()
+    pairingChannelCollector.start()
+    clipboardSyncer.start()
+    channelHub.start()
   }
 
   @Synchronized
   fun stop() {
-    channelHub.close()
-    job?.cancel()
-    job = null
+    clipbirdProtocolServer.stop()
+    clipbirdProtocolClient.stop()
+    pairingChannelCollector.stop()
+    clipboardSyncer.stop()
+    channelHub.stop()
   }
 }

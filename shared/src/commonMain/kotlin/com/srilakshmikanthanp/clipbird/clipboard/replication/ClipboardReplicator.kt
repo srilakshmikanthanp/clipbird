@@ -4,14 +4,18 @@ import com.srilakshmikanthanp.clipbird.clipboard.Clipboard
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardHistory
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.PeerHub
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 open class ClipboardReplicator<P: PairedDevice>(
   private val peerHub: PeerHub<P>,
   private val clipboard: Clipboard,
-  private val clipboardHistory: ClipboardHistory
+  private val clipboardHistory: ClipboardHistory,
+  private val scope: CoroutineScope,
 ) {
+  private var job: Job? = null
   private suspend fun syncClipboardFromHistory() {
     clipboardHistory.latest.collect {
       clipboard.set(it)
@@ -30,9 +34,18 @@ open class ClipboardReplicator<P: PairedDevice>(
     }
   }
 
-  suspend fun run() = coroutineScope {
+  private suspend fun run() = coroutineScope {
     launch { syncClipboardFromHistory() }
     launch { syncHistoryFromPeers() }
     launch { syncClipboardToPeers() }
+  }
+
+  fun start() {
+    if (job?.isActive == true) return
+    job = scope.launch { run() }
+  }
+
+  fun stop() {
+    job?.cancel()
   }
 }

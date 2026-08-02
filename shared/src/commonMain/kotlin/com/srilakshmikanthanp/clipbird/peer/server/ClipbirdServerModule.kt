@@ -10,6 +10,7 @@ import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceSe
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.BluetoothClipbirdProtocolServer
 import com.srilakshmikanthanp.clipbird.peer.server.bluetooth.ClipbirdBluetoothServer
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import kotlin.uuid.ExperimentalUuidApi
@@ -40,11 +41,13 @@ class ClipbirdServerModule {
     advertiser: Advertiser,
     server: ClipbirdServer,
     handshakeProtocol: ClipbirdServerHandshakeProtocol<BluetoothPairedDevice>,
-    peerHub: BluetoothPeerHub
+    peerHub: BluetoothPeerHub,
+    scope: CoroutineScope,
   ): BluetoothClipbirdProtocolServer = BluetoothClipbirdProtocolServer(
     advertiser,
     server,
     handshakeProtocol,
-    peerHub
+    peerHub,
+    scope,
   )
 }

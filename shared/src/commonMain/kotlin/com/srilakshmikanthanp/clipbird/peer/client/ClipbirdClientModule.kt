@@ -9,6 +9,7 @@ import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientConnector
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdProtocolClient
 import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import kotlin.uuid.ExperimentalUuidApi
@@ -47,11 +48,13 @@ class ClipbirdClientModule {
     decider: ConnectionInitiationDecider,
     handshakeProtocol: ClipbirdClientHandshakeProtocol,
     peerHub: BluetoothPeerHub,
+    scope: CoroutineScope,
   ): BluetoothClipbirdProtocolClient = BluetoothClipbirdProtocolClient(
     RetryingActivePairedDeviceProvider(activeDeviceProvider),
     connector,
     decider,
     handshakeProtocol,
-    peerHub
+    peerHub,
+    scope,
   )
 }

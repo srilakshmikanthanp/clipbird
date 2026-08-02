@@ -7,6 +7,8 @@ import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.peer.PeerConnection
 import com.srilakshmikanthanp.clipbird.peer.PeerHub
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,8 +20,10 @@ open class ClipbirdProtocolServer<P: PairedDevice>(
   private val advertiser: Advertiser,
   private val server: ClipbirdServer,
   private val handshakeProtocol: ClipbirdServerHandshakeProtocol<P>,
-  private val peerHub: PeerHub<P>
+  private val peerHub: PeerHub<P>,
+  private val scope: CoroutineScope,
 ) {
+  private var job: Job? = null
   private suspend fun handleChannel(channel: Channel) {
     try {
       val peerConnection = handshakeProtocol.handshake(channel)
@@ -40,9 +44,18 @@ open class ClipbirdProtocolServer<P: PairedDevice>(
     server.channels.collect { channel -> this@coroutineScope.launch { handleChannel(channel) } }
   }
 
-  suspend fun run() = coroutineScope {
+  private suspend fun run() = coroutineScope {
     launch { doAdvertise() }
     launch { doServe() }
+  }
+
+  fun start() {
+    if (job?.isActive == true) return
+    job = scope.launch { run() }
+  }
+
+  fun stop() {
+    job?.cancel()
   }
 
   companion object {

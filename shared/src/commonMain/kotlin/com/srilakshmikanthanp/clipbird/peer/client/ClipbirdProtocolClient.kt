@@ -22,8 +22,10 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
   private val decider: ConnectionInitiationDecider,
   private val handshakeProtocol: ClipbirdClientHandshakeProtocol,
   private val peerHub: PeerHub<P>,
+  private val scope: CoroutineScope,
 ) {
   private val jobs = mutableMapOf<Long, Job>()
+  private var job: Job? = null
 
   private fun CoroutineScope.job(device: P): Job = launch {
     while (isActive) {
@@ -65,7 +67,7 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
     }
   }
 
-  suspend fun run(): Unit = coroutineScope {
+  private suspend fun run(): Unit = coroutineScope {
     while (isActive) {
       try {
         this.doRun()
@@ -76,6 +78,17 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
         delay(RETRY_DELAY)
       }
     }
+  }
+
+  fun start() {
+    if (job?.isActive == true) return
+    job = scope.launch { run() }
+  }
+
+  fun stop() {
+    jobs.values.forEach { it.cancel() }
+    jobs.clear()
+    job?.cancel()
   }
 
   companion object {

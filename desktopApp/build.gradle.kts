@@ -21,7 +21,7 @@ dependencies {
   implementation(projects.shared)
   implementation(libs.koin.core)
   implementation(compose.desktop.currentOs)
-  implementation(libs.material3.v190)
+  implementation(libs.compose.material3)
   implementation(libs.kotlinx.coroutinesSwing)
   implementation(libs.compose.uiToolingPreview)
   implementation(libs.composenativetray)

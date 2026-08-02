@@ -81,7 +81,7 @@ export default function Contribute() {
             </p>
 
             <div className={classes.contribute__option}>
-                <h4>Here's how you can contribute:</h4>
+                <h4>How to contribute</h4>
 
                 <div className={classes.contribute__steps}>
                     <StepList steps={contributeSteps} />
@@ -91,7 +91,7 @@ export default function Contribute() {
             <hr className={classes.contribute__separator} />
 
             <div className={classes.contribute__option}>
-                <h4>Here are some other ways to support the project:</h4>
+                <h4>Other ways to support</h4>
 
                 <div className={classes.contribute__steps}>
                     <StepList steps={supportSteps} />

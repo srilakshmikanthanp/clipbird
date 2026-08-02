@@ -43,7 +43,7 @@ const setupSteps: IStep[] = [
 export default function SetupInstructions() {
     return (
         <section className={classes.setup}>
-            <h2>Setup Instructions</h2>
+            <h2>Get Started</h2>
 
             <main className={classes.setup__instructions}>
                 <StepList steps={setupSteps} />

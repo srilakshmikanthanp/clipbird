@@ -220,16 +220,16 @@ fun CompactHistoryScreen(viewModel: HistoryViewModel = koinViewModel()) {
   val transferState by viewModel.transferState.collectAsStateWithLifecycle()
   val history by viewModel.history.collectAsStateWithLifecycle()
 
-  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+  Column(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+      CompactSendCard(state = transferState, onSend = viewModel::sendClipboard)
+    }
+
     LazyColumn(
-      modifier = Modifier.fillMaxWidth(),
-      contentPadding = PaddingValues(8.dp),
+      modifier = Modifier.weight(1f).fillMaxWidth(),
+      contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 8.dp),
       verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-      item {
-        CompactSendCard(state = transferState, onSend = viewModel::sendClipboard)
-      }
-
       if (history.isEmpty()) {
         item { CompactEmptyHistory() }
       } else {

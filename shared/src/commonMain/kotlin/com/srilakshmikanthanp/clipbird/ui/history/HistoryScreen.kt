@@ -250,24 +250,26 @@ fun HistoryScreen(viewModel: HistoryViewModel = koinViewModel()) {
   val history by viewModel.history.collectAsStateWithLifecycle()
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-    LazyColumn(
-      modifier = Modifier.widthIn(max = 600.dp).fillMaxWidth(),
-      contentPadding = PaddingValues(16.dp),
-      verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-      item {
+    Column(modifier = Modifier.widthIn(max = 600.dp).fillMaxSize()) {
+      Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         SendCard(state = transferState, onSend = viewModel::sendClipboard)
       }
 
-      if (history.isEmpty()) {
-        item { EmptyHistory() }
-      } else {
-        itemsIndexed(history) { index, content ->
-          HistoryItem(
-            content = content,
-            onCopy = { viewModel.copyToClipboard(index) },
-            onDelete = { viewModel.deleteAt(index) },
-          )
+      LazyColumn(
+        modifier = Modifier.weight(1f).fillMaxWidth(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+      ) {
+        if (history.isEmpty()) {
+          item { EmptyHistory() }
+        } else {
+          itemsIndexed(history) { index, content ->
+            HistoryItem(
+              content = content,
+              onCopy = { viewModel.copyToClipboard(index) },
+              onDelete = { viewModel.deleteAt(index) },
+            )
+          }
         }
       }
     }

@@ -9,7 +9,7 @@ import com.srilakshmikanthanp.clipbird.clipboard.ClipboardPlatformModule
 import com.srilakshmikanthanp.clipbird.ffi.bindings.Clipbird
 import com.srilakshmikanthanp.clipbird.ffi.loader.NativeClipbirdLoader
 import com.srilakshmikanthanp.clipbird.ffi.log.LogHandle
-import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleAdvertiserModule
+import com.srilakshmikanthanp.clipbird.hub.HubModule
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothPlatformModule
 import com.srilakshmikanthanp.clipbird.pairing.PairingModule
 import com.srilakshmikanthanp.clipbird.peer.PeerModule
@@ -51,7 +51,7 @@ fun initKoin() {
       ClipboardModule().module,
       ClipboardPlatformModule().module,
       BluetoothPlatformModule().module,
-      BleAdvertiserModule().module,
+      HubModule().module,
       ClipbirdServerModule().module,
       ClipbirdClientModule().module,
       PeerModule().module,

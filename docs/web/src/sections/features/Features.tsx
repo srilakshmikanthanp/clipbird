@@ -30,7 +30,7 @@ export default function Features() {
                         <GoShieldLock size={60} />
                     </div>
                     <h3>Secure Encryption</h3>
-                    <p>All clipboard data is encrypted.</p>
+                    <p>Clipboard data is encrypted in transit — no one in between can read what you send.</p>
                 </Card>
 
                 <Card>

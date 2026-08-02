@@ -22,7 +22,7 @@ export default function Features() {
                         <FaBluetooth size={60} />
                     </div>
                     <h3>Bluetooth Transfer</h3>
-                    <p>Share clipboard data directly over Bluetooth — no Wi-Fi, no router, no internet needed.</p>
+                    <p>Share clipboard data directly between devices — no internet or shared network required.</p>
                 </Card>
 
                 <Card>

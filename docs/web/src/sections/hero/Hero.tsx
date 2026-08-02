@@ -10,11 +10,11 @@ export default function Hero() {
             <Pill icon={<FaBluetooth />}>No internet · No account · No server</Pill>
             <h1>Same you, why different clipboards?</h1>
             <p className={classes.hero__primary}>
-                Share your clipboard between devices over Bluetooth — privately and securely.
+                Share your clipboard between devices — no internet, no shared network.
             </p>
             <p className={classes.hero__description}>
-                ClipBird syncs clipboard content between your devices using Bluetooth, with no cloud, no Wi-Fi, and no
-                account required.
+                ClipBird syncs clipboard content directly between your devices without internet or a common network. No
+                cloud, no router, no account required.
             </p>
 
             <Button icon={<MdOutlineFileDownload size={20} />} href="#downloads">

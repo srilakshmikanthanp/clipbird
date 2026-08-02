@@ -1,10 +1,13 @@
 package com.srilakshmikanthanp.clipbird.pairing
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
+import com.srilakshmikanthanp.clipbird.hub.RetryingDiscoverer
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
+import com.srilakshmikanthanp.clipbird.hub.bluetooth.ble.BleDiscoverer
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerConfig
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.*
+import com.srilakshmikanthanp.clipbird.pairing.bluetooth.ble.BleActivePairedDeviceProvider
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -81,6 +84,15 @@ class PairingModule {
     pairer,
     service,
     responder,
+  )
+
+  @Single
+  fun blePairedActiveDeviceProvider(
+    discoverer: BleDiscoverer,
+    service: BluetoothPairedDeviceService,
+  ): BleActivePairedDeviceProvider = BleActivePairedDeviceProvider(
+    RetryingDiscoverer(discoverer),
+    service
   )
 
   @Single

@@ -27,15 +27,6 @@ class ClipbirdClientModule {
   )
 
   @Single
-  fun blePairedActiveDeviceProvider(
-    discoverer: BleDiscoverer,
-    service: BluetoothPairedDeviceService,
-  ): BleActivePairedDeviceProvider = BleActivePairedDeviceProvider(
-    RetryingDiscoverer(discoverer),
-    service
-  )
-
-  @Single
   fun connectionInitiationDecider(
     hostDeviceProvider: HostDeviceProvider,
   ): ConnectionInitiationDecider = ConnectionInitiationDecider(

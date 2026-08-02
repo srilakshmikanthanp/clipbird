@@ -1,13 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');
 
 :root {
     --font-heading: 'Cal Sans', sans-serif;
     --font-primary: 'Wix Madefor Text', sans-serif;
 
-    --color-primary: #4682b4;
-    --color-secondary: #ffd700;
+    --color-primary: #1e6fff;
+    --color-primary-dark: #1250cc;
+    --color-secondary: #ffa726;
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-text: #1e293b;
+    --color-muted: #64748b;
+    --color-border: #e2e8f0;
 }
 
 * {
@@ -32,7 +37,8 @@ h6 {
 }
 
 h1 {
-    font-size: 5rem;
+    font-size: 6rem;
+    line-height: 1.1;
 }
 
 h2 {
@@ -43,7 +49,7 @@ h2 {
 }
 
 h3 {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
 }
 
 h4 {
@@ -53,9 +59,12 @@ h4 {
 body {
     font-family: var(--font-primary);
     font-size: 1.6rem;
-    background-color: white;
+    background-color: var(--color-bg);
+    color: var(--color-text);
 }
 
 p {
     margin-bottom: 0.4em;
+    line-height: 1.7;
+    color: var(--color-muted);
 }

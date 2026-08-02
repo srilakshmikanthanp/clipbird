@@ -1,15 +1,12 @@
 .features {
-    margin: 12rem auto;
+    padding: 10rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
 
     .features__list {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 3rem;
         align-items: stretch;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 4rem;
-
-        div {
-            max-width: 300px;
-        }
     }
 }

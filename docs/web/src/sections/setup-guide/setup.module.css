@@ -1,8 +1,9 @@
 .setup {
-    margin: 0 4rem 8rem 4rem;
+    padding: 0 4rem 10rem;
+    background: var(--color-bg);
 
     .setup__instructions {
-        margin: auto;
-        max-width: 720px;
+        margin: 0 auto;
+        max-width: 680px;
     }
 }

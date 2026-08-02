@@ -1,15 +1,20 @@
 .header {
-    padding: 2rem;
+    padding: 1.6rem 3rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: fixed;
+    position: absolute;
     z-index: 1000;
     width: 100%;
-    background-color: var(--color-primary);
+    background: transparent;
 
     img,
     svg {
         display: block;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 0.8;
+        }
     }
 }

@@ -11,7 +11,7 @@ const setupSteps: IStep[] = [
         step_number: 1,
         icon: <LuHardDriveDownload size={50} color="var(--color-secondary)" />,
         title: 'Download and Install',
-        description: 'Download and install ClipBird on every device you want to sync.',
+        description: 'Download and install Clipbird on every device you want to sync.',
         cta: (
             <Button icon={<MdOutlineFileDownload size={20} />} href="#downloads">
                 Download
@@ -28,8 +28,8 @@ const setupSteps: IStep[] = [
     {
         step_number: 3,
         icon: <MdOutlinePhonelinkSetup size={50} color="var(--color-secondary)" />,
-        title: 'Pair in ClipBird',
-        description: 'Open ClipBird on both devices and pair them within the app.'
+        title: 'Pair in Clipbird',
+        description: 'Open Clipbird on both devices and pair them within the app.'
     },
     {
         step_number: 4,

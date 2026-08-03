@@ -13,7 +13,7 @@ export default function Hero() {
                 Share your clipboard between devices — no internet, no shared network.
             </p>
             <p className={classes.hero__description}>
-                ClipBird syncs clipboard content directly between your devices without internet or a common network. No
+                Clipbird syncs clipboard content directly between your devices without internet or a common network. No
                 cloud, no router, no account required.
             </p>
 

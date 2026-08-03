@@ -11,6 +11,7 @@ plugins {
 
 val jdk25 = javaToolchains.launcherFor {
   languageVersion = JavaLanguageVersion.of(25)
+  vendor.set(JvmVendorSpec.JETBRAINS)
 }
 
 kotlin {
@@ -30,6 +31,7 @@ dependencies {
   implementation(libs.nucleus.decorated.window.tao)
   implementation(libs.autolaunch)
   implementation(libs.compose.material.icons.extended)
+  implementation(libs.kermit)
 }
 
 nucleus.application {

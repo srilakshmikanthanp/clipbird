@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.ui.history.CompactHistoryScreen
 import com.srilakshmikanthanp.clipbird.ui.theme.ClipbirdTheme
 import dev.nucleusframework.application.DecoratedWindow
@@ -39,6 +40,7 @@ import dev.nucleusframework.window.styling.TitleBarStyle
 import dev.nucleusframework.composenativetray.menu.api.TrayMenuBuilder
 import io.github.vinceglb.autolaunch.AutoLaunch
 import kotlinx.coroutines.launch
+import java.awt.Toolkit
 import javax.imageio.ImageIO
 
 @Composable
@@ -154,6 +156,14 @@ fun NucleusApplicationScope.ClipbirdApplication() {
 }
 
 fun main() {
+  Logger.i { "Java Vendor   : ${System.getProperty("java.vendor")}" }
+  Logger.i { "Runtime       : ${System.getProperty("java.runtime.name")}" }
+  Logger.i { "Java Version  : ${System.getProperty("java.version")}" }
+  Logger.i { "Java Home     : ${System.getProperty("java.home")}" }
+  Logger.i { "Toolkit       : ${Toolkit.getDefaultToolkit().javaClass.name}" }
+  Logger.i { "Session       : ${System.getenv("XDG_SESSION_TYPE")}" }
+  Logger.i { "Desktop       : ${System.getenv("XDG_CURRENT_DESKTOP")}" }
+
   initKoin()
 
   nucleusApplication(backend = NucleusBackend.Tao) {

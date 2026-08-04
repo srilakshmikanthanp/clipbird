@@ -9,13 +9,15 @@ plugins {
   alias(libs.plugins.aboutlibraries)
 }
 
-val jdk25 = javaToolchains.launcherFor {
-  languageVersion = JavaLanguageVersion.of(25)
+fun JavaToolchainSpec.configureJbr25() {
+  languageVersion.set(JavaLanguageVersion.of(25))
   vendor.set(JvmVendorSpec.JETBRAINS)
 }
 
+val jdk = javaToolchains.launcherFor { configureJbr25() }
+
 kotlin {
-  jvmToolchain(25)
+  jvmToolchain { configureJbr25() }
 }
 
 dependencies {
@@ -36,7 +38,7 @@ dependencies {
 
 nucleus.application {
   mainClass = "com.srilakshmikanthanp.clipbird.MainKt"
-  javaHome = jdk25.get().metadata.installationPath.asFile.absolutePath
+  javaHome = jdk.get().metadata.installationPath.asFile.absolutePath
   jvmArgs += listOf("--enable-native-access=ALL-UNNAMED")
   nativeDistributions {
     targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

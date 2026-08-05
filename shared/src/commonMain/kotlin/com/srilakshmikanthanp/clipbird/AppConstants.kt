@@ -1,6 +1,7 @@
 package com.srilakshmikanthanp.clipbird
 
 object AppConstants {
+  val CLIPBOARD_MAX_SIZE: Int get() = BuildKonfig.CLIPBOARD_MAX_SIZE
   val APP_NAME: String get() = BuildKonfig.APP_NAME
   val APP_PACKAGE_NAME: String get() = BuildKonfig.APP_PACKAGE_NAME
   val APP_DESCRIPTION: String get() = BuildKonfig.APP_DESCRIPTION

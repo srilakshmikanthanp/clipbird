@@ -3,7 +3,7 @@ package com.srilakshmikanthanp.clipbird.clipboard
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ClipboardContent(
+data class ClipboardContent(
   val items: List<ClipboardItem>
 ) {
   companion object {

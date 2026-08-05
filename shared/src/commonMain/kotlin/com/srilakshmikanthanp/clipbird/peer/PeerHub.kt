@@ -102,7 +102,7 @@ open class PeerHub<P: PairedDevice>(
   }
 
   suspend fun sendClipboard(clipboardContent: ClipboardContent): Unit = sendMutex.withLock {
-    if (clipboardContent.items.isEmpty()) return
+    if (clipboardContent == ClipboardContent.Empty) return
     try {
       val listener = ProgressListener { p, t -> _transferState.value = TransferState.Progress(p, t) }
       _transferState.value = TransferState.Progress(0, 0)

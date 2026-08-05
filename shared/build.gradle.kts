@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.INT
 
 plugins {
   alias(libs.plugins.kotlinMultiplatform)
@@ -101,6 +102,7 @@ ksp {
 buildkonfig {
   packageName = "com.srilakshmikanthanp.clipbird"
   defaultConfigs {
+    buildConfigField(INT, "CLIPBOARD_MAX_SIZE", providers.gradleProperty("clipboard.max.size").get())
     buildConfigField(STRING, "APP_NAME", providers.gradleProperty("app.name").get())
     buildConfigField(STRING, "APP_PACKAGE_NAME", providers.gradleProperty("app.packageName").get())
     buildConfigField(STRING, "APP_DESCRIPTION", providers.gradleProperty("app.description").get())

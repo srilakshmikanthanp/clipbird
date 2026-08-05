@@ -30,16 +30,14 @@ class AndroidClipboard(private val context: Context, scope: CoroutineScope) : Cl
       if (clipboardManager.primaryClipDescription?.label == LABEL) {
         return@OnPrimaryClipChangedListener
       }
+
       launch {
         send(get())
       }
     }
 
     clipboardManager.addPrimaryClipChangedListener(listener)
-
-    awaitClose {
-      clipboardManager.removePrimaryClipChangedListener(listener)
-    }
+    awaitClose { clipboardManager.removePrimaryClipChangedListener(listener) }
   }.shareIn(
     scope,
     SharingStarted.WhileSubscribed()
@@ -94,48 +92,59 @@ class AndroidClipboard(private val context: Context, scope: CoroutineScope) : Cl
     val html = items.find { it.mimeType == ClipboardMimeType.MIME_HTML } ?: return false
     val textStr = text.data.toString(Charsets.UTF_8)
     val htmlStr = html.data.toString(Charsets.UTF_8)
+
     val clipData = if (textStr.length + htmlStr.length >= maxClipboardSize) {
       ClipData.newUri(context.contentResolver, LABEL, writeFile(".html", html.data))
     } else {
       ClipData.newHtmlText(LABEL, textStr, htmlStr)
     }
+
     withContext(Dispatchers.Main) { clipboardManager.setPrimaryClip(clipData) }
+
     return true
   }
 
   private suspend fun setAsHtml(items: List<ClipboardItem>): Boolean {
     val html = items.find { it.mimeType == ClipboardMimeType.MIME_HTML } ?: return false
     val htmlStr = html.data.toString(Charsets.UTF_8)
+
     val clipData = if (html.data.size >= maxClipboardSize) {
       ClipData.newUri(context.contentResolver, LABEL, writeFile(".html", html.data))
     } else {
       ClipData.newHtmlText(LABEL, htmlStr, htmlStr)
     }
+
     withContext(Dispatchers.Main) { clipboardManager.setPrimaryClip(clipData) }
+
     return true
   }
 
   private suspend fun setAsText(items: List<ClipboardItem>): Boolean {
     val text = items.find { it.mimeType == ClipboardMimeType.MIME_TEXT } ?: return false
     val textStr = text.data.toString(Charsets.UTF_8)
+
     val clipData = if (text.data.size >= maxClipboardSize) {
       ClipData.newUri(context.contentResolver, LABEL, writeFile(".txt", text.data))
     } else {
       ClipData.newPlainText(LABEL, textStr)
     }
+
     withContext(Dispatchers.Main) { clipboardManager.setPrimaryClip(clipData) }
+
     return true
   }
 
   override suspend fun get(): ClipboardContent {
-    val clipData = clipboardManager.primaryClip ?: return ClipboardContent(emptyList())
+    val clipData = clipboardManager.primaryClip ?: return ClipboardContent.Empty
     val items = mutableListOf<ClipboardItem>()
+
     for (i in 0 until clipData.itemCount) {
       val item = clipData.getItemAt(i)
       item.htmlText?.let { items.add(ClipboardItem(ClipboardMimeType.MIME_HTML, it.toByteArray(Charsets.UTF_8))) }
       item.uri?.let { readUri(it)?.let { ci -> items.add(ci) } }
       item.text?.let { items.add(ClipboardItem(ClipboardMimeType.MIME_TEXT, it.toString().toByteArray(Charsets.UTF_8))) }
     }
+
     return ClipboardContent(items)
   }
 

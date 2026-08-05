@@ -16,11 +16,12 @@ import com.srilakshmikanthanp.clipbird.ui.trust.TrustedScreen
 fun ClipbirdNavHost(
   navController: NavHostController,
   snackbarHostState: SnackbarHostState,
+  startDestination: DrawerRoute,
   modifier: Modifier = Modifier,
 ) {
   NavHost(
+    startDestination = startDestination,
     navController = navController,
-    startDestination = DevicesRoute,
     modifier = modifier,
   ) {
     composable<DevicesRoute> { DevicesScreen(snackbarHostState) }

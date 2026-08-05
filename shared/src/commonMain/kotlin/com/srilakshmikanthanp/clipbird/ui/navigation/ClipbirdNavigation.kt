@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -102,7 +103,7 @@ private fun NavigationButton(
 }
 
 @Composable
-fun ClipbirdNavigation() {
+fun ClipbirdNavigation(initialRoute: DrawerRoute = DevicesRoute) {
   val snackBarHostState = remember { SnackbarHostState() }
   val drawerState = rememberDrawerState(DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
@@ -121,6 +122,12 @@ fun ClipbirdNavigation() {
     }
     coroutineScope.launch {
       drawerState.close()
+    }
+  }
+
+  LaunchedEffect(initialRoute) {
+    if (initialRoute != DevicesRoute) {
+      navigateTo(initialRoute)
     }
   }
 
@@ -158,6 +165,7 @@ fun ClipbirdNavigation() {
       ClipbirdNavHost(
         navController = navController,
         snackbarHostState = snackBarHostState,
+        startDestination = initialRoute,
         modifier = Modifier.padding(padding),
       )
     }

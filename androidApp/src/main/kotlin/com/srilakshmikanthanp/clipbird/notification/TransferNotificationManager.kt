@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import com.srilakshmikanthanp.clipbird.ClipbirdService
+import com.srilakshmikanthanp.clipbird.MainActivity
 import com.srilakshmikanthanp.clipbird.R
 import com.srilakshmikanthanp.clipbird.handlers.SendHandler
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
@@ -25,14 +26,30 @@ class TransferNotificationManager(
   private var lastProgressMs = 0L
   private var job: Job? = null
 
-  private fun pendingIntent(): PendingIntent = PendingIntent.getActivity(
-    context,
-    0,
-    Intent(context, SendHandler::class.java),
-    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-  )
+  private fun historyPendingIntent(): PendingIntent {
+    val intent = Intent(context, MainActivity::class.java).apply {
+      putExtra(MainActivity.EXTRA_INITIAL_ROUTE, MainActivity.ROUTE_HISTORY)
+      flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+    }
+    return PendingIntent.getActivity(
+      context,
+      1,
+      intent,
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+  }
+
+  private fun sendPendingIntent(): PendingIntent {
+    return PendingIntent.getActivity(
+      context,
+      0,
+      Intent(context, SendHandler::class.java),
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+  }
 
   private fun notify(
+    contentIntent: PendingIntent,
     block: NotificationCompat.Builder.() -> Unit
   ) {
     val notification = NotificationCompat.Builder(context, ClipbirdService.CHANNEL_ID)
@@ -40,7 +57,7 @@ class TransferNotificationManager(
       .setContentTitle(context.getString(R.string.app_name))
       .setPriority(NotificationCompat.PRIORITY_LOW)
       .setOngoing(true)
-      .setContentIntent(pendingIntent())
+      .setContentIntent(contentIntent)
       .apply(block)
       .build()
 
@@ -59,7 +76,7 @@ class TransferNotificationManager(
 
     lastProgressMs = now
 
-    notify {
+    notify(contentIntent = historyPendingIntent()) {
       if (total > 0) {
         val percent = (current * 100L / total).toInt()
         setProgress(100, percent, false)
@@ -72,7 +89,7 @@ class TransferNotificationManager(
   }
 
   private fun showDone(success: Boolean) {
-    notify {
+    notify(contentIntent = sendPendingIntent()) {
       setContentText(
         if (success) {
           "Sent! Tap to send again"

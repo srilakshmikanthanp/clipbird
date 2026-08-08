@@ -20,16 +20,24 @@ LinuxRfcommConnector::LinuxRfcommConnector(
 }
 
 int LinuxRfcommConnector::getFd() {
+  auto channel = resolver.rfcommChannel(remote, serviceUuid);
+
+  if (!channel) {
+    throw io::IOException("No RFCOMM channel found for the requested service");
+  }
+
   auto socket = ::socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
   if (socket < 0) {
     throw io::IOException("Failed to create RFCOMM socket");
   }
 
-  auto channel = resolver.rfcommChannel(remote, serviceUuid);
+  struct bt_security security = {};
+  security.level = BT_SECURITY_HIGH;
 
-  if (!channel) {
-    throw io::IOException("No RFCOMM channel found for the requested service");
+  if (::setsockopt(socket, SOL_BLUETOOTH, BT_SECURITY, &security, sizeof(security)) < 0) {
+    ::close(socket);
+    throw io::IOException("Failed to require an encrypted RFCOMM link");
   }
 
   struct sockaddr_rc addr = {};

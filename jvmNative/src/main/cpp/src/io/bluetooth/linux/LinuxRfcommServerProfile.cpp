@@ -1,11 +1,13 @@
 #include "LinuxRfcommServerProfile.hpp"
 
+#include <bluetooth/bluetooth.h>
 #include <boost/log/trivial.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <cstring>
 #include <fcntl.h>
 #include <map>
 #include <stdexcept>
+#include <sys/socket.h>
 
 #include "LinuxRfcommChannel.hpp"
 #include "io/IOException.hpp"
@@ -38,7 +40,7 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
     {"Name", sdbus::Variant(serviceName)},
     {"Role", sdbus::Variant(std::string("server"))},
     {"Channel", sdbus::Variant(uint16_t(0))},
-    {"RequireAuthentication", sdbus::Variant(false)},
+    {"RequireAuthentication", sdbus::Variant(true)},
     {"RequireAuthorization", sdbus::Variant(false)}
   };
 
@@ -79,6 +81,17 @@ std::unique_ptr<io::Channel> LinuxRfcommServerProfile::accept() {
     address = device->getProperty("Address").onInterface("org.bluez.Device1").get<std::string>();
   } catch (const sdbus::Error& e) {
     throw io::IOException("Failed to get Bluetooth device address for RFCOMM connection: " + std::string(e.what()));
+  }
+
+  struct bt_security security = {};
+  socklen_t securityLength = sizeof(security);
+
+  if (::getsockopt(fd.get(), SOL_BLUETOOTH, BT_SECURITY, &security, &securityLength) < 0) {
+    throw io::IOException("Failed to read RFCOMM link security level: " + std::string(strerror(errno)));
+  }
+
+  if (security.level < BT_SECURITY_HIGH) {
+    throw io::IOException("Rejected an insufficiently secured RFCOMM connection from " + address);
   }
 
   int flags = ::fcntl(fd.get(), F_GETFL, 0);

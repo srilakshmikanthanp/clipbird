@@ -8,13 +8,14 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class PacketDeduplicator(private val ttlInMillis: Long = 5 * 60 * 1000L) : PacketInterceptor {
+class PacketDeduplicator : PacketInterceptor {
   private val seen = ConcurrentHashMap<Uuid, Long>()
 
   override suspend fun intercept(channel: Channel, packet: Packet): Packet? {
     if (packet !is RoutedPacket) return packet
     val now = System.currentTimeMillis()
-    seen.entries.removeIf { it.value < now - ttlInMillis }
-    return if (seen.putIfAbsent(packet.id, now) == null) packet else null
+    seen.entries.removeIf { it.value <= now }
+    val expiry = now + packet.ttlMillis
+    return if (seen.putIfAbsent(packet.id, expiry) == null) packet else null
   }
 }

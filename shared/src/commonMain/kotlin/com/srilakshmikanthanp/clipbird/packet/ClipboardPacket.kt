@@ -9,11 +9,18 @@ import kotlin.uuid.Uuid
 @Serializable
 class ClipboardSyncingPacket(
   override val id: Uuid,
+  override val createdAt: Long,
+  override val ttlMillis: Long,
   val content: ClipboardContent
 ) : RoutedPacket {
   companion object {
     fun create(content: ClipboardContent): ClipboardSyncingPacket {
-      return ClipboardSyncingPacket(id = Uuid.random(), content = content)
+      return ClipboardSyncingPacket(
+        id = Uuid.random(),
+        createdAt = System.currentTimeMillis(),
+        ttlMillis = RoutedPacket.DEFAULT_TTL_MILLIS,
+        content = content,
+      )
     }
   }
 }

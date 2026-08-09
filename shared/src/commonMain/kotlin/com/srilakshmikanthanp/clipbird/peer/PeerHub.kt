@@ -6,6 +6,7 @@ import com.srilakshmikanthanp.clipbird.io.ProgressListener
 import com.srilakshmikanthanp.clipbird.packet.*
 import com.srilakshmikanthanp.clipbird.packet.ErrorPacket.ErrorCode
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketDeduplicator
+import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketExpiry
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketInterceptor
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketInterceptors
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketReRouter
@@ -41,6 +42,7 @@ open class PeerHub<P: PairedDevice>(
   val transferState: StateFlow<TransferState> = _transferState.asStateFlow()
 
   private val packetInterceptor: PacketInterceptor = PacketInterceptors(
+    PacketExpiry(),
     PacketDeduplicator(),
     PacketReRouter { _devices.value.values.map { it.channel } }
   )

@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.pairing.bluetooth
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
-import com.srilakshmikanthanp.clipbird.common.toPublicKey
+import com.srilakshmikanthanp.clipbird.common.toCertificate
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothServerEndpoint
 import com.srilakshmikanthanp.clipbird.packet.PairingPacket
@@ -12,11 +12,10 @@ import com.srilakshmikanthanp.clipbird.pairing.Pairer
 import com.srilakshmikanthanp.clipbird.pairing.PairingVerifier
 import com.srilakshmikanthanp.clipbird.pairing.PairingFailedException
 import com.srilakshmikanthanp.clipbird.utility.CodeGenerator
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalSerializationApi::class)
+@OptIn(ExperimentalUuidApi::class)
 class BluetoothPairer(
   private val bluetoothManager: BluetoothManager,
   private val hostDeviceProvider: HostDeviceProvider,
@@ -27,7 +26,7 @@ class BluetoothPairer(
     val hostDevice = hostDeviceProvider.get()
     val serverEndpoint = BluetoothServerEndpoint(candidate.address, serviceUuid)
     val channel = bluetoothManager.connect(serverEndpoint)
-    val pairingPacket = PairingPacket(hostDevice.id, hostDevice.name, hostDevice.publicKey.encoded)
+    val pairingPacket = PairingPacket(hostDevice.id, hostDevice.name, hostDevice.certificate.encoded)
     channel.sendPacket(pairingPacket)
 
     val packet = channel.nextPacket()
@@ -37,15 +36,15 @@ class BluetoothPairer(
     }
 
     val remote = BluetoothPairedDevice(
-      publicKey = packet.publicKey.toPublicKey(),
+      certificate = packet.certificate.toCertificate(),
       name = packet.deviceName,
       id = packet.deviceId,
       address = candidate.address
     )
 
     val code = CodeGenerator.generate(
-      hostDevice.publicKey.encoded,
-      packet.publicKey
+      hostDevice.certificate.encoded,
+      remote.certificate.encoded
     )
 
     if (pairingVerifier.verify(hostDevice, remote, code)) {

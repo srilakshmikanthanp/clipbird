@@ -10,8 +10,17 @@ import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceEntityDao
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceDao
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairedDeviceEntity
 
-@Database(entities = [PairedDeviceEntity::class, BluetoothPairedDeviceEntity::class, HostDeviceEntity::class], version = 1)
-@ConstructedBy(AppDatabaseConstructor::class)
+@ConstructedBy(
+  AppDatabaseConstructor::class
+)
+@Database(
+  entities = [
+    PairedDeviceEntity::class,
+    BluetoothPairedDeviceEntity::class,
+    HostDeviceEntity::class
+  ],
+  version = 3
+)
 abstract class AppDatabase : RoomDatabase() {
   abstract fun hostDeviceDao(): HostDeviceDao
   abstract fun pairedDeviceDao(): PairedDeviceEntityDao

@@ -1,11 +1,11 @@
 package com.srilakshmikanthanp.clipbird.common
 
 import java.security.PrivateKey
-import java.security.PublicKey
+import java.security.cert.X509Certificate
 
 class HostDevice (
   override val id: Long,
   override val name: String,
-  override val publicKey: PublicKey,
+  override val certificate: X509Certificate,
   val privateKey: PrivateKey,
 ) : Device

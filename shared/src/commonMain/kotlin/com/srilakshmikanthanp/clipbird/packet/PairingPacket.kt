@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 class PairingPacket (
   val deviceId: Long,
   val deviceName: String,
-  val publicKey: ByteArray
+  val certificate: ByteArray
 ) : Packet

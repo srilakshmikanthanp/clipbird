@@ -1,6 +1,6 @@
 package com.srilakshmikanthanp.clipbird.peer.server
 
-import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator
+import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.bluetooth.BluetoothConstants
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
@@ -30,10 +30,10 @@ class ClipbirdServerModule {
   @Single
   fun clipbirdServerHandshakeProtocol(
     service: BluetoothPairedDeviceService,
-    authenticator: Authenticator,
+    hostDeviceProvider: HostDeviceProvider,
   ): ClipbirdServerHandshakeProtocol<BluetoothPairedDevice> = ClipbirdServerHandshakeProtocol(
     service,
-    authenticator
+    hostDeviceProvider
   )
 
   @Single

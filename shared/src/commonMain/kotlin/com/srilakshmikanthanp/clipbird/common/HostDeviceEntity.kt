@@ -8,10 +8,10 @@ class HostDeviceEntity(
   @PrimaryKey(autoGenerate = false) val singleton: Int = 0,
   val id: Long,
   val name: String,
-  val publicKey: ByteArray,
   val privateKey: ByteArray,
+  val certificate: ByteArray,
 )
 
 fun HostDeviceEntity.toHostDevice(): HostDevice {
-  return HostDevice(id, name, publicKey.toPublicKey(), privateKey.toPrivateKey())
+  return HostDevice(id, name, certificate.toCertificate(), privateKey.toPrivateKey())
 }

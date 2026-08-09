@@ -1,6 +1,5 @@
 package com.srilakshmikanthanp.clipbird.common
 
-import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,13 +10,16 @@ import org.koin.core.annotation.Single
 @Module
 class CoreModule {
   @Single
-  fun hostDeviceProvider(dao: HostDeviceDao, bluetoothManager: BluetoothManager): HostDeviceProvider = HostDeviceProvider(
-    dao, bluetoothManager.name
+  fun coroutineScope(): CoroutineScope = CoroutineScope(
+    SupervisorJob() + Dispatchers.Default
   )
 
   @Single
-  fun authenticator(hostDeviceProvider: HostDeviceProvider): Authenticator = Authenticator(hostDeviceProvider)
-
-  @Single
-  fun coroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+  fun hostDeviceProvider(
+    dao: HostDeviceDao,
+    bluetoothManager: BluetoothManager
+  ): HostDeviceProvider = HostDeviceProvider(
+    dao,
+    bluetoothManager.name
+  )
 }

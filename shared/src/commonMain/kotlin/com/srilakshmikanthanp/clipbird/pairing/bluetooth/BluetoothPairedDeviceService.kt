@@ -21,12 +21,16 @@ class BluetoothPairedDeviceService(
     return bleDao.findById(id)?.toBluetoothPairedDevice()
   }
 
+  override suspend fun getAllOneOff(): List<BluetoothPairedDevice> {
+    return bleDao.getAllOneOff().map { it.toBluetoothPairedDevice() }
+  }
+
   override fun getAll(): Flow<List<BluetoothPairedDevice>> {
     return bleDao.getAll().map { bleDevices -> bleDevices.map { it.toBluetoothPairedDevice() } }
   }
 
   override suspend fun upsert(device: BluetoothPairedDevice) {
-    val pairedDeviceEntity = PairedDeviceEntity(id = device.id, name = device.name, publicKey = device.publicKey.encoded)
+    val pairedDeviceEntity = PairedDeviceEntity(id = device.id, name = device.name, certificate = device.certificate.encoded)
     val blePairedDeviceEntity = BluetoothPairedDeviceEntity(id = device.id, address = device.address)
     upsert(pairedDeviceEntity, blePairedDeviceEntity)
   }

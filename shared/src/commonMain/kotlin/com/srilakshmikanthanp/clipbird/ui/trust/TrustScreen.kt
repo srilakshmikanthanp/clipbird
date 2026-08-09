@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
-import com.srilakshmikanthanp.clipbird.utility.publicKeyFingerprint
+import com.srilakshmikanthanp.clipbird.utility.certificateFingerprint
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -66,7 +66,7 @@ private fun DeviceItem(
   device: PairedDevice,
   onRemove: () -> Unit,
 ) {
-  val fingerprint = remember(device.publicKey) { publicKeyFingerprint(device.publicKey) }
+  val fingerprint = remember(device.certificate) { certificateFingerprint(device.certificate) }
   var showDialog by remember { mutableStateOf(false) }
 
   if (showDialog) {

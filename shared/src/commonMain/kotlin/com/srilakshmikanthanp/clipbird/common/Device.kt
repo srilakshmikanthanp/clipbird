@@ -1,9 +1,9 @@
 package com.srilakshmikanthanp.clipbird.common
 
-import java.security.PublicKey
+import java.security.cert.X509Certificate
 
 interface Device {
   val id: Long
   val name: String
-  val publicKey: PublicKey
+  val certificate: X509Certificate
 }

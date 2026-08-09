@@ -1,10 +1,9 @@
 package com.srilakshmikanthanp.clipbird.common
 
-import com.srilakshmikanthanp.clipbird.utility.KeyAlgorithm
-import com.srilakshmikanthanp.clipbird.utility.Nonce
+import com.srilakshmikanthanp.clipbird.crypto.SelfSignedCertificates
+import com.srilakshmikanthanp.clipbird.crypto.KeyPairs
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.security.KeyPairGenerator
 import java.security.SecureRandom
 
 class HostDeviceProvider(private val dao: HostDeviceDao, private val name: String) {
@@ -12,9 +11,10 @@ class HostDeviceProvider(private val dao: HostDeviceDao, private val name: Strin
   private val mutex = Mutex()
 
   private suspend fun create(): HostDeviceEntity {
-    val keyPair = KeyPairGenerator.getInstance(KeyAlgorithm.KEY_ALGORITHM).generateKeyPair()
+    val keyPair = KeyPairs.generate()
     val id = SecureRandom().nextLong()
-    val device = HostDeviceEntity(id = id, name = name, publicKey = keyPair.public.encoded, privateKey = keyPair.private.encoded)
+    val certificate = SelfSignedCertificates.create(keyPair, id.toString())
+    val device = HostDeviceEntity(id = id, name = name, certificate = certificate.encoded, privateKey = keyPair.private.encoded)
     dao.upsert(device)
     return device
   }

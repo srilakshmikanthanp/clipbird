@@ -11,7 +11,7 @@ interface BluetoothPairedDeviceDao {
   @Query(
     """
         SELECT
-            p.id, p.name, p.publicKey, b.address
+            p.id, p.name, p.certificate, b.address
         FROM paired_device p
         JOIN ble_paired_device b
             ON p.id = b.id
@@ -22,7 +22,18 @@ interface BluetoothPairedDeviceDao {
   @Query(
     """
         SELECT
-            p.id, p.name, p.publicKey, b.address
+            p.id, p.name, p.certificate, b.address
+        FROM paired_device p
+        JOIN ble_paired_device b
+            ON p.id = b.id
+    """
+  )
+  suspend fun getAllOneOff(): List<BluetoothPairedDeviceProjection>
+
+  @Query(
+    """
+        SELECT
+            p.id, p.name, p.certificate, b.address
         FROM paired_device p
         JOIN ble_paired_device b
             ON p.id = b.id

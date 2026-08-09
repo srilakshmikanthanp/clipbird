@@ -12,10 +12,6 @@ fun ByteArray.toPacket(packetType: PacketType): Packet {
   return when (packetType) {
     PacketType.ClipboardDataPacketType -> ProtoBuf.decodeFromByteArray<ClipboardSyncingPacket>(this)
     PacketType.PairingPacketType -> ProtoBuf.decodeFromByteArray<PairingPacket>(this)
-    PacketType.NoncePacketType -> ProtoBuf.decodeFromByteArray<NoncePacket>(this)
-    PacketType.SignaturePacketType -> ProtoBuf.decodeFromByteArray<SignaturePacket>(this)
-    PacketType.IdentityPacketType -> ProtoBuf.decodeFromByteArray<IdentityPacket>(this)
-    PacketType.EphemeralKeyPacketType -> ProtoBuf.decodeFromByteArray<EphemeralKeyPacket>(this)
     PacketType.ErrorPacketType -> ProtoBuf.decodeFromByteArray<ErrorPacket>(this)
   }
 }
@@ -24,10 +20,6 @@ fun ByteArray.toPacket(packetType: PacketType): Packet {
 fun Packet.toBytes(): ByteArray = when (this) {
   is ClipboardSyncingPacket -> ProtoBuf.encodeToByteArray(this)
   is PairingPacket -> ProtoBuf.encodeToByteArray(this)
-  is NoncePacket -> ProtoBuf.encodeToByteArray(this)
-  is SignaturePacket -> ProtoBuf.encodeToByteArray(this)
-  is IdentityPacket -> ProtoBuf.encodeToByteArray(this)
-  is EphemeralKeyPacket -> ProtoBuf.encodeToByteArray(this)
   is ErrorPacket -> ProtoBuf.encodeToByteArray(this)
 }
 
@@ -35,10 +27,6 @@ fun Packet.getType(): PacketType {
   return when (this) {
     is ClipboardSyncingPacket -> PacketType.ClipboardDataPacketType
     is PairingPacket -> PacketType.PairingPacketType
-    is NoncePacket -> PacketType.NoncePacketType
-    is SignaturePacket -> PacketType.SignaturePacketType
-    is IdentityPacket -> PacketType.IdentityPacketType
-    is EphemeralKeyPacket -> PacketType.EphemeralKeyPacketType
     is ErrorPacket -> PacketType.ErrorPacketType
   }
 }

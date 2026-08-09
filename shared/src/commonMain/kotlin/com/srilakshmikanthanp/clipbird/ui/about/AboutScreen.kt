@@ -92,7 +92,7 @@ fun AboutScreen(
       title = { Text("Fingerprint") },
       text = {
         Text(
-          text = fingerprint.ifEmpty { "Loading…" },
+          text = fingerprint ?: "Loading…",
           style = MaterialTheme.typography.bodyMedium,
         )
       },

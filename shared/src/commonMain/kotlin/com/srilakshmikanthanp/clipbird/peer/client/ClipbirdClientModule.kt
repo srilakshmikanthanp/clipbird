@@ -8,7 +8,6 @@ import com.srilakshmikanthanp.clipbird.pairing.bluetooth.ble.BleActivePairedDevi
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdClientConnector
 import com.srilakshmikanthanp.clipbird.peer.client.bluetooth.BluetoothClipbirdProtocolClient
-import com.srilakshmikanthanp.clipbird.peer.handshake.authentication.Authenticator
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -25,10 +24,8 @@ class ClipbirdClientModule {
 
   @Single
   fun clipbirdClientHandshakeProtocol(
-    authenticator: Authenticator,
     hostDeviceProvider: HostDeviceProvider,
   ): ClipbirdClientHandshakeProtocol = ClipbirdClientHandshakeProtocol(
-    authenticator,
     hostDeviceProvider
   )
 

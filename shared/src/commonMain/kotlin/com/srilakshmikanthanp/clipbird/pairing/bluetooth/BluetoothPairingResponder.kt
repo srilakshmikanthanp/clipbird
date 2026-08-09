@@ -1,7 +1,7 @@
 package com.srilakshmikanthanp.clipbird.pairing.bluetooth
 
 import com.srilakshmikanthanp.clipbird.common.HostDeviceProvider
-import com.srilakshmikanthanp.clipbird.common.toPublicKey
+import com.srilakshmikanthanp.clipbird.common.toCertificate
 import com.srilakshmikanthanp.clipbird.io.bluetooth.BluetoothChannel
 import com.srilakshmikanthanp.clipbird.packet.PairingPacket
 import com.srilakshmikanthanp.clipbird.packet.nextPacket
@@ -27,7 +27,7 @@ class BluetoothPairingResponder(
     val pairingPacket = PairingPacket(
       deviceId = hostDevice.id,
       deviceName = hostDevice.name,
-      publicKey = hostDevice.publicKey.encoded
+      certificate = hostDevice.certificate.encoded
     )
 
     channel.sendPacket(pairingPacket)
@@ -35,13 +35,13 @@ class BluetoothPairingResponder(
     val remote = BluetoothPairedDevice(
       id = packet.deviceId,
       name = packet.deviceName,
-      publicKey = packet.publicKey.toPublicKey(),
+      certificate = packet.certificate.toCertificate(),
       address = channel.remoteAddress,
     )
 
     val code = CodeGenerator.generate(
-      hostDevice.publicKey.encoded,
-      packet.publicKey,
+      hostDevice.certificate.encoded,
+      remote.certificate.encoded,
     )
 
     if (pairingVerifier.verify(hostDevice, remote, code)) {

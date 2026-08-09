@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 class PairedDeviceEntity (
   @PrimaryKey(autoGenerate = false) val id : Long,
   val name : String,
-  val publicKey: ByteArray,
+  val certificate: ByteArray,
 )

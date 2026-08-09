@@ -113,11 +113,7 @@ private class TlsWriter(private val channel: Channel, private val engine: SSLEng
 
     while (source.hasRemaining()) {
       val record = encrypt(source)
-
-      if (record.isEmpty()) {
-        throw IOException("TLS engine produced no output while plaintext remained")
-      }
-
+      if (record.isEmpty()) throw IOException("TLS engine produced no output while plaintext remained")
       output.write(record)
     }
 

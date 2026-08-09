@@ -2,29 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
   <!-- Bluetooth (API 31+) -->
-  <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-  <uses-permission
-      android:name="android.permission.BLUETOOTH_SCAN"
-      android:usesPermissionFlags="neverForLocation" />
-  <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+  <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+  <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation"/>
+  <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
 
   <!-- Bluetooth (API 30 and below) -->
-  <uses-permission
-      android:name="android.permission.BLUETOOTH"
-      android:maxSdkVersion="30" />
-  <uses-permission
-      android:name="android.permission.BLUETOOTH_ADMIN"
-      android:maxSdkVersion="30" />
+  <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
 
   <!-- Notifications (API 33+) -->
-  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
   <!-- Foreground service -->
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
 
   <!-- Battery optimization exemption -->
-  <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+  <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
   <application
       android:name=".ClipbirdApplication"
@@ -47,7 +41,7 @@
     <service
         android:name=".ClipbirdService"
         android:exported="false"
-        android:foregroundServiceType="connectedDevice" />
+        android:foregroundServiceType="connectedDevice"/>
 
     <activity
         android:name=".handlers.SendHandler"
@@ -55,32 +49,32 @@
         android:excludeFromRecents="true"
         android:noHistory="true"
         android:taskAffinity=""
-        android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     <activity
         android:name=".handlers.ShareHandler"
         android:exported="true"
         android:theme="@android:style/Theme.Translucent.NoTitleBar">
       <intent-filter>
-        <action android:name="android.intent.action.SEND" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <data android:mimeType="text/plain" />
+        <action android:name="android.intent.action.SEND"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="text/plain"/>
       </intent-filter>
       <intent-filter>
-        <action android:name="android.intent.action.SEND" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <data android:mimeType="image/*" />
+        <action android:name="android.intent.action.SEND"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="image/*"/>
       </intent-filter>
       <intent-filter>
-        <action android:name="android.intent.action.PROCESS_TEXT" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <data android:mimeType="text/plain" />
+        <action android:name="android.intent.action.PROCESS_TEXT"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="text/plain"/>
       </intent-filter>
     </activity>
 
     <receiver
         android:name=".pairing.PairingVerificationReceiver"
-        android:exported="false" />
+        android:exported="false"/>
 
     <provider
         android:name="androidx.core.content.FileProvider"
@@ -89,7 +83,7 @@
         android:grantUriPermissions="true">
       <meta-data
           android:name="android.support.FILE_PROVIDER_PATHS"
-          android:resource="@xml/file_paths" />
+          android:resource="@xml/file_paths"/>
     </provider>
   </application>
 

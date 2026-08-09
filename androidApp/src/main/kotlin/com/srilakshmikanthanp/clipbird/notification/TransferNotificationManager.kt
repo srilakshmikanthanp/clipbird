@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import com.srilakshmikanthanp.clipbird.ClipbirdService
 import com.srilakshmikanthanp.clipbird.MainActivity
@@ -14,7 +13,9 @@ import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
 import com.srilakshmikanthanp.clipbird.peer.TransferState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class TransferNotificationManager(
   private val context: Context,
@@ -23,7 +24,6 @@ class TransferNotificationManager(
 ) {
   private val notificationManager = context.getSystemService(NotificationManager::class.java)
 
-  private var lastProgressMs = 0L
   private var job: Job? = null
 
   private fun historyPendingIntent(): PendingIntent {
@@ -68,14 +68,6 @@ class TransferNotificationManager(
   }
 
   private fun showProgress(current: Int, total: Int) {
-    val now = SystemClock.elapsedRealtime()
-
-    if (now - lastProgressMs < THROTTLE_MS) {
-      return
-    }
-
-    lastProgressMs = now
-
     notify(contentIntent = historyPendingIntent()) {
       if (total > 0) {
         val percent = (current * 100L / total).toInt()
@@ -108,6 +100,8 @@ class TransferNotificationManager(
           is TransferState.Success -> showDone(true)
           is TransferState.Failure -> showDone(false)
         }
+
+        delay(THROTTLE_MS.milliseconds)
       }
     }
   }

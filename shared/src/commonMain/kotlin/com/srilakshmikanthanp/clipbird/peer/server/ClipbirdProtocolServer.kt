@@ -24,6 +24,7 @@ open class ClipbirdProtocolServer<P: PairedDevice>(
   private val scope: CoroutineScope,
 ) {
   private var job: Job? = null
+
   private suspend fun handleChannel(channel: Channel) {
     try {
       val peerConnection = handshakeProtocol.handshake(channel)

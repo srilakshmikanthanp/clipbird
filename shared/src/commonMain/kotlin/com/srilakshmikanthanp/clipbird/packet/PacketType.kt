@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable(with = PacketTypeSerializer::class)
 enum class PacketType(val value: Int) {
   PairingPacketType(0x01),
-  ClipboardDataPacketType(0x05),
+  ClipboardDataPacketType(0x02),
   ErrorPacketType(0xFF);
 
   companion object {

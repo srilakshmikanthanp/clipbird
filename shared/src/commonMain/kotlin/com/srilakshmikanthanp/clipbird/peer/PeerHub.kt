@@ -2,6 +2,7 @@ package com.srilakshmikanthanp.clipbird.peer
 
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardContent
+import com.srilakshmikanthanp.clipbird.common.closeQuietly
 import com.srilakshmikanthanp.clipbird.io.ProgressListener
 import com.srilakshmikanthanp.clipbird.packet.*
 import com.srilakshmikanthanp.clipbird.packet.ErrorPacket.ErrorCode
@@ -99,13 +100,13 @@ open class PeerHub<P: PairedDevice>(
         _devices.value -= connection.device.id
       }
     }.also {
-      connection.close()
+      connection.closeQuietly()
     }
   }
 
   suspend fun sendClipboard(clipboardContent: ClipboardContent): Unit = sendMutex.withLock {
-    if (clipboardContent == ClipboardContent.Empty) return
     try {
+      if (clipboardContent == ClipboardContent.Empty) return
       val listener = ProgressListener { p, t -> _transferState.value = TransferState.Progress(p, t) }
       _transferState.value = TransferState.Progress(0, 0)
       val connections = devicesMutex.withLock { _devices.value.values.toList() }
@@ -113,7 +114,7 @@ open class PeerHub<P: PairedDevice>(
       connections.forEach { it.channel.sendPacket(packet, listener) }
       _transferState.value = TransferState.Success
     } catch (e: CancellationException) {
-      _transferState.value = TransferState.Success
+      _transferState.value = TransferState.Failure(e)
       throw e
     } catch (e: Exception) {
       _transferState.value = TransferState.Failure(e)
@@ -129,7 +130,7 @@ open class PeerHub<P: PairedDevice>(
 
     if (stale != null) {
       Logger.w("Replacing stale connection for ${connection.device.name}", null, TAG)
-      stale.close()
+      stale.closeQuietly()
     }
 
     scope.launch {
@@ -147,7 +148,7 @@ open class PeerHub<P: PairedDevice>(
   }
 
   fun stop() {
-    _devices.value.values.forEach(PeerConnection::close)
+    _devices.value.values.forEach(PeerConnection::closeQuietly)
     _devices.value = emptyMap()
     job?.cancel()
   }

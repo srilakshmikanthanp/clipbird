@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird
 
+import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.clipboard.replication.bluetooth.BluetoothClipboardReplicator
 import com.srilakshmikanthanp.clipbird.pairing.bluetooth.BluetoothPairingChannelCollector
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
@@ -17,19 +18,23 @@ class AppRuntime : KoinComponent {
 
   @Synchronized
   fun start() {
+    Logger.i { "Starting AppRuntime..." }
     clipbirdProtocolServer.start()
     clipbirdProtocolClient.start()
     pairingChannelCollector.start()
     clipboardSyncer.start()
     channelHub.start()
+    Logger.i { "AppRuntime started." }
   }
 
   @Synchronized
   fun stop() {
+    Logger.i { "Stopping AppRuntime..." }
     clipbirdProtocolServer.stop()
     clipbirdProtocolClient.stop()
     pairingChannelCollector.stop()
     clipboardSyncer.stop()
     channelHub.stop()
+    Logger.i { "AppRuntime stopped." }
   }
 }

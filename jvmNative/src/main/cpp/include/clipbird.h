@@ -10,3 +10,4 @@
 #include "io/bluetooth/bluetooth_channel.h"
 #include "io/bluetooth/bluetooth_server.h"
 #include "log/log.h"
+#include "power/power_handler.h"

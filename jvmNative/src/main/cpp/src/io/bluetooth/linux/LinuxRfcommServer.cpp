@@ -14,8 +14,8 @@ std::unique_ptr<io::Channel> LinuxRfcommServer::accept() {
 }
 
 LinuxRfcommServer::~LinuxRfcommServer() {
-	profileRegistration.reset();
 	connection->leaveEventLoop();
+	profileRegistration.reset();
 }
 
 }  // namespace clipbird::io::bluetooth

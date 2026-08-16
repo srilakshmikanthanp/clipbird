@@ -7,14 +7,14 @@ import classes from './hero.module.css';
 export default function Hero() {
     return (
         <section className={classes.hero}>
-            <Pill icon={<FaBluetooth />}>No internet · No account · No server</Pill>
-            <h1>Same you, why different clipboards?</h1>
+            <Pill icon={<FaBluetooth />}>No cloud · No account · No router</Pill>
+            <h1>One you. One clipboard. Every device.</h1>
             <p className={classes.hero__primary}>
-                Share your clipboard between devices — no internet, no shared network.
+                Copy on one device. Paste on another. Nothing in between.
             </p>
             <p className={classes.hero__description}>
-                Clipbird syncs clipboard content directly between your devices without internet or a common network. No
-                cloud, no router, no account required.
+                Clipbird syncs clipboard content directly between your devices — no cloud, no router,
+                no account required.
             </p>
 
             <Button icon={<MdOutlineFileDownload size={20} />} href="#downloads">

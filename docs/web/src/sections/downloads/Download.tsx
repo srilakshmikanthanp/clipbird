@@ -7,7 +7,7 @@ export default function Download() {
     return (
         <section className={classes.download} id="downloads">
             <h2>Downloads</h2>
-            <p>Download the latest version for your platform from the GitHub releases.</p>
+            <p>Get the latest release for your platform on GitHub.</p>
             <div className={classes.links}>
                 <Button
                     icon={<FaLinux size={20} />}

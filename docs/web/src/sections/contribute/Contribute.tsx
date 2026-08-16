@@ -14,7 +14,7 @@ const contributeSteps: IStep[] = [
         step_number: 1,
         icon: <VscRepoForked size={50} color="var(--color-secondary)" />,
         title: 'Fork the Repository',
-        description: 'Start by forking the Clipbird repository on GitHub to create your own copy of the project.',
+        description: 'Fork the Clipbird repository on GitHub to get started.',
         cta: (
             <div className={classes.contribute__links}>
                 <Hyperlink
@@ -77,7 +77,7 @@ export default function Contribute() {
             <h2>Contribute</h2>
             <p>
                 Clipbird is a free and open-source project, and we welcome contributions from the community. Whether you
-                want to change, add a feature, or fix a bug, your contributions are valuable to us.
+                want to report an issue, add a feature, or fix a bug, your contributions are valuable to us.
             </p>
 
             <div className={classes.contribute__option}>

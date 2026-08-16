@@ -14,7 +14,7 @@ export default function Features() {
                         <HiOutlineClipboardDocumentList size={60} />
                     </div>
                     <h3>Clipboard Sync</h3>
-                    <p>Instantly send clipboard content from one device to all your devices with a single tap.</p>
+                    <p>Instantly send clipboard content from one device to all your devices with a single action.</p>
                 </Card>
 
                 <Card>
@@ -38,7 +38,7 @@ export default function Features() {
                         <GoHistory size={60} />
                     </div>
                     <h3>Clipboard History</h3>
-                    <p>Browse past clipboard items received from your peers.</p>
+                    <p>Browse clipboard items received from your other devices.</p>
                 </Card>
             </div>
         </section>

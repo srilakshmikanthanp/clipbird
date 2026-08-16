@@ -21,22 +21,22 @@ const setupSteps: IStep[] = [
     {
         step_number: 2,
         icon: <FaBluetooth size={50} color="var(--color-secondary)" />,
-        title: 'Pair via Bluetooth',
+        title: 'Bluetooth Pairing',
         description:
-            'Use your operating system\'s Bluetooth settings to pair your devices with each other.'
+            'Pair your devices using your OS Bluetooth settings.'
     },
     {
         step_number: 3,
         icon: <MdOutlinePhonelinkSetup size={50} color="var(--color-secondary)" />,
-        title: 'Pair in Clipbird',
-        description: 'Open Clipbird on both devices and pair them within the app.'
+        title: 'In-App Pairing',
+        description: 'Open Clipbird on both devices and pair them from the app\'s device list.'
     },
     {
         step_number: 4,
         icon: <LuSend size={50} color="var(--color-secondary)" />,
         title: 'Copy & Send',
         description:
-            'Copy text on any device, then send it — on Android, tap Send from the History screen or the notification; on Linux, click Send from the History screen or double-click the tray icon to open the compact history window and click Send.'
+            'Copy text on any device and send it. On Android, tap Send from the notification or History screen. On Linux, click Send from the History screen, or double-click the tray icon to open the compact history and click Send.'
     }
 ];
 

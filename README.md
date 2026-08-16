@@ -1,6 +1,6 @@
 # Clipbird
 
-Share your clipboard between devices over Bluetooth — no internet, no account, no server.
+Share your clipboard between devices over Bluetooth.
 
 For downloads, setup instructions, and more, visit **[clipbird.srilakshmikanthanp.com](https://clipbird.srilakshmikanthanp.com/)**.
 

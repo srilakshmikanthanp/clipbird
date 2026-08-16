@@ -7,7 +7,9 @@
 
     --color-primary: #1e6fff;
     --color-primary-dark: #1250cc;
+    --color-brand-dark: #1d4ed8;
     --color-secondary: #ffa726;
+    --color-text-on-accent: #1a1a00;
     --color-bg: #f8fafc;
     --color-surface: #ffffff;
     --color-text: #1e293b;
@@ -81,4 +83,21 @@ p {
     margin-bottom: 0.4em;
     line-height: 1.7;
     color: var(--color-muted);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+@media (max-width: 48rem) {
+    h1 {
+        font-size: 3.8rem;
+    }
+
+    h2 {
+        font-size: 3rem;
+        margin-bottom: 1.2em;
+    }
 }

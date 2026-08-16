@@ -12,7 +12,7 @@
     transition: transform 0.22s cubic-bezier(0.04, 0.05, 0.8, 1.22), box-shadow 0.22s ease;
 
     &:hover {
-        transform: translateY(-0.8rem);
+        transform: translateY(-0.4rem);
         box-shadow: 0 12px 32px rgba(30, 111, 255, 0.18);
     }
 

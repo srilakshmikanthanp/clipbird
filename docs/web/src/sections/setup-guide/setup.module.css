@@ -1,9 +1,13 @@
 .setup {
-    padding: 0 4rem 10rem;
+    padding: 10rem 4rem;
     background: var(--color-bg);
 
     .setup__instructions {
         margin: 0 auto;
         max-width: 680px;
+    }
+
+    @media (max-width: 48rem) {
+        padding: 6rem 2rem;
     }
 }

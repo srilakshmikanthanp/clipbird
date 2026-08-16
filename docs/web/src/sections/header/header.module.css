@@ -17,4 +17,8 @@
             opacity: 0.8;
         }
     }
+
+    @media (max-width: 48rem) {
+        padding: 1.2rem 1.6rem;
+    }
 }

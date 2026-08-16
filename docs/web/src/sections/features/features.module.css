@@ -9,4 +9,12 @@
         gap: 3rem;
         align-items: stretch;
     }
+
+    @media (max-width: 48rem) {
+        padding: 6rem 2rem;
+
+        .features__list {
+            grid-template-columns: 1fr;
+        }
+    }
 }

@@ -9,6 +9,8 @@ namespace clipbird::io {
 class Server {
  public:
   virtual std::unique_ptr<Channel> accept() = 0;
+  virtual void close() = 0;
+
   virtual ~Server() = default;
 };
 

@@ -91,6 +91,31 @@ const char* clipbird_io_bluetooth_channel_remote_address(clipbird_io_bluetooth_c
   }
 }
 
+bool clipbird_io_bluetooth_channel_close(clipbird_io_bluetooth_channel_t* channel) {
+  if (!channel || !channel->impl) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_CHANNEL_INVALID_ARGUMENT, "Invalid argument: channel must not be null.");
+    return false;
+  }
+
+  try {
+    channel->impl->close();
+    error::clearLastError();
+    return true;
+  } catch (const io::IOException& e) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_CHANNEL_IO_ERROR, e.what());
+    return false;
+  } catch (const std::system_error& e) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_CHANNEL_IO_ERROR, e.what());
+    return false;
+  } catch (const std::exception& e) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_CHANNEL_INTERNAL_ERROR, e.what());
+    return false;
+  } catch (...) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_CHANNEL_INTERNAL_ERROR, "Unknown error occurred while closing the channel.");
+    return false;
+  }
+}
+
 void clipbird_io_bluetooth_channel_destroy(clipbird_io_bluetooth_channel_t* channel) {
   delete channel;
 }

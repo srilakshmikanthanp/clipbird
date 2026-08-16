@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ClipbirdBluetoothServer(
   private val bluetoothManager: BluetoothManager,
@@ -17,17 +18,20 @@ class ClipbirdBluetoothServer(
   override val channels: Flow<Channel> = channelFlow {
     val server = bluetoothManager.start(serverConfig)
 
-    val job = launch {
+    launch {
       server.use { server ->
-        while (isActive) {
-          send(server.accept())
+        try {
+          while (isActive) {
+            send(server.accept())
+          }
+        } catch (_: IOException) {
+          // Expected once the server is closed; accept cannot be cancelled.
         }
       }
     }
 
     awaitClose {
       server.close()
-      job.cancel()
     }
   }
 }

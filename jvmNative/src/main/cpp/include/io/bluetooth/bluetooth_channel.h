@@ -45,7 +45,17 @@ bool clipbird_io_bluetooth_channel_write(clipbird_io_bluetooth_channel_t* channe
 const char* clipbird_io_bluetooth_channel_remote_address(clipbird_io_bluetooth_channel_t* channel);
 
 /**
+ * Unblocks a pending read or write on the specified channel, which then fails with CLIPBIRD_IO_BLUETOOTH_CHANNEL_EOF or
+ * CLIPBIRD_IO_BLUETOOTH_CHANNEL_IO_ERROR. Safe to call from any thread and more than once. This only signals: the instance stays
+ * valid, so the caller must ensure every read and write has returned before calling clipbird_io_bluetooth_channel_destroy.
+ * @param channel A pointer to the channel instance to close.
+ * @return true on success, or false on failure. In case of failure, the last error can be retrieved using the error handling functions.
+ */
+bool clipbird_io_bluetooth_channel_close(clipbird_io_bluetooth_channel_t* channel);
+
+/**
  * Destroys a channel instance and releases its resources.
+ * The caller must ensure no read or write is in flight; call clipbird_io_bluetooth_channel_close first and wait for them to return.
  * @param channel A pointer to the channel instance to destroy.
  */
 void clipbird_io_bluetooth_channel_destroy(clipbird_io_bluetooth_channel_t* channel);

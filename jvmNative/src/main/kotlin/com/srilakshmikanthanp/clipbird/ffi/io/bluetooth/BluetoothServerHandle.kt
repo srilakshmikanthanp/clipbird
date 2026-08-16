@@ -11,6 +11,10 @@ object BluetoothServerHandle {
     return Clipbird.clipbird_io_bluetooth_server_accept(server).orThrow { IOException("Failed to accept connection: ${NativeErrorHandle.lastErrorMessage()}") }
   }
 
+  fun close(server: MemorySegment) {
+    Clipbird.clipbird_io_bluetooth_server_close(server).orThrow { IOException("Failed to close server: ${NativeErrorHandle.lastErrorMessage()}") }
+  }
+
   fun destroy(server: MemorySegment) {
     Clipbird.clipbird_io_bluetooth_server_destroy(server)
   }

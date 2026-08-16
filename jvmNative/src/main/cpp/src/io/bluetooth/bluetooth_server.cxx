@@ -43,6 +43,31 @@ clipbird_io_bluetooth_channel_t* clipbird_io_bluetooth_server_accept(clipbird_io
   }
 }
 
+bool clipbird_io_bluetooth_server_close(clipbird_io_bluetooth_server_t* server) {
+  if (!server || !server->impl) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_SERVER_INVALID_ARGUMENT, "Invalid argument: server must not be null.");
+    return false;
+  }
+
+  try {
+    server->impl->close();
+    error::clearLastError();
+    return true;
+  } catch (const io::IOException& e) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_SERVER_IO_ERROR, e.what());
+    return false;
+  } catch (const std::system_error& e) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_SERVER_IO_ERROR, e.what());
+    return false;
+  } catch (const std::exception& e) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_SERVER_INTERNAL_ERROR, e.what());
+    return false;
+  } catch (...) {
+    error::setLastError(CLIPBIRD_IO_BLUETOOTH_SERVER_INTERNAL_ERROR, "Unknown error occurred while closing the server.");
+    return false;
+  }
+}
+
 void clipbird_io_bluetooth_server_destroy(clipbird_io_bluetooth_server_t* server) {
   delete server;
 }

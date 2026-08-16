@@ -4,6 +4,7 @@ import com.srilakshmikanthanp.clipbird.ffi.common.NativeCleaners
 import com.srilakshmikanthanp.clipbird.ffi.io.bluetooth.BluetoothChannelHandle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.lang.foreign.MemorySegment
 
 class NativeBluetoothChannel(private val channel: MemorySegment) : BluetoothChannel {
@@ -11,17 +12,50 @@ class NativeBluetoothChannel(private val channel: MemorySegment) : BluetoothChan
     BluetoothChannelHandle.destroy(channel)
   }
 
-  override val remoteAddress: String get() = BluetoothChannelHandle.remoteAddress(channel)
+  private val lock = Any()
+  private var inFlight = 0
+  private var closed = false
+
+  private inline fun <T> withHandle(block: () -> T): T {
+    synchronized(lock) {
+      if (closed) throw IOException("Channel is closed")
+      inFlight++
+    }
+
+    try {
+      return block()
+    } finally {
+      synchronized(lock) { inFlight-- }
+      tryDestroy()
+    }
+  }
+
+  private fun tryDestroy() {
+    if (synchronized(lock) { closed && inFlight == 0 }) {
+      cleanable.clean()
+    }
+  }
+
+  override val remoteAddress: String get() = withHandle { BluetoothChannelHandle.remoteAddress(channel) }
 
   override suspend fun readExactly(size: Int): ByteArray = withContext(Dispatchers.IO) {
-    BluetoothChannelHandle.readExactly(channel, size)
+    withHandle { BluetoothChannelHandle.readExactly(channel, size) }
   }
 
   override suspend fun write(data: ByteArray, offset: Int, length: Int) = withContext(Dispatchers.IO) {
-    BluetoothChannelHandle.write(channel, data, offset, length.toLong())
+    withHandle { BluetoothChannelHandle.write(channel, data, offset, length.toLong()) }
   }
 
   override fun close() {
-    cleanable.clean()
+    synchronized(lock) {
+      if (closed) return
+      closed = true
+    }
+
+    try {
+      BluetoothChannelHandle.close(channel)
+    } finally {
+      tryDestroy()
+    }
   }
 }

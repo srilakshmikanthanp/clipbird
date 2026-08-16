@@ -34,6 +34,12 @@ object BluetoothChannelHandle {
     }.getString(0)
   }
 
+  fun close(channel: MemorySegment) {
+    Clipbird.clipbird_io_bluetooth_channel_close(channel).orThrow {
+      IOException("Failed to close channel: ${NativeErrorHandle.lastErrorMessage()}")
+    }
+  }
+
   fun destroy(channel: MemorySegment) {
     Clipbird.clipbird_io_bluetooth_channel_destroy(channel)
   }

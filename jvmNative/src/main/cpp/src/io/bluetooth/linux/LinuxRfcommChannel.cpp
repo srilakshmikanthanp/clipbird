@@ -5,6 +5,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <boost/log/trivial.hpp>
+#include <cerrno>
+#include <cstring>
 #include <stdexcept>
 #include <system_error>
 #include <utility>
@@ -67,8 +70,26 @@ void LinuxRfcommChannel::write(const std::vector<std::uint8_t>& data) {
   }
 }
 
+void LinuxRfcommChannel::close() {
+  if (shutdown_done.exchange(true)) {
+    return;
+  }
+
+  if (::shutdown(socket_fd, SHUT_RDWR) == 0) {
+    return;
+  }
+
+  if (errno == ENOTCONN) {
+    return;
+  }
+
+  throw std::system_error(errno, std::generic_category(), "Failed to shut down RFCOMM socket");
+}
+
 LinuxRfcommChannel::~LinuxRfcommChannel() {
-  ::close(socket_fd);
+  if (::close(socket_fd) != 0) {
+    BOOST_LOG_TRIVIAL(warning) << "Failed to close RFCOMM socket: " << std::strerror(errno);
+  }
 }
 
 }  // namespace clipbird::io::bluetooth

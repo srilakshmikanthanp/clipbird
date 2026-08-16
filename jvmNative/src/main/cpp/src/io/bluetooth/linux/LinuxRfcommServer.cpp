@@ -13,6 +13,12 @@ std::unique_ptr<io::Channel> LinuxRfcommServer::accept() {
   return profileRegistration->accept();
 }
 
+void LinuxRfcommServer::close() {
+  if (profileRegistration) {
+    profileRegistration->close();
+  }
+}
+
 LinuxRfcommServer::~LinuxRfcommServer() {
 	connection->leaveEventLoop();
 	profileRegistration.reset();

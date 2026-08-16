@@ -32,7 +32,7 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
     }),
     sdbus::registerMethod("Cancel").implementedAs([]() {}),
     sdbus::registerMethod("Release").implementedAs([this]() {
-      this->release();
+      this->close();
     })
   ).forInterface("org.bluez.Profile1");
 
@@ -59,9 +59,18 @@ void LinuxRfcommServerProfile::onNewConnection(const sdbus::ObjectPath& device, 
   }
 }
 
-void LinuxRfcommServerProfile::release() {
-  registered = false;
+void LinuxRfcommServerProfile::close() {
+  if (!registered.exchange(false)) {
+    return;
+  }
+
   acceptedConnections.close();
+
+  try {
+    profileManager->callMethod("UnregisterProfile").onInterface("org.bluez.ProfileManager1").withArguments(objectPath);
+  } catch (const sdbus::Error& e) {
+    throw io::IOException("Failed to unregister BlueZ RFCOMM server profile: " + std::string(e.what()));
+  }
 }
 
 std::unique_ptr<io::Channel> LinuxRfcommServerProfile::accept() {
@@ -104,17 +113,10 @@ std::unique_ptr<io::Channel> LinuxRfcommServerProfile::accept() {
 }
 
 LinuxRfcommServerProfile::~LinuxRfcommServerProfile() {
-  if (registered) {
-    this->release();
-  } else {
-    BOOST_LOG_TRIVIAL(debug) << "BlueZ RFCOMM server profile was already released";
-    return;
-  }
-
   try {
-    profileManager->callMethod("UnregisterProfile").onInterface("org.bluez.ProfileManager1").withArguments(objectPath);
-  } catch (const sdbus::Error& e) {
-    BOOST_LOG_TRIVIAL(warning) << "Failed to unregister BlueZ RFCOMM server profile: " << e.what();
+    this->close();
+  } catch (const std::exception& e) {
+    BOOST_LOG_TRIVIAL(warning) << e.what();
   }
 }
 

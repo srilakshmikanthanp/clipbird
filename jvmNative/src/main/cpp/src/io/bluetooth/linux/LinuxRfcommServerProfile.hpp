@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -18,11 +19,10 @@ class LinuxRfcommServerProfile final {
   LinuxRfcommServerProfile(const LinuxRfcommServerProfile&) = delete;
   LinuxRfcommServerProfile& operator=(const LinuxRfcommServerProfile&) = delete;
   ~LinuxRfcommServerProfile();
-
   std::unique_ptr<io::Channel> accept();
+  void close();
 
  private:
-  void release();
   void onNewConnection(const sdbus::ObjectPath& device, sdbus::UnixFd fd, const std::map<std::string, sdbus::Variant>& properties);
 
   sdbus::IConnection& connection;
@@ -30,7 +30,7 @@ class LinuxRfcommServerProfile final {
   sdbus::ObjectPath objectPath;
   std::unique_ptr<sdbus::IObject> object;
   std::unique_ptr<sdbus::IProxy> profileManager;
-  bool registered = false;
+  std::atomic<bool> registered{false};
 };
 
 }  // namespace clipbird::io::bluetooth

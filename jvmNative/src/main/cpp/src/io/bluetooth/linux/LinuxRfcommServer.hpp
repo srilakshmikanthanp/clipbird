@@ -16,6 +16,7 @@ class LinuxRfcommServer final : public io::Server {
  public:
   LinuxRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid);
   std::unique_ptr<io::Channel> accept() override;
+  void close() override;
   ~LinuxRfcommServer() override;
 
  private:

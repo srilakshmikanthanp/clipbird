@@ -19,14 +19,14 @@ class ClipbirdBluetoothServer(
     val server = bluetoothManager.start(serverConfig)
 
     launch {
-      server.use { server ->
-        try {
+      try {
+        server.use { server ->
           while (isActive) {
             send(server.accept())
           }
-        } catch (_: IOException) {
-          // Expected once the server is closed; accept cannot be cancelled.
         }
+      } catch (e: IOException) {
+        if (isActive) close(e)
       }
     }
 

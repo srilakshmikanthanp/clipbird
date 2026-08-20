@@ -1,13 +1,7 @@
 package com.srilakshmikanthanp.clipbird.permission
 
-import android.Manifest.permission
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
-import android.os.PowerManager
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
@@ -33,26 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
-
-private fun Context.hasRequiredPermissions(permissions: Array<String>) = permissions.all {
-  checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
-}
-
-private fun PowerManager.isIgnoringBatteryOptimizations(context: Context): Boolean {
-  return isIgnoringBatteryOptimizations(context.packageName)
-}
-
-private val RequiredPermissions: Array<String> get() = buildList {
-  if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-    add(permission.POST_NOTIFICATIONS)
-  }
-
-  if (VERSION.SDK_INT >= VERSION_CODES.S) {
-    add(permission.BLUETOOTH_CONNECT)
-    add(permission.BLUETOOTH_SCAN)
-    add(permission.BLUETOOTH_ADVERTISE)
-  }
-}.toTypedArray()
+import com.srilakshmikanthanp.clipbird.extension.hasRequiredPermissions
+import com.srilakshmikanthanp.clipbird.extension.isBatteryOptimizationDisabled
+import com.srilakshmikanthanp.clipbird.extension.requiredPermissions
 
 @Composable
 private fun ActionRequired(message: String, action: String, onClick: () -> Unit) {
@@ -80,32 +57,26 @@ fun PermissionGate(content: @Composable () -> Unit) {
   val permissionViewModel: PermissionViewModel = viewModel()
   val context = LocalContext.current
 
-  val powerManager = remember {
-    context.getSystemService(Context.POWER_SERVICE) as PowerManager
-  }
-
-  val permissions = remember {
-    RequiredPermissions
-  }
+  val permissions = remember { requiredPermissions }
 
   var batteryOptimizationDisabled by remember {
-    mutableStateOf(powerManager.isIgnoringBatteryOptimizations(context))
+    mutableStateOf(context.isBatteryOptimizationDisabled())
   }
 
   var permissionsGranted by remember {
-    mutableStateOf(context.hasRequiredPermissions(permissions))
+    mutableStateOf(context.hasRequiredPermissions())
   }
 
   val batteryOptimizationDisableLauncher = rememberLauncherForActivityResult(
     StartActivityForResult()
   ) {
-    batteryOptimizationDisabled = powerManager.isIgnoringBatteryOptimizations(context)
+    batteryOptimizationDisabled = context.isBatteryOptimizationDisabled()
   }
 
   val permissionGrantLauncher = rememberLauncherForActivityResult(
     RequestMultiplePermissions()
   ) {
-    permissionsGranted = context.hasRequiredPermissions(permissions)
+    permissionsGranted = context.hasRequiredPermissions()
   }
 
   LaunchedEffect(permissionsGranted, batteryOptimizationDisabled) {

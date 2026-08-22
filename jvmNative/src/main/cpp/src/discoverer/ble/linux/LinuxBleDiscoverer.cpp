@@ -98,16 +98,13 @@ void LinuxBleDiscoverer::onAdapterPropertiesChanged(
     return;
   }
 
-  if (!discovering.exchange(false)) {
-    return;
-  }
+  const bool wasDiscovering = discovering.exchange(false);
 
-  {
-    std::lock_guard lock(knownDevicesMutex);
-    knownDevices.clear();
-  }
+  stopDiscovery();
 
-  listener.onDiscoveryStopped();
+  if (wasDiscovering) {
+    listener.onDiscoveryStopped();
+  }
 }
 
 LinuxBleDiscoverer::LinuxBleDiscoverer(
@@ -184,12 +181,14 @@ void LinuxBleDiscoverer::startDiscovery() {
 }
 
 void LinuxBleDiscoverer::stopDiscovery() {
-  if (!discovering.exchange(false)) return;
+  const bool wasDiscovering = discovering.exchange(false);
 
-  adapterProxy->callMethodAsync("StopDiscovery")
-    .onInterface(kAdapterInterface)
-    .getResultAsFuture()
-    .get();
+  if (wasDiscovering) {
+    adapterProxy->callMethodAsync("StopDiscovery")
+      .onInterface(kAdapterInterface)
+      .getResultAsFuture()
+      .get();
+  }
 
   deviceMatchSlot.reset();
 
@@ -198,8 +197,9 @@ void LinuxBleDiscoverer::stopDiscovery() {
     knownDevices.clear();
   }
 
-  adapterProxy.reset();
-  listener.onDiscoveryStopped();
+  if (wasDiscovering) {
+    listener.onDiscoveryStopped();
+  }
 }
 
 LinuxBleDiscoverer::~LinuxBleDiscoverer() {

@@ -6,12 +6,7 @@ For downloads, setup instructions, and more, visit **[clipbird.srilakshmikanthan
 
 ## History
 
-Clipbird was previously developed as separate desktop and Android applications using a network-based synchronization approach:
-
-- [Clipbirdesk](https://github.com/srilakshmikanthanp/clipbirdesk) — Desktop application
-- [Clipbirdroid](https://github.com/srilakshmikanthanp/clipbirdroid) — Android application
-
-The new version removes the requirement for devices to be on the same network.
+Clipbird was previously developed in separate repositories for [desktop](https://github.com/srilakshmikanthanp/clipbirdesk) and [Android](https://github.com/srilakshmikanthanp/clipbirdroid), using a network-based synchronization approach. The new version removes the requirement for devices to be on the same network.
 
 ## Contributing
 

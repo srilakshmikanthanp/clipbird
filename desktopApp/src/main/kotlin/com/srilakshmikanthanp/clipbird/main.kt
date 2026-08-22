@@ -89,7 +89,7 @@ fun NucleusApplicationScope.ClipbirdApplication() {
 
     CheckableItem(
       isEnabled = AutoLaunch.isRunningFromDistributable,
-      label = "Launch at Login",
+      label = "Autostart",
       checked = launchAtLogin,
       onCheckedChange = { onAutoLaunchChange(it) }
     )

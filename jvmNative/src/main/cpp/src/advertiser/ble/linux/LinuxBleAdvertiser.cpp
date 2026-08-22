@@ -5,6 +5,7 @@
 #include <string>
 
 #include "advertiser/ble/ble_advertiser_code.h"
+#include "utility/utility.hpp"
 
 namespace clipbird::advertiser::ble {
 
@@ -125,8 +126,8 @@ void LinuxBleAdvertiser::stopAdvertising() {
 }
 
 LinuxBleAdvertiser::~LinuxBleAdvertiser() {
-  this->stopAdvertising();
-  connection->leaveEventLoop();
+  utility::logOnThrow("Failed to stop BLE advertising", [this] { this->stopAdvertising(); });
+  utility::logOnThrow("Failed to leave BLE advertiser event loop", [this] { connection->leaveEventLoop(); });
 }
 
 }  // namespace clipbird::advertiser::ble

@@ -13,6 +13,7 @@
 #include <utility>
 
 #include "io/EOFException.hpp"
+#include "utility/utility.hpp"
 
 namespace clipbird::io::bluetooth {
 
@@ -87,9 +88,9 @@ void LinuxRfcommChannel::close() {
 }
 
 LinuxRfcommChannel::~LinuxRfcommChannel() {
-  if (::close(socket_fd) != 0) {
-    BOOST_LOG_TRIVIAL(warning) << "Failed to close RFCOMM socket: " << std::strerror(errno);
-  }
+  utility::logOnThrow("Failed to close RFCOMM socket", [this] {
+    if (::close(socket_fd) != 0) throw std::system_error(errno, std::generic_category(), "close");
+  });
 }
 
 }  // namespace clipbird::io::bluetooth

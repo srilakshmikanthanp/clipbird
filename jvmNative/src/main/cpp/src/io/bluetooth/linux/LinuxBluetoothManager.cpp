@@ -1,6 +1,7 @@
 #include "LinuxBluetoothManager.hpp"
 #include "LinuxRfcommConnector.hpp"
 #include "LinuxStdBusProperties.hpp"
+#include "utility/utility.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <sdbus-c++/sdbus-c++.h>
@@ -38,8 +39,8 @@ LinuxBluetoothManager::LinuxBluetoothManager()
 }
 
 LinuxBluetoothManager::~LinuxBluetoothManager() {
-  this->connection->leaveEventLoop();
-  this->removeBondedDevicesChangedCallback();
+  utility::logOnThrow("Failed to leave Bluetooth manager event loop", [this] { this->connection->leaveEventLoop(); });
+  utility::logOnThrow("Failed to remove bonded-device change callback", [this] { this->removeBondedDevicesChangedCallback(); });
 }
 
 void LinuxBluetoothManager::setBondedDevicesChangedCallback(std::function<void()> callback) {

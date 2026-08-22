@@ -2,6 +2,8 @@
 
 #include <boost/log/trivial.hpp>
 
+#include "utility/utility.hpp"
+
 namespace clipbird::power {
 
 LinuxPowerHandler::LinuxPowerHandler(std::function<void()> onSleep, std::function<void()> onWake)
@@ -48,8 +50,8 @@ void LinuxPowerHandler::releaseInhibitLock() {
 }
 
 LinuxPowerHandler::~LinuxPowerHandler() {
-  connection->leaveEventLoop();
-  releaseInhibitLock();
+  utility::logOnThrow("Failed to leave power handler event loop", [this] { connection->leaveEventLoop(); });
+  utility::logOnThrow("Failed to release inhibit lock", [this] { releaseInhibitLock(); });
 }
 
 }  // namespace clipbird::power

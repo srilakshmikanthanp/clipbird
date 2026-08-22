@@ -1,5 +1,6 @@
 #include "LinuxRfcommServer.hpp"
 #include "LinuxRfcommServerProfile.hpp"
+#include "utility/utility.hpp"
 
 namespace clipbird::io::bluetooth {
 
@@ -20,8 +21,8 @@ void LinuxRfcommServer::close() {
 }
 
 LinuxRfcommServer::~LinuxRfcommServer() {
-	connection->leaveEventLoop();
-	profileRegistration.reset();
+	utility::logOnThrow("Failed to leave RFCOMM server event loop", [this] { connection->leaveEventLoop(); });
+	utility::logOnThrow("Failed to release RFCOMM server profile", [this] { profileRegistration.reset(); });
 }
 
 }  // namespace clipbird::io::bluetooth

@@ -11,6 +11,7 @@
 
 #include "LinuxRfcommChannel.hpp"
 #include "io/IOException.hpp"
+#include "utility/utility.hpp"
 
 namespace clipbird::io::bluetooth {
 
@@ -113,11 +114,7 @@ std::unique_ptr<io::Channel> LinuxRfcommServerProfile::accept() {
 }
 
 LinuxRfcommServerProfile::~LinuxRfcommServerProfile() {
-  try {
-    this->close();
-  } catch (const std::exception& e) {
-    BOOST_LOG_TRIVIAL(warning) << e.what();
-  }
+  utility::logOnThrow("Failed to close BlueZ RFCOMM server profile", [this] { this->close(); });
 }
 
 }  // namespace clipbird::io::bluetooth

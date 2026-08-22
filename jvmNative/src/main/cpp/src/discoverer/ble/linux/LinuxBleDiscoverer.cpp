@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "discoverer/ble/ble_discoverer_code.h"
+#include "utility/utility.hpp"
 
 namespace clipbird::discoverer::ble {
 
@@ -203,8 +204,8 @@ void LinuxBleDiscoverer::stopDiscovery() {
 }
 
 LinuxBleDiscoverer::~LinuxBleDiscoverer() {
-  this->stopDiscovery();
-  connection->leaveEventLoop();
+  utility::logOnThrow("Failed to stop BLE discovery", [this] { this->stopDiscovery(); });
+  utility::logOnThrow("Failed to leave BLE discoverer event loop", [this] { connection->leaveEventLoop(); });
 }
 
 }  // namespace clipbird::discoverer::ble

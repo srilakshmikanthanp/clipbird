@@ -52,10 +52,6 @@ class LinuxBleDiscoverer final : public Discoverer {
   std::atomic<bool> discovering{false};
 
  private:
-  std::map<sdbus::ObjectPath, std::int64_t> knownDevices;
-  std::mutex knownDevicesMutex;
-
- private:
   inline static constexpr const char* kObjectManagerInterface = "org.freedesktop.DBus.ObjectManager";
   inline static constexpr const char* kPropertiesInterface = "org.freedesktop.DBus.Properties";
   inline static constexpr const char* kBluezService = "org.bluez";

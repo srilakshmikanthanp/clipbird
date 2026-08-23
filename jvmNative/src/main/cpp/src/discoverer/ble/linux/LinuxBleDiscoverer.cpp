@@ -59,29 +59,22 @@ void LinuxBleDiscoverer::onInterfacesAdded(
   auto interface = interfaces.find(kDeviceInterface);
   if (!discovering || interface == interfaces.end()) return;
 
-  std::optional<std::int64_t> deviceId = extractDeviceId(interface->second);
-
-  if (!deviceId.has_value()) return;
-
-  {
-    std::lock_guard lock(knownDevicesMutex);
-    knownDevices[path] = *deviceId;
+  auto deviceId = extractDeviceId(interface->second);
+  if (deviceId.has_value()) {
+    listener.onDeviceDiscovered(*deviceId);
   }
-
-  listener.onDeviceDiscovered(*deviceId);
 }
 
 void LinuxBleDiscoverer::onDevicePropertiesChanged(sdbus::Message message) {
-  std::int64_t deviceId;
+  std::string ifaceName;
+  std::map<std::string, sdbus::Variant> changedProps;
+  std::vector<std::string> invalidated;
+  message >> ifaceName >> changedProps >> invalidated;
 
-  {
-    std::lock_guard lock(knownDevicesMutex);
-    auto it = knownDevices.find(sdbus::ObjectPath(message.getPath()));
-    if (it == knownDevices.end()) return;
-    deviceId = it->second;
+  auto deviceId = extractDeviceId(changedProps);
+  if (deviceId.has_value()) {
+    listener.onDeviceDiscovered(*deviceId);
   }
-
-  listener.onDeviceDiscovered(deviceId);
 }
 
 void LinuxBleDiscoverer::onAdapterPropertiesChanged(
@@ -192,11 +185,6 @@ void LinuxBleDiscoverer::stopDiscovery() {
   }
 
   deviceMatchSlot.reset();
-
-  {
-    std::lock_guard lock(knownDevicesMutex);
-    knownDevices.clear();
-  }
 
   if (wasDiscovering) {
     listener.onDiscoveryStopped();

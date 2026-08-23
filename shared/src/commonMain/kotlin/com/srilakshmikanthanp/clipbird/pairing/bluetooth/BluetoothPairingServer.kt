@@ -24,8 +24,8 @@ class BluetoothPairingServer(
           while (isActive) {
             send(it.accept())
           }
-        } catch (_: IOException) {
-          // Expected once the server is closed; accept cannot be cancelled.
+        } catch (e: IOException) {
+          if (isActive) close(e)
         }
       }
     }

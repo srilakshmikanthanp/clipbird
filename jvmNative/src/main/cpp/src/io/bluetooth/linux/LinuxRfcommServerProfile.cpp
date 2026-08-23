@@ -39,7 +39,7 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
     {"Name", sdbus::Variant(serviceName)},
     {"Role", sdbus::Variant(std::string("server"))},
     {"Channel", sdbus::Variant(uint16_t(0))},
-    {"RequireAuthentication", sdbus::Variant(true)},
+    {"RequireAuthentication", sdbus::Variant(false)},
     {"RequireAuthorization", sdbus::Variant(false)}
   };
 

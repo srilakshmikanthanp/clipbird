@@ -10,4 +10,5 @@ object AppConstants {
   val APP_SOURCE_PAGE: String get() = BuildKonfig.APP_SOURCE_PAGE
   val APP_ISSUES_PAGE: String get() = BuildKonfig.APP_ISSUES_PAGE
   val APP_DONATE_PAGE: String get() = BuildKonfig.APP_DONATE_PAGE
+  val APP_COMMIT_ID: String get() = BuildKonfig.APP_COMMIT_ID
 }

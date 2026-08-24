@@ -102,6 +102,13 @@ ksp {
   arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
 }
 
+fun gitCommitId(): String = providers.exec { commandLine("git", "rev-parse", "HEAD") }
+  .standardOutput.asText.get()
+  .trim()
+  .ifBlank {
+    error("git rev-parse returned no output")
+  }
+
 buildkonfig {
   packageName = "com.srilakshmikanthanp.clipbird"
   defaultConfigs {
@@ -114,5 +121,6 @@ buildkonfig {
     buildConfigField(STRING, "APP_SOURCE_PAGE", providers.gradleProperty("app.sourcePage").get())
     buildConfigField(STRING, "APP_ISSUES_PAGE", providers.gradleProperty("app.issuesPage").get())
     buildConfigField(STRING, "APP_DONATE_PAGE", providers.gradleProperty("app.donatePage").get())
+    buildConfigField(STRING, "APP_COMMIT_ID", gitCommitId())
   }
 }

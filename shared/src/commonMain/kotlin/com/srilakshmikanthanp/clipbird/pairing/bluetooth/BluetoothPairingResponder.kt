@@ -25,7 +25,7 @@ class BluetoothPairingResponder(
     }
 
     val pairingPacket = PairingPacket(
-      deviceId = hostDevice.id,
+      deviceId = hostDevice.id.toLong(),
       deviceName = hostDevice.name,
       certificate = hostDevice.certificate.encoded
     )
@@ -33,7 +33,7 @@ class BluetoothPairingResponder(
     channel.sendPacket(pairingPacket)
 
     val remote = BluetoothPairedDevice(
-      id = packet.deviceId,
+      id = packet.deviceId.toULong(),
       name = packet.deviceName,
       certificate = packet.certificate.toCertificate(),
       address = channel.remoteAddress,

@@ -27,11 +27,11 @@ class PairingNotificationManager(private val context: Context) : KoinComponent {
   private val verifier: PairingDeferredVerifier by inject()
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-  private fun pendingBroadcast(action: String, deviceId: Long): PendingIntent {
+  private fun pendingBroadcast(action: String, deviceId: ULong): PendingIntent {
     val intent = Intent(context, PairingVerificationReceiver::class.java).apply {
       this.action = action
       data = "clipbird://pairing/$action/$deviceId".toUri()
-      putExtra(PairingVerificationReceiver.EXTRA_DEVICE_ID, deviceId)
+      putExtra(PairingVerificationReceiver.EXTRA_DEVICE_ID, deviceId.toLong())
     }
     return PendingIntent.getBroadcast(
       context, 0, intent,

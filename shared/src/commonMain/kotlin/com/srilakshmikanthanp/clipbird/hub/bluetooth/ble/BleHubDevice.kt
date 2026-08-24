@@ -7,5 +7,5 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class)
 @Serializable
 data class BleHubDevice (
-  override val id: Long,
+  override val id: ULong,
 ) : HubDevice

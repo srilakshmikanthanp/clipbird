@@ -12,9 +12,9 @@ class HostDeviceProvider(private val dao: HostDeviceDao, private val name: Strin
 
   private suspend fun create(): HostDeviceEntity {
     val keyPair = KeyPairs.generate()
-    val id = SecureRandom().nextLong()
+    val id = SecureRandom().nextLong().toULong()
     val certificate = SelfSignedCertificates.create(keyPair, id.toString())
-    val device = HostDeviceEntity(id = id, name = name, certificate = certificate.encoded, privateKey = keyPair.private.encoded)
+    val device = HostDeviceEntity(id = id.toLong(), name = name, certificate = certificate.encoded, privateKey = keyPair.private.encoded)
     dao.upsert(device)
     return device
   }

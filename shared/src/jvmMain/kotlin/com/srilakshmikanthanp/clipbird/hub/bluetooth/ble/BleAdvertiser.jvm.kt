@@ -23,7 +23,7 @@ actual class BleAdvertiser(
 
     val idBytes = ByteBuffer
       .allocate(8)
-      .putLong(hostDeviceProvider.get().id)
+      .putLong(hostDeviceProvider.get().id.toLong())
       .array()
 
     val advertiser = suspendCancellableCoroutine { continuation ->

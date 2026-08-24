@@ -13,8 +13,9 @@ class PairingVerificationReceiver : BroadcastReceiver(), KoinComponent {
 
   override fun onReceive(context: Context, intent: Intent) {
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    val deviceId = intent.getLongExtra(EXTRA_DEVICE_ID, -1L)
-    if (deviceId == -1L) return
+    val rawId = intent.getLongExtra(EXTRA_DEVICE_ID, -1L)
+    if (rawId == -1L) return
+    val deviceId = rawId.toULong()
 
     when (intent.action) {
       ACTION_CONFIRM -> verifier.confirmById(deviceId)

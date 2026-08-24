@@ -13,7 +13,7 @@ class BleActivePairedDeviceProvider(
   discoverer: Discoverer<BleHubDevice>,
   service: BluetoothPairedDeviceService,
 ) : ActivePairedDeviceProvider<BluetoothPairedDevice> {
-  private val activeDeviceIds: Flow<Set<Long>> = discoverer.events.scan(emptySet()) { activeDevicesIds, event ->
+  private val activeDeviceIds: Flow<Set<ULong>> = discoverer.events.scan(emptySet()) { activeDevicesIds, event ->
     when (event) {
       is Found -> activeDevicesIds + event.device.id
       is Lost -> activeDevicesIds - event.device.id

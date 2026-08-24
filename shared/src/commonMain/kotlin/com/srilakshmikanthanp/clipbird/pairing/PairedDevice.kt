@@ -4,7 +4,7 @@ import com.srilakshmikanthanp.clipbird.common.Device
 import java.security.cert.X509Certificate
 
 open class PairedDevice(
-  override val id: Long,
+  override val id: ULong,
   override val name: String,
   override val certificate: X509Certificate,
 ) : Device {

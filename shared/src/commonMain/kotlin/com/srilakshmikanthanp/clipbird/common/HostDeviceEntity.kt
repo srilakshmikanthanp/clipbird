@@ -13,5 +13,5 @@ class HostDeviceEntity(
 )
 
 fun HostDeviceEntity.toHostDevice(): HostDevice {
-  return HostDevice(id, name, certificate.toCertificate(), privateKey.toPrivateKey())
+  return HostDevice(id.toULong(), name, certificate.toCertificate(), privateKey.toPrivateKey())
 }

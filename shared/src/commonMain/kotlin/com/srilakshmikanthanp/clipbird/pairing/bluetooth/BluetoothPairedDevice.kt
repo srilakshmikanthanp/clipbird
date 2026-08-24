@@ -4,7 +4,7 @@ import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import java.security.cert.X509Certificate
 
 class BluetoothPairedDevice(
-  id: Long,
+  id: ULong,
   name: String,
   certificate: X509Certificate,
   val address: String

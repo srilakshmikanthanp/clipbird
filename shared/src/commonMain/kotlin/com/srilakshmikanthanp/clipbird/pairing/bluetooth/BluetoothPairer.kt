@@ -26,7 +26,7 @@ class BluetoothPairer(
     val hostDevice = hostDeviceProvider.get()
     val serverEndpoint = BluetoothServerEndpoint(candidate.address, serviceUuid)
     val channel = bluetoothManager.connect(serverEndpoint)
-    val pairingPacket = PairingPacket(hostDevice.id, hostDevice.name, hostDevice.certificate.encoded)
+    val pairingPacket = PairingPacket(hostDevice.id.toLong(), hostDevice.name, hostDevice.certificate.encoded)
     channel.sendPacket(pairingPacket)
 
     val packet = channel.nextPacket()
@@ -38,7 +38,7 @@ class BluetoothPairer(
     val remote = BluetoothPairedDevice(
       certificate = packet.certificate.toCertificate(),
       name = packet.deviceName,
-      id = packet.deviceId,
+      id = packet.deviceId.toULong(),
       address = candidate.address
     )
 

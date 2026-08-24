@@ -23,7 +23,7 @@ actual class BleDiscoverer actual constructor(
   private val deviceTimeout: Duration,
 ) : Discoverer<BleHubDevice> {
   override val events: Flow<DiscoveryEvent<BleHubDevice>> = channelFlow {
-    val devices = mutableMapOf<Long, SeenDevice>()
+    val devices = mutableMapOf<ULong, SeenDevice>()
     val channel = Channel<Message>(64)
 
     val handleDeviceFound = suspend { device: BleHubDevice ->
@@ -44,7 +44,7 @@ actual class BleDiscoverer actual constructor(
 
     val listener = object : BleDiscovererListener {
       override fun onDeviceDiscovered(deviceId: Long) {
-        channel.trySend(Message.DeviceFound(BleHubDevice(deviceId)))
+        channel.trySend(Message.DeviceFound(BleHubDevice(deviceId.toULong())))
       }
 
       override fun onDiscoveryFailed(code: Int, reason: String) {

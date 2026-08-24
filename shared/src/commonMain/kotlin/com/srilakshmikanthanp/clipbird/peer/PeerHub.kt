@@ -27,7 +27,7 @@ open class PeerHub<P: PairedDevice>(
   private val pairedDeviceService: PairedDeviceService<P>,
   private val scope: CoroutineScope
 ) {
-  private val _devices = MutableStateFlow<Map<Long, PeerConnection>>(emptyMap())
+  private val _devices = MutableStateFlow<Map<ULong, PeerConnection>>(emptyMap())
   val devices: StateFlow<List<PairedDevice>> = _devices.map {
     devices -> devices.values.map { it.device }
   }.stateIn(

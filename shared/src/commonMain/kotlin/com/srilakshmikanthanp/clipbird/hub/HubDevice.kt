@@ -5,5 +5,5 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 interface HubDevice {
-  val id: Long
+  val id: ULong
 }

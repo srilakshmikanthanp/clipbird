@@ -29,7 +29,7 @@ actual class BleDiscoverer actual constructor(
   private val deviceTimeout: Duration,
 ) : Discoverer<BleHubDevice> {
   override val events: Flow<DiscoveryEvent<BleHubDevice>> = channelFlow {
-    val devices = mutableMapOf<Long, SeenDevice>()
+    val devices = mutableMapOf<ULong, SeenDevice>()
     val channel = Channel<Message>(64)
 
     val handleDeviceFound = suspend { device: BleHubDevice ->
@@ -92,7 +92,7 @@ actual class BleDiscoverer actual constructor(
     val buf = ByteBuffer.wrap(data)
     val msb = buf.getLong()
     val lsb = buf.getLong()
-    val id = buf.getLong()
+    val id = buf.getLong().toULong()
 
     if (msb != uuid.mostSignificantBits || lsb != uuid.leastSignificantBits) return null
 

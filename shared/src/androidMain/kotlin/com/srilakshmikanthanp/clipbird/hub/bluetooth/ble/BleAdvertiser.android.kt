@@ -50,7 +50,7 @@ actual class BleAdvertiser(
     val manufacturerData = ByteBuffer.allocate(24)
       .putLong(javaUuid.mostSignificantBits)
       .putLong(javaUuid.leastSignificantBits)
-      .putLong(device.id)
+      .putLong(device.id.toLong())
       .array()
 
     val settings = AdvertiseSettings.Builder()

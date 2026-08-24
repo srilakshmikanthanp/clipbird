@@ -69,7 +69,7 @@ open class DeviceViewModel<PC : PairingCandidate, D : PairedDevice, C: Channel>(
     runCatching { coordinator.pair(candidate) }.onFailure { _events.send(it.toEvent(candidate)) }
   }
 
-  fun unpair(id: Long) = viewModelScope.launch {
+  fun unpair(id: ULong) = viewModelScope.launch {
     pairedDeviceService.delete(id)
   }
 }

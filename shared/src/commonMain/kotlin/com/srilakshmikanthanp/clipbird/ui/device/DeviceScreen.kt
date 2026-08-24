@@ -113,7 +113,7 @@ private fun <C: PairingCandidate> AvailableDevices(
 @Composable
 private fun <D: PairedDevice> PairedDevices(
   devices: List<DeviceViewModel.Device<D>>,
-  onRemove: (Long) -> Unit,
+  onRemove: (ULong) -> Unit,
 ) {
   @Composable
   fun RemoveDevice(device: D) {

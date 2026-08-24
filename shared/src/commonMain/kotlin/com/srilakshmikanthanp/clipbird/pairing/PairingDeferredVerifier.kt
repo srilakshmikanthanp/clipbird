@@ -33,11 +33,11 @@ class PairingDeferredVerifier : PairingVerifier {
     pending.value[request]?.complete(false)
   }
 
-  fun confirmById(deviceId: Long) {
+  fun confirmById(deviceId: ULong) {
     pending.value.keys.find { it.remoteDevice.id == deviceId }?.let { confirm(it) }
   }
 
-  fun rejectById(deviceId: Long) {
+  fun rejectById(deviceId: ULong) {
     pending.value.keys.find { it.remoteDevice.id == deviceId }?.let { reject(it) }
   }
 }

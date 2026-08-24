@@ -24,7 +24,7 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
   private val peerHub: PeerHub<P>,
   private val scope: CoroutineScope,
 ) {
-  private val jobs = mutableMapOf<Long, Job>()
+  private val jobs = mutableMapOf<ULong, Job>()
   private var job: Job? = null
 
   private fun CoroutineScope.job(device: P): Job = launch {

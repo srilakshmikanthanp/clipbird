@@ -12,7 +12,7 @@ class BluetoothPairedDeviceProjection (
 
 fun BluetoothPairedDeviceProjection.toBluetoothPairedDevice(): BluetoothPairedDevice {
   return BluetoothPairedDevice(
-    id = this.id,
+    id = this.id.toULong(),
     name = this.name,
     certificate = this.certificate.toCertificate(),
     address = this.address,

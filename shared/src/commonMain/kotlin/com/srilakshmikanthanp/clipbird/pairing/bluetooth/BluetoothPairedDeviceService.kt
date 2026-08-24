@@ -17,8 +17,8 @@ class BluetoothPairedDeviceService(
     bleDao.upsert(blePairedDevice)
   }
 
-  override suspend fun findById(id: Long): BluetoothPairedDevice? {
-    return bleDao.findById(id)?.toBluetoothPairedDevice()
+  override suspend fun findById(id: ULong): BluetoothPairedDevice? {
+    return bleDao.findById(id.toLong())?.toBluetoothPairedDevice()
   }
 
   override suspend fun getAllOneOff(): List<BluetoothPairedDevice> {
@@ -30,12 +30,12 @@ class BluetoothPairedDeviceService(
   }
 
   override suspend fun upsert(device: BluetoothPairedDevice) {
-    val pairedDeviceEntity = PairedDeviceEntity(id = device.id, name = device.name, certificate = device.certificate.encoded)
-    val blePairedDeviceEntity = BluetoothPairedDeviceEntity(id = device.id, address = device.address)
+    val pairedDeviceEntity = PairedDeviceEntity(id = device.id.toLong(), name = device.name, certificate = device.certificate.encoded)
+    val blePairedDeviceEntity = BluetoothPairedDeviceEntity(id = device.id.toLong(), address = device.address)
     upsert(pairedDeviceEntity, blePairedDeviceEntity)
   }
 
-  override suspend fun delete(id: Long) {
-    pairedDao.deleteById(id)
+  override suspend fun delete(id: ULong) {
+    pairedDao.deleteById(id.toLong())
   }
 }

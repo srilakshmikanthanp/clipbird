@@ -18,7 +18,7 @@ class TrustViewModel(
     emptyList(),
   )
 
-  fun remove(id: Long) = viewModelScope.launch {
+  fun remove(id: ULong) = viewModelScope.launch {
     pairedDeviceService.delete(id)
   }
 }

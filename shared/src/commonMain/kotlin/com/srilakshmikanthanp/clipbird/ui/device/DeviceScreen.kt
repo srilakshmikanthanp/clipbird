@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.pairing.PairingCandidate
+import com.srilakshmikanthanp.clipbird.peer.client.ConnectionInitiationDecider
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 private fun DeviceViewModel.PairingEvent.toMessage(): String = when (this) {
@@ -123,10 +126,13 @@ private fun <D: PairedDevice> PairedDevices(
   }
 
   @Composable
-  fun ActiveStatus() {
+  fun ActiveStatus(remoteDevice: D) {
+    val decider = koinInject<ConnectionInitiationDecider>()
+    val isInitiatedByMe by produceState(initialValue = false, remoteDevice.id) { value = decider.shouldInitiateConnection(remoteDevice) }
+    val color = if (isInitiatedByMe) MaterialTheme.colorScheme.primary else Color(0xFF4CAF50)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-      Box(Modifier.size(8.dp).background(Color(0xFF4CAF50), CircleShape))
-      Text("Active", style = MaterialTheme.typography.bodySmall)
+      Box(Modifier.size(8.dp).background(color, CircleShape))
+      Text("Active", style = MaterialTheme.typography.bodySmall, color = color)
     }
   }
 
@@ -136,7 +142,7 @@ private fun <D: PairedDevice> PairedDevices(
       headlineContent = { Text(device.pairedDevice.name) },
       leadingContent = { DeviceAvatar(device.pairedDevice.name) },
       colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-      supportingContent = { if (device.connected) ActiveStatus() },
+      supportingContent = { if (device.connected) ActiveStatus(device.pairedDevice) },
       trailingContent = { RemoveDevice(device.pairedDevice) },
     )
   }

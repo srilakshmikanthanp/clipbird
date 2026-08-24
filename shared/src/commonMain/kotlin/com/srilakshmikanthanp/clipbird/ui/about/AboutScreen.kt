@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.material.icons.outlined.Language
@@ -26,7 +28,12 @@ import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,7 +45,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,6 +56,53 @@ import clipbird.shared.generated.resources.logo
 import com.srilakshmikanthanp.clipbird.AppConstants
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+
+@Suppress("DEPRECATION")
+@Composable
+private fun InformationRow(
+  label: String,
+  value: String?,
+  containerColor: androidx.compose.ui.graphics.Color,
+  modifier: Modifier = Modifier,
+) {
+  val clipboardManager = LocalClipboardManager.current
+
+  ListItem(
+    overlineContent = {
+      Text(
+        text = label,
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
+    },
+    headlineContent = {
+      if (value == null) {
+        CircularProgressIndicator(
+          modifier = Modifier.padding(top = 4.dp).size(16.dp),
+          strokeWidth = 2.dp,
+        )
+      } else {
+        Text(
+          text = value,
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurface,
+        )
+      }
+    },
+    trailingContent = if (value != null) ({
+      IconButton(onClick = { clipboardManager.setText(AnnotatedString(value)) }) {
+        Icon(
+          imageVector = Icons.Outlined.ContentCopy,
+          contentDescription = "Copy $label",
+          modifier = Modifier.size(20.dp),
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+      }
+    }) else null,
+    colors = ListItemDefaults.colors(containerColor = containerColor),
+    modifier = modifier,
+  )
+}
 
 @Composable
 private fun ActionItem(
@@ -78,6 +134,7 @@ fun AboutScreen(
   viewModel: AboutViewModel = koinViewModel(),
 ) {
   val fingerprint by viewModel.fingerprint.collectAsStateWithLifecycle()
+  val deviceId by viewModel.deviceId.collectAsStateWithLifecycle()
   var showFingerprintDialog by remember { mutableStateOf(false) }
   val uriHandler = LocalUriHandler.current
 
@@ -91,10 +148,15 @@ fun AboutScreen(
       },
       title = { Text("Fingerprint") },
       text = {
-        Text(
-          text = fingerprint ?: "Loading…",
-          style = MaterialTheme.typography.bodyMedium,
-        )
+        val fingerprint = fingerprint
+        if (fingerprint == null) {
+          CircularProgressIndicator(modifier = Modifier.size(24.dp))
+        } else {
+          Text(
+            text = fingerprint,
+            style = MaterialTheme.typography.bodyMedium,
+          )
+        }
       },
     )
   }
@@ -182,6 +244,38 @@ fun AboutScreen(
           icon = { Icon(Icons.AutoMirrored.Outlined.LibraryBooks, contentDescription = null, modifier = Modifier.size(32.dp)) },
           text = "Licenses",
           modifier = itemModifier { onNavigateToLicenses() },
+        )
+      }
+
+      Spacer(modifier = Modifier.height(4.dp))
+
+      Card(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 16.dp)
+          .padding(bottom = 16.dp),
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(
+          containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+      ) {
+        val rowColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        InformationRow(
+          label = "Device ID",
+          value = deviceId,
+          containerColor = rowColor,
+          modifier = Modifier.fillMaxWidth(),
+        )
+        HorizontalDivider(
+          modifier = Modifier.padding(horizontal = 16.dp),
+          color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+        )
+        InformationRow(
+          label = "Build",
+          value = AppConstants.APP_COMMIT_ID,
+          containerColor = rowColor,
+          modifier = Modifier.fillMaxWidth(),
         )
       }
     }

@@ -14,9 +14,14 @@ class AboutViewModel(
   private val _fingerprint = MutableStateFlow<String?>(null)
   val fingerprint: StateFlow<String?> = _fingerprint
 
+  private val _deviceId = MutableStateFlow<String?>(null)
+  val deviceId: StateFlow<String?> = _deviceId
+
   init {
     viewModelScope.launch {
-      _fingerprint.value = certificateFingerprint(hostDeviceProvider.get().certificate)
+      val device = hostDeviceProvider.get()
+      _fingerprint.value = certificateFingerprint(device.certificate)
+      _deviceId.value = device.id.toString()
     }
   }
 }

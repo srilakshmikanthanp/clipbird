@@ -129,7 +129,7 @@ fun TrustedScreen(viewModel: TrustViewModel = koinViewModel()) {
         contentPadding = PaddingValues(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(0.dp),
       ) {
-        items(devices, key = { it.id }) { device ->
+        items(devices, key = { it.id.toLong() }) { device ->
           DeviceItem(
             device = device,
             onRemove = { viewModel.remove(device.id) },

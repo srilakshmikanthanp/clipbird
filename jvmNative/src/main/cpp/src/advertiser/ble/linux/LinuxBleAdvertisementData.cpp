@@ -18,7 +18,7 @@ LinuxBleAdvertisementData::LinuxBleAdvertisementData(sdbus::IConnection& connect
     std::vector<std::uint8_t> payload;
     payload.reserve(24);
     const auto& uuid = this->getServiceUuid();
-    payload.insert(payload.end(), uuid.data, uuid.data + 16);
+    payload.insert(payload.end(), uuid.begin(), uuid.end());
     const auto& data = this->getServiceData();
     payload.insert(payload.end(), data.begin(), data.end());
     return std::map<std::uint16_t, sdbus::Variant>{ { 0xFFFF, sdbus::Variant(payload) } };

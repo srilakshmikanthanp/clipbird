@@ -1,0 +1,40 @@
+name: Snapshot Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-deb:
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, ubuntu-24.04 ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake ninja-build pkg-config \
+            libbluetooth-dev \
+            libboost-log-dev \
+            libsystemd-dev
+
+      - name: Set up JBR 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 25
+
+      - name: Build .deb package
+        run: ./gradlew :desktopApp:packageDeb --no-daemon -PnativeBuildType=Release
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: clipbird-${{ matrix.os }}-snapshot
+          path: desktopApp/build/packages/**/*.deb
+          retention-days: 7

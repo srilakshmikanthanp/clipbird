@@ -8,5 +8,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(FetchContent)
 
+set(BOOST_INCLUDE_LIBRARIES log log_setup)
+FetchContent_Declare(
+  Boost
+  URL https://github.com/boostorg/boost/releases/download/boost-1.87.0/boost-1.87.0-cmake.tar.gz
+  DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+FetchContent_MakeAvailable(Boost)
+
 add_subdirectory(src)
 

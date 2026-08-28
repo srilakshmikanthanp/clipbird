@@ -30,14 +30,7 @@ target_sources(
 
 if(UNIX)
   find_package(PkgConfig REQUIRED)
-  find_package(Boost REQUIRED COMPONENTS log log_setup)
   pkg_check_modules(BLUEZ REQUIRED bluez)
-
-  if(TARGET Boost::headers)
-    set(CLIPBIRD_BOOST_TARGET Boost::headers)
-  else()
-    set(CLIPBIRD_BOOST_TARGET Boost::boost)
-  endif()
 
   set(SDBUSCPP_BUILD_CODEGEN  OFF CACHE BOOL "" FORCE)
   set(SDBUSCPP_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
@@ -77,14 +70,11 @@ if(UNIX)
 
   target_include_directories(clipbird PRIVATE ${BLUEZ_INCLUDE_DIRS})
   target_compile_options(clipbird PRIVATE ${BLUEZ_CFLAGS_OTHER})
-  target_compile_definitions(clipbird PRIVATE BOOST_LOG_DYN_LINK)
-
   target_link_libraries(
     clipbird
     PRIVATE
     ${BLUEZ_LIBRARIES}
     SDBusCpp::sdbus-c++
-    ${CLIPBIRD_BOOST_TARGET}
     Boost::log
     Boost::log_setup
   )

@@ -1,6 +1,10 @@
 rootProject.name = "clipbird"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+System.getenv("XDG_RUNTIME_DIR")?.let {
+  System.setProperty("java.io.tmpdir", it)
+}
+
 pluginManagement {
   repositories {
     google {

@@ -36,10 +36,19 @@ dependencies {
   implementation(libs.kermit)
 }
 
+tasks.withType<JavaExec>().configureEach {
+  System.getenv("XDG_RUNTIME_DIR")?.let { jvmArgs("-Djava.io.tmpdir=$it") }
+}
+
 nucleus.application {
   mainClass = "com.srilakshmikanthanp.clipbird.MainKt"
   javaHome = jdk.get().metadata.installationPath.asFile.absolutePath
-  jvmArgs += listOf("--enable-native-access=ALL-UNNAMED")
+  jvmArgs += buildList {
+    add("--enable-native-access=ALL-UNNAMED")
+    if (System.getProperty("os.name").startsWith("Linux", ignoreCase = true)) {
+      add($$"-Djava.io.tmpdir=$XDG_RUNTIME_DIR")
+    }
+  }
   nativeDistributions {
     targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
     packageVersion = providers.gradleProperty("app.version").get()

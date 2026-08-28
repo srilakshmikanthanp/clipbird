@@ -77,6 +77,8 @@ if(UNIX)
     SDBusCpp::sdbus-c++
     Boost::log
     Boost::log_setup
+    Boost::thread
+    Boost::uuid
   )
 
   target_link_directories(clipbird PRIVATE ${BLUEZ_LIBRARY_DIRS})

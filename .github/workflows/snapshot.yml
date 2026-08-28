@@ -24,7 +24,7 @@ jobs:
             libsystemd-dev
 
       - name: Set up JBR 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: jetbrains
           java-version: 25
@@ -36,5 +36,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: clipbird-${{ matrix.os }}-snapshot
-          path: desktopApp/build/packages/**/*.deb
+          path: desktopApp/build/**/*.deb
           retention-days: 7

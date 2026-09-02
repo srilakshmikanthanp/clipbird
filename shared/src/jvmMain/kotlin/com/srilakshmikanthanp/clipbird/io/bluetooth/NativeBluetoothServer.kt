@@ -44,11 +44,13 @@ class NativeBluetoothServer(private val server: MemorySegment) : BluetoothServer
     synchronized(lock) {
       if (closed) return
       closed = true
+      inFlight++
     }
 
     try {
       BluetoothServerHandle.close(server)
     } finally {
+      synchronized(lock) { inFlight-- }
       tryDestroy()
     }
   }

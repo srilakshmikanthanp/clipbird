@@ -50,11 +50,13 @@ class NativeBluetoothChannel(private val channel: MemorySegment) : BluetoothChan
     synchronized(lock) {
       if (closed) return
       closed = true
+      inFlight++
     }
 
     try {
       BluetoothChannelHandle.close(channel)
     } finally {
+      synchronized(lock) { inFlight-- }
       tryDestroy()
     }
   }

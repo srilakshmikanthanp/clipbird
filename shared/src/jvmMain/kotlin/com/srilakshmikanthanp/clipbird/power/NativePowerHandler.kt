@@ -6,7 +6,10 @@ import java.lang.foreign.Arena
 
 class NativePowerHandler(onSleep: () -> Unit, onWake: () -> Unit) : AutoCloseable {
   private val arena = Arena.ofShared()
-  private val handle = PowerHandlerHandle.create(arena, onSleep, onWake)
+  private val handle = runCatching { PowerHandlerHandle.create(arena, onSleep, onWake) }.getOrElse {
+    arena.close()
+    throw it
+  }
 
   private val cleanable = NativeCleaners.cleaner.register(this) {
     PowerHandlerHandle.destroy(handle)

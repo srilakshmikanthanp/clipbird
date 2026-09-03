@@ -19,14 +19,12 @@ class BluetoothPairingServer(
     val server = bluetoothManager.start(serverConfig)
 
     launch {
-      server.use {
-        try {
-          while (isActive) {
-            send(it.accept())
-          }
-        } catch (e: IOException) {
-          if (isActive) close(e)
+      try {
+        while (isActive) {
+          send(server.accept())
         }
+      } catch (e: IOException) {
+        if (isActive) close(e)
       }
     }
 

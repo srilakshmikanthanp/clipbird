@@ -5,11 +5,7 @@ import com.srilakshmikanthanp.clipbird.ffi.advertiser.ble.BleAdvertiserListener
 import com.srilakshmikanthanp.clipbird.hub.Advertiser
 import com.srilakshmikanthanp.clipbird.hub.AdvertisingException
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 import java.nio.ByteBuffer
-import kotlin.coroutines.resumeWithException
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -18,54 +14,33 @@ actual class BleAdvertiser(
   private val serviceUuid: Uuid,
   private val hostDeviceProvider: HostDeviceProvider,
 ) : Advertiser {
-  actual override suspend fun advertise(): Unit = coroutineScope {
-    val deferred = CompletableDeferred<Nothing>()
-
+  actual override suspend fun advertise(): Unit {
     val idBytes = ByteBuffer
       .allocate(8)
       .putLong(hostDeviceProvider.get().id.toLong())
       .array()
 
-    val advertiser = suspendCancellableCoroutine { continuation ->
-      lateinit var nativeAdvertiser: NativeBleAdvertiser
+    val started = CompletableDeferred<Unit>()
+    val stopped = CompletableDeferred<Nothing>()
 
-      val listener = object : BleAdvertiserListener {
-        override fun onAdvertisingStarted() {
-          if (continuation.isActive) {
-            continuation.resume(nativeAdvertiser)
-          }
-        }
-
-        override fun onAdvertisingFailed(code: Int, reason: String) {
-          if (continuation.isActive) {
-            continuation.resumeWithException(AdvertisingException("Failed to start advertising: $reason"))
-          }
-        }
-
-        override fun onAdvertisingStopped() {
-          deferred.completeExceptionally(AdvertisingException("Advertising stopped unexpectedly"))
-        }
+    val listener = object : BleAdvertiserListener {
+      override fun onAdvertisingStarted() {
+        started.complete(Unit)
       }
 
-      nativeAdvertiser = NativeBleAdvertiser(
-        serviceUuid,
-        idBytes,
-        listener
-      )
-
-      try {
-        nativeAdvertiser.start()
-      } catch (e: Exception) {
-        if (continuation.isActive) continuation.resumeWithException(e)
+      override fun onAdvertisingFailed(code: Int, reason: String) {
+        started.completeExceptionally(AdvertisingException("Failed to start advertising: $reason"))
       }
 
-      continuation.invokeOnCancellation {
-        nativeAdvertiser.close()
+      override fun onAdvertisingStopped() {
+        stopped.completeExceptionally(AdvertisingException("Advertising stopped unexpectedly"))
       }
     }
 
-    advertiser.use {
-      deferred.await()
+    NativeBleAdvertiser(serviceUuid, idBytes, listener).use { nativeAdvertiser ->
+      nativeAdvertiser.start()
+      started.await()
+      stopped.await()
     }
   }
 }

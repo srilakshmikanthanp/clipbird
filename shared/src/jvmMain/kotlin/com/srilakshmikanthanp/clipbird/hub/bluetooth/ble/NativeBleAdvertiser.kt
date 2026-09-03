@@ -13,6 +13,7 @@ class NativeBleAdvertiser(serviceUuid: Uuid, serviceData: ByteArray, listener: B
   private val arena = Arena.ofShared()
 
   private val advertiser = runCatching { BleAdvertiserHandle.create(arena, serviceUuid, serviceData, listener) }.getOrElse {
+    arena.close()
     throw AdvertisingException("Failed to create BLE advertiser: ${it.message}", it)
   }
 

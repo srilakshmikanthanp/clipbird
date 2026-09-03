@@ -58,30 +58,29 @@ actual class BleDiscoverer actual constructor(
       override fun onDiscoveryStarted() {}
     }
 
-    val nativeDiscoverer = NativeBleDiscoverer(serviceUuid, listener)
-
-    val cleaningJob = launch {
-      while (true) {
-        channel.send(Message.CleanUp)
-        delay(1000.milliseconds)
-      }
-    }
-
-    val processingJob = launch {
-      for (message in channel) {
-        when (message) {
-          is Message.DeviceFound -> handleDeviceFound(message.device)
-          is Message.CleanUp -> handleCleanUp()
+    NativeBleDiscoverer(serviceUuid, listener).use { nativeDiscoverer ->
+      val cleaningJob = launch {
+        while (true) {
+          channel.send(Message.CleanUp)
+          delay(1000.milliseconds)
         }
       }
-    }
 
-    nativeDiscoverer.start()
+      val processingJob = launch {
+        for (message in channel) {
+          when (message) {
+            is Message.DeviceFound -> handleDeviceFound(message.device)
+            is Message.CleanUp -> handleCleanUp()
+          }
+        }
+      }
 
-    awaitClose {
-      cleaningJob.cancel()
-      processingJob.cancel()
-      nativeDiscoverer.close()
+      nativeDiscoverer.start()
+
+      awaitClose {
+        cleaningJob.cancel()
+        processingJob.cancel()
+      }
     }
   }
 

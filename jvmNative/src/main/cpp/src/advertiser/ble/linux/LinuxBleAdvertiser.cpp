@@ -99,7 +99,6 @@ void LinuxBleAdvertiser::startAdvertising() {
   auto registerCallback = [this](std::optional<sdbus::Error> error) {
     if (error) {
       advertising = false;
-      advertisingManagerProxy.reset();
       listener.onAdvertisingFailed(clipbird_advertiser_ble_error_code::CLIPBIRD_ADVERTISER_BLE_REGISTRATION_FAILED, error->getMessage());
     } else {
       advertising = true;
@@ -115,6 +114,8 @@ void LinuxBleAdvertiser::startAdvertising() {
 
 void LinuxBleAdvertiser::stopAdvertising() {
   if (!advertising.exchange(false)) return;
+
+  if (!advertisingManagerProxy) return;
 
   advertisingManagerProxy->callMethodAsync("UnregisterAdvertisement")
     .onInterface(kAdvertisingManagerInterface)

@@ -21,10 +21,10 @@ class LinuxBleAdvertisementData final {
   const std::vector<std::uint8_t>& getServiceData() const;
 
  private:
-  std::unique_ptr<sdbus::IObject> object;
   sdbus::ObjectPath objectPath;
   boost::uuids::uuid serviceUuid;
   std::vector<std::uint8_t> serviceData;
   std::function<void()> onRelease;
+  std::unique_ptr<sdbus::IObject> object;
 };
 }  // namespace clipbird

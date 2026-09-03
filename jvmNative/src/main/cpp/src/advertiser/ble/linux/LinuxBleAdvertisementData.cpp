@@ -8,11 +8,11 @@ LinuxBleAdvertisementData::LinuxBleAdvertisementData(sdbus::IConnection& connect
                                                      boost::uuids::uuid serviceUuid,
                                                      std::vector<std::uint8_t> serviceData,
                                                      std::function<void()> onRelease)
-: object(sdbus::createObject(connection, objectPath)),
-  objectPath(objectPath),
+: objectPath(objectPath),
   serviceUuid(serviceUuid),
   serviceData(serviceData),
-  onRelease(onRelease) {
+  onRelease(onRelease),
+  object(sdbus::createObject(connection, objectPath)) {
 
   const auto manufacturerDataGetter = [this]() {
     std::vector<std::uint8_t> payload;

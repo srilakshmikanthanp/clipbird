@@ -133,11 +133,7 @@ void LinuxBleDiscoverer::startDiscovery() {
     return;
   }
 
-  adapterProxy = sdbus::createProxy(
-    *connection,
-    sdbus::ServiceName(kBluezService),
-    adapterPath
-  );
+  adapterProxy = sdbus::createProxy(*connection, sdbus::ServiceName(kBluezService), adapterPath);
 
   adapterProxy->uponSignal("PropertiesChanged")
     .onInterface(kPropertiesInterface)
@@ -151,13 +147,8 @@ void LinuxBleDiscoverer::startDiscovery() {
   filter["Transport"] = sdbus::Variant(std::string("le"));
 
   try {
-    adapterProxy->callMethod("SetDiscoveryFilter")
-      .onInterface(kAdapterInterface)
-      .withArguments(filter);
-
-    adapterProxy->callMethod("StartDiscovery")
-      .onInterface(kAdapterInterface)
-      .storeResultsTo();
+    adapterProxy->callMethod("SetDiscoveryFilter").onInterface(kAdapterInterface).withArguments(filter);
+    adapterProxy->callMethod("StartDiscovery").onInterface(kAdapterInterface).storeResultsTo();
   } catch (const std::exception& e) {
     discovering = false;
     adapterProxy.reset();

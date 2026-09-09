@@ -28,6 +28,7 @@ dependencies {
   implementation(libs.kotlinx.coroutinesSwing)
   implementation(libs.compose.uiToolingPreview)
   implementation(libs.composenativetray)
+  implementation(libs.composenativetray.app)
   implementation(libs.nucleus.darkmode.detector)
   implementation(libs.nucleus.application)
   implementation(libs.nucleus.decorated.window.tao)

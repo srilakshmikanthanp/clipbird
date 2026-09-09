@@ -37,7 +37,10 @@ dependencies {
 }
 
 tasks.withType<JavaExec>().configureEach {
-  System.getenv("XDG_RUNTIME_DIR")?.let { jvmArgs("-Djava.io.tmpdir=$it") }
+  if (System.getProperty("os.name").startsWith("Linux", ignoreCase = true)) {
+    System.getenv("XDG_RUNTIME_DIR")?.let { jvmArgs("-Djava.io.tmpdir=$it") }
+    jvmArgs("-Dawt.toolkit.name=sun.awt.X11.XToolkit")
+  }
 }
 
 nucleus.application {
@@ -46,6 +49,7 @@ nucleus.application {
   jvmArgs += buildList {
     add("--enable-native-access=ALL-UNNAMED")
     if (System.getProperty("os.name").startsWith("Linux", ignoreCase = true)) {
+      add("-Dawt.toolkit.name=sun.awt.X11.XToolkit")
       add($$"-Djava.io.tmpdir=$XDG_RUNTIME_DIR")
     }
   }

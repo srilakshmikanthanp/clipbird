@@ -30,15 +30,13 @@ jobs:
         with:
           path: dist
 
-      - name: List artifacts
-        run: find dist -type f
-
       - name: Publish snapshot release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete snapshot --cleanup-tag --yes 2>/dev/null || true
-          gh release create snapshot dist/clipbird-deb/*.deb dist/clipbird-apk/*.apk \
+          gh release create snapshot \
+            $(find dist -name "*.deb" -o -name "*.apk") \
             --title "Snapshot (latest main)" \
             --notes "Commit: ${{ github.sha }}" \
             --prerelease

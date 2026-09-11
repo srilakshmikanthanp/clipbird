@@ -7,4 +7,4 @@ import androidx.compose.runtime.Composable
  * platforms/older Android it falls back to a default Material 3 light/dark scheme.
  */
 @Composable
-expect fun ClipbirdTheme(content: @Composable () -> Unit)
+expect fun ClipbirdTheme(isDark: Boolean, content: @Composable () -> Unit)

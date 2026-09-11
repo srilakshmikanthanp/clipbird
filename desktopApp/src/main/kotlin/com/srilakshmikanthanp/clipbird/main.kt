@@ -144,7 +144,7 @@ fun NucleusApplicationScope.ClipbirdApplication() {
     state = trayAppState,
     menu = { clipbirdTrayMenu() },
   ) {
-    ClipbirdTheme {
+    ClipbirdTheme(isDark = isDark) {
       Surface(
         modifier = Modifier.fillMaxSize().border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape),
         shape = shape,

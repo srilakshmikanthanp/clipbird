@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -11,7 +12,7 @@ import com.srilakshmikanthanp.clipbird.ui.theme.ClipbirdTheme
 
 @Composable
 fun App(initialRoute: DrawerRoute = DevicesRoute) {
-  ClipbirdTheme {
+  ClipbirdTheme(isDark = isSystemInDarkTheme()) {
     Surface(modifier = Modifier.fillMaxSize()) {
       ClipbirdNavigation(initialRoute = initialRoute)
     }

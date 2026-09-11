@@ -11,13 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-actual fun ClipbirdTheme(content: @Composable () -> Unit) {
+actual fun ClipbirdTheme(isDark: Boolean, content: @Composable () -> Unit) {
   val context = LocalContext.current
-  val dark = isSystemInDarkTheme()
   val colorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-    if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
   } else {
-    if (dark) darkColorScheme() else lightColorScheme()
+    if (isDark) darkColorScheme() else lightColorScheme()
   }
   MaterialTheme(colorScheme = colorScheme, content = content)
 }

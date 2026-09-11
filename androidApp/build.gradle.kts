@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Base64
 
 plugins {
   alias(libs.plugins.androidApplication)
@@ -51,11 +52,29 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
+
+  signingConfigs {
+    val keystoreBase64 = System.getenv("KEYSTORE_BASE64")
+    if (!keystoreBase64.isNullOrBlank()) {
+      create("release") {
+        val keystoreFile = File(rootProject.buildDir, "keystore.jks")
+        keystoreFile.writeBytes(Base64.getDecoder().decode(keystoreBase64))
+        storeFile = keystoreFile
+        storePassword = System.getenv("KEYSTORE_PASSWORD")
+        keyAlias = System.getenv("KEY_ALIAS")
+        keyPassword = System.getenv("KEY_PASSWORD")
+      }
+    }
+  }
+
   buildTypes {
     getByName("release") {
       isMinifyEnabled = false
+      val releaseSigningConfig = signingConfigs.findByName("release")
+      if (releaseSigningConfig != null) signingConfig = releaseSigningConfig
     }
   }
+
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25

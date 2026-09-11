@@ -4,36 +4,38 @@ on:
   push:
     branches: [ main ]
 
+concurrency:
+  group: snapshot
+  cancel-in-progress: true
+
 jobs:
-  build-deb:
-    strategy:
-      matrix:
-        os: [ ubuntu-24.04 ]
-    runs-on: ${{ matrix.os }}
+  deb:
+    uses: ./.github/workflows/snapshot-deb.yml
+
+  apk:
+    uses: ./.github/workflows/snapshot-apk.yml
+    secrets: inherit
+
+  publish:
+    needs: [ deb, apk ]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install native dependencies
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Publish snapshot release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            cmake ninja-build pkg-config \
-            libbluetooth-dev \
-            libsystemd-dev
-
-      - name: Set up JBR 25
-        uses: actions/setup-java@v5
-        with:
-          distribution: jetbrains
-          java-version: 25
-
-      - name: Build .deb package
-        run: ./gradlew :desktopApp:packageDeb --no-daemon -PnativeBuildType=Release
-
-      - name: Upload .deb artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: clipbird-${{ matrix.os }}-snapshot
-          path: desktopApp/build/**/*.deb
-          retention-days: 7
+          gh release delete snapshot --cleanup-tag --yes 2>/dev/null || true
+          gh release create snapshot dist/**/*.deb dist/**/*.apk \
+            --title "Snapshot (latest main)" \
+            --notes "Commit: ${{ github.sha }}" \
+            --prerelease

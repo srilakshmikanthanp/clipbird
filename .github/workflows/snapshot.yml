@@ -34,9 +34,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          VERSION=$(grep '^app.version=' gradle.properties | cut -d'=' -f2)
+          cp $(find dist -name "*.deb") "clipbird-v${VERSION}-snapshot-linux-amd64.deb"
+          cp $(find dist -name "*.apk") "clipbird-v${VERSION}-snapshot.apk"
           gh release delete snapshot --cleanup-tag --yes 2>/dev/null || true
           gh release create snapshot \
-            $(find dist -name "*.deb" -o -name "*.apk") \
-            --title "Snapshot (latest main)" \
-            --notes "Commit: ${{ github.sha }}" \
+            "clipbird-v${VERSION}-snapshot-linux-amd64.deb" \
+            "clipbird-v${VERSION}-snapshot.apk" \
+            --title "clipbird-v${VERSION}-snapshot" \
+            --notes "Automated snapshot build from the latest \`main\` branch. This is a rolling pre-release; assets are replaced on every push to \`main\`." \
             --prerelease

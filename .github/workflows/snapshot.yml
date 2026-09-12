@@ -40,6 +40,6 @@ jobs:
           gh release create snapshot \
             "clipbird-snapshot-linux-amd64.deb" \
             "clipbird-snapshot.apk" \
-            --title "clipbird-snapshot" \
+            --title "snapshot" \
             --notes "Automated snapshot build from the latest commit on main. This is a rolling pre-release; assets are replaced with every push to main and may break at any time." \
             --prerelease

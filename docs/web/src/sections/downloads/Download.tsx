@@ -1,4 +1,4 @@
-import { FaDownload, FaGithub } from 'react-icons/fa';
+import { FaCodeBranch, FaDownload } from 'react-icons/fa';
 import Button from '../../components/button/Button';
 import classes from './download.module.css';
 
@@ -15,7 +15,7 @@ export default function Download() {
                     Latest
                 </Button>
                 <Button
-                    icon={<FaGithub size={20} />}
+                    icon={<FaCodeBranch size={20} />}
                     href="https://github.com/srilakshmikanthanp/clipbird/releases/tag/snapshot"
                     target="_blank">
                     Snapshot

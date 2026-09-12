@@ -23,6 +23,7 @@ void initialize() {
 
 void setCallback(const clipbird_log_callback_t cb, void* context) {
   callbackBackend->setCallback(cb, context);
+  spdlog::info("Log callback registered");
 }
 
 void clearCallback() {

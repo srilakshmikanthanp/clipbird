@@ -1,4 +1,4 @@
-import { FaGithub, FaLinux } from 'react-icons/fa';
+import { FaDownload, FaGithub } from 'react-icons/fa';
 import Button from '../../components/button/Button';
 import classes from './download.module.css';
 
@@ -9,7 +9,7 @@ export default function Download() {
             <p>Get the latest release or the rolling snapshot build on GitHub.</p>
             <div className={classes.links}>
                 <Button
-                    icon={<FaLinux size={20} />}
+                    icon={<FaDownload size={20} />}
                     href="https://github.com/srilakshmikanthanp/clipbird/releases/latest"
                     target="_blank">
                     Latest

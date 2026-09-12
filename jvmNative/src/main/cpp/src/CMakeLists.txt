@@ -75,8 +75,7 @@ if(UNIX)
     PRIVATE
     ${BLUEZ_LIBRARIES}
     SDBusCpp::sdbus-c++
-    Boost::log
-    Boost::log_setup
+    spdlog::spdlog
     Boost::thread
     Boost::uuid
   )

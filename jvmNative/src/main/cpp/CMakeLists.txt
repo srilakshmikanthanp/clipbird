@@ -8,7 +8,17 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(FetchContent)
 
-set(BOOST_INCLUDE_LIBRARIES log uuid thread)
+FetchContent_Declare(
+  spdlog
+  GIT_REPOSITORY https://github.com/gabime/spdlog.git
+  GIT_TAG        v1.17.0
+  GIT_SHALLOW    TRUE
+)
+
+FetchContent_MakeAvailable(spdlog)
+
+set(BOOST_INCLUDE_LIBRARIES uuid thread)
+
 FetchContent_Declare(
   Boost
   URL https://github.com/boostorg/boost/releases/download/boost-1.87.0/boost-1.87.0-cmake.tar.gz
@@ -17,4 +27,3 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Boost)
 
 add_subdirectory(src)
-

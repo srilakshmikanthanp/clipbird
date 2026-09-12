@@ -1,7 +1,7 @@
 #include "LinuxRfcommServerProfile.hpp"
 
-#include <boost/log/trivial.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <spdlog/spdlog.h>
 #include <cstring>
 #include <fcntl.h>
 #include <map>
@@ -51,10 +51,10 @@ LinuxRfcommServerProfile::LinuxRfcommServerProfile(
 
 void LinuxRfcommServerProfile::onNewConnection(const sdbus::ObjectPath& device, sdbus::UnixFd fd, const std::map<std::string, sdbus::Variant>& properties) {
   try {
-    BOOST_LOG_TRIVIAL(debug) << "RFCOMM NewConnection from " << std::string(device);
+    spdlog::debug("RFCOMM NewConnection from {}", std::string(device));
     acceptedConnections.push(std::make_tuple(std::move(fd), std::string(device)));
   } catch (const boost::sync_queue_is_closed& e) {
-    BOOST_LOG_TRIVIAL(debug) << "Ignored RFCOMM server connection because the profile is closed: " << e.what();
+    spdlog::debug("Ignored RFCOMM server connection because the profile is closed: {}", e.what());
   }
 }
 

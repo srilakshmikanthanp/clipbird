@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <exception>
 #include <type_traits>
@@ -11,9 +11,9 @@ void logOnThrow(const char* context, F&& fn) noexcept {
   try {
     fn();
   } catch (const std::exception& e) {
-    BOOST_LOG_TRIVIAL(warning) << context << ": " << e.what();
+    spdlog::warn("{}: {}", context, e.what());
   } catch (...) {
-    BOOST_LOG_TRIVIAL(warning) << context << ": unknown error";
+    spdlog::warn("{}: unknown error", context);
   }
 }
 

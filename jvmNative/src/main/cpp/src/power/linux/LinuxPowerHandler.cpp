@@ -1,6 +1,6 @@
 #include "LinuxPowerHandler.hpp"
 
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "utility/utility.hpp"
 
@@ -18,11 +18,11 @@ LinuxPowerHandler::LinuxPowerHandler(std::function<void()> onSleep, std::functio
 
 void LinuxPowerHandler::onPrepareForSleep(bool suspending) {
   if (suspending) {
-    BOOST_LOG_TRIVIAL(info) << "PrepareForSleep(true): invoking sleep callback";
+    spdlog::info("PrepareForSleep(true): invoking sleep callback");
     onSleepCallback();
     releaseInhibitLock();
   } else {
-    BOOST_LOG_TRIVIAL(info) << "PrepareForSleep(false): invoking wake callback";
+    spdlog::info("PrepareForSleep(false): invoking wake callback");
     onWakeCallback();
     acquireInhibitLock();
   }
@@ -30,14 +30,14 @@ void LinuxPowerHandler::onPrepareForSleep(bool suspending) {
 
 bool LinuxPowerHandler::acquireInhibitLock() {
   try {
-    BOOST_LOG_TRIVIAL(info) << "Acquiring inhibit lock";
+    spdlog::info("Acquiring inhibit lock");
     sdbus::UnixFd fd;
     login1Proxy->callMethod("Inhibit").onInterface(kInterface).withArguments(std::string("sleep"), std::string("Clipbird"), std::string("Preparing for suspend"), std::string("delay")).storeResultsTo(fd);
     inhibitLock = std::move(fd);
-    BOOST_LOG_TRIVIAL(info) << "Inhibit lock acquired";
+    spdlog::info("Inhibit lock acquired");
     return true;
   } catch (const std::exception& e) {
-    BOOST_LOG_TRIVIAL(warning) << "Failed to acquire inhibit lock: " << e.what();
+    spdlog::warn("Failed to acquire inhibit lock: {}", e.what());
     return false;
   }
 }
@@ -45,7 +45,7 @@ bool LinuxPowerHandler::acquireInhibitLock() {
 void LinuxPowerHandler::releaseInhibitLock() {
   if (inhibitLock.has_value()) {
     inhibitLock.reset();
-    BOOST_LOG_TRIVIAL(info) << "Inhibit lock released";
+    spdlog::info("Inhibit lock released");
   }
 }
 

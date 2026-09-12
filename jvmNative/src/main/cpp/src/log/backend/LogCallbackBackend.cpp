@@ -1,25 +1,22 @@
 #include "log/backend/LogCallbackBackend.hpp"
 
-#include <boost/log/attributes/attribute_value_set.hpp>
-#include <boost/log/attributes/value_extraction.hpp>
-
-namespace logging = boost::log;
+#include <string>
 
 namespace clipbird::log {
 
-clipbird_log_level_t LogCallbackBackend::toLevel(const logging::trivial::severity_level severity) {
-  switch (severity) {
-    case logging::trivial::trace:
+clipbird_log_level_t LogCallbackBackend::toLevel(const spdlog::level::level_enum level) {
+  switch (level) {
+    case spdlog::level::trace:
       return CLIPBIRD_LOG_LEVEL_TRACE;
-    case logging::trivial::debug:
+    case spdlog::level::debug:
       return CLIPBIRD_LOG_LEVEL_DEBUG;
-    case logging::trivial::info:
+    case spdlog::level::info:
       return CLIPBIRD_LOG_LEVEL_INFO;
-    case logging::trivial::warning:
+    case spdlog::level::warn:
       return CLIPBIRD_LOG_LEVEL_WARNING;
-    case logging::trivial::error:
+    case spdlog::level::err:
       return CLIPBIRD_LOG_LEVEL_ERROR;
-    case logging::trivial::fatal:
+    case spdlog::level::critical:
       return CLIPBIRD_LOG_LEVEL_FATAL;
     default:
       return CLIPBIRD_LOG_LEVEL_INFO;
@@ -36,7 +33,7 @@ void LogCallbackBackend::clearCallback() {
   callbackContext.store(nullptr, std::memory_order_release);
 }
 
-void LogCallbackBackend::consume(const logging::record_view& rec, const string_type& formatted) {
+void LogCallbackBackend::sink_it_(const spdlog::details::log_msg& msg) {
   auto logCallback = callback.load(std::memory_order_acquire);
   auto context = callbackContext.load(std::memory_order_acquire);
 
@@ -44,12 +41,11 @@ void LogCallbackBackend::consume(const logging::record_view& rec, const string_t
     return;
   }
 
-  const auto extractedSeverity = logging::extract<logging::trivial::severity_level>("Severity", rec);
-  const auto severity = extractedSeverity ? extractedSeverity.get() : logging::trivial::info;
-
-  const auto level = toLevel(severity);
-  const auto message = formatted.c_str();
-  logCallback(level, message, context);
+  const auto level = toLevel(msg.level);
+  std::string message(msg.payload.data(), msg.payload.size());
+  logCallback(level, message.c_str(), context);
 }
+
+void LogCallbackBackend::flush_() {}
 
 }  // namespace clipbird::log

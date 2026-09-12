@@ -3,8 +3,8 @@
 #include "LinuxStdBusProperties.hpp"
 #include "utility/utility.hpp"
 
-#include <boost/log/trivial.hpp>
 #include <sdbus-c++/sdbus-c++.h>
+#include <spdlog/spdlog.h>
 
 #include <algorithm>
 #include <functional>
@@ -149,9 +149,9 @@ void LinuxBluetoothManager::notifyBondedDevicesChanged() {
   try {
     callback();
   } catch (const std::exception& e) {
-    BOOST_LOG_TRIVIAL(warning) << "Bonded-device change callback failed: " << e.what();
+    spdlog::warn("Bonded-device change callback failed: {}", e.what());
   } catch (...) {
-    BOOST_LOG_TRIVIAL(warning) << "Bonded-device change callback failed with an unknown error";
+    spdlog::warn("Bonded-device change callback failed with an unknown error");
   }
 
   {

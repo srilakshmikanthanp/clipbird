@@ -10,10 +10,10 @@ concurrency:
 
 jobs:
   deb:
-    uses: ./.github/workflows/snapshot-deb.yml
+    uses: ./.github/workflows/build-deb.yml
 
   apk:
-    uses: ./.github/workflows/snapshot-apk.yml
+    uses: ./.github/workflows/build-apk.yml
     secrets: inherit
 
   publish:

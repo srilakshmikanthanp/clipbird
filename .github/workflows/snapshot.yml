@@ -42,5 +42,5 @@ jobs:
             "clipbird-v${VERSION}-snapshot-linux-amd64.deb" \
             "clipbird-v${VERSION}-snapshot.apk" \
             --title "clipbird-v${VERSION}-snapshot" \
-            --notes "Automated snapshot build from the latest \`main\` branch. This is a rolling pre-release; assets are replaced on every push to \`main\`." \
+            --notes "Automated snapshot build from the latest commit on main. This is a rolling pre-release; assets are replaced with every push to main and may break at any time." \
             --prerelease

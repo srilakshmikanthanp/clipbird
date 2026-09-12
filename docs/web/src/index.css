@@ -2,30 +2,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');
 
 :root {
-    --font-heading: 'Cal Sans', sans-serif;
-    --font-primary: 'Wix Madefor Text', sans-serif;
+  --font-heading: 'Cal Sans', sans-serif;
+  --font-primary: 'Wix Madefor Text', sans-serif;
 
-    --color-primary: #1e6fff;
-    --color-primary-dark: #1250cc;
-    --color-brand-dark: #1d4ed8;
-    --color-secondary: #ffa726;
-    --color-text-on-accent: #1a1a00;
-    --color-bg: #f8fafc;
-    --color-surface: #ffffff;
-    --color-text: #1e293b;
-    --color-muted: #64748b;
-    --color-border: #e2e8f0;
+  --color-primary: #1e6fff;
+  --color-primary-dark: #1250cc;
+  --color-brand-dark: #1d4ed8;
+  --color-secondary: #ffa726;
+  --color-text-on-accent: #1a1a00;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #1e293b;
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html {
-    font-size: 62.5%;
-    scroll-behavior: smooth;
+  font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
 h1,
@@ -34,70 +34,70 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: var(--font-heading);
-    margin-bottom: 0.3em;
+  font-family: var(--font-heading);
+  margin-bottom: 0.3em;
 }
 
 h1 {
-    font-size: 6rem;
-    line-height: 1.1;
+  font-size: 6rem;
+  line-height: 1.1;
 }
 
 h2 {
-    color: var(--color-primary);
-    text-align: center;
-    font-size: 4rem;
-    margin-bottom: 1.4em;
-    letter-spacing: -0.01em;
-    position: relative;
+  color: var(--color-primary);
+  text-align: center;
+  font-size: 4rem;
+  margin-bottom: 1.4em;
+  letter-spacing: -0.01em;
+  position: relative;
 
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: -0.45em;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 3.5rem;
-        height: 3px;
-        background: var(--color-secondary);
-        border-radius: 99px;
-    }
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -0.45em;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3.5rem;
+    height: 3px;
+    background: var(--color-secondary);
+    border-radius: 99px;
+  }
 }
 
 h3 {
-    font-size: 2.2rem;
+  font-size: 2.2rem;
 }
 
 h4 {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 body {
-    font-family: var(--font-primary);
-    font-size: 1.6rem;
-    background-color: var(--color-bg);
-    color: var(--color-text);
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 p {
-    margin-bottom: 0.4em;
-    line-height: 1.7;
-    color: var(--color-muted);
+  margin-bottom: 0.4em;
+  line-height: 1.7;
+  color: var(--color-muted);
 }
 
 :focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 3px;
-    border-radius: 4px;
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 @media (max-width: 48rem) {
-    h1 {
-        font-size: 3.8rem;
-    }
+  h1 {
+    font-size: 3.8rem;
+  }
 
-    h2 {
-        font-size: 3rem;
-        margin-bottom: 1.2em;
-    }
+  h2 {
+    font-size: 3rem;
+    margin-bottom: 1.2em;
+  }
 }

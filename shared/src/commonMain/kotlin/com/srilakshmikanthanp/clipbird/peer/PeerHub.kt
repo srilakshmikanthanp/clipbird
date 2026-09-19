@@ -15,6 +15,8 @@ import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.pairing.PairedDeviceService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -52,7 +54,8 @@ open class PeerHub<P: PairedDevice>(
   private val _clipboard = MutableSharedFlow<ClipboardContent>()
   val clipboard: Flow<ClipboardContent> = _clipboard.asSharedFlow()
 
-  private var job: Job? = null
+  private var hubScope: CoroutineScope? = null
+  private var hubJob: Job? = null
 
   private suspend fun observeChannelPackets(peerConnection: PeerConnection) {
     try {
@@ -134,7 +137,7 @@ open class PeerHub<P: PairedDevice>(
       stale.closeQuietly()
     }
 
-    scope.launch {
+    hubScope?.launch {
       observeChannelPackets(connection)
     }
   }
@@ -144,17 +147,20 @@ open class PeerHub<P: PairedDevice>(
   }
 
   fun start() {
-    if (job?.isActive == true) return
-    job = scope.launch { observePaired() }
+    if (hubJob?.isActive == true) return
+    val supervisorJob = SupervisorJob(scope.coroutineContext[Job])
+    hubScope = CoroutineScope(scope.coroutineContext + supervisorJob)
+    hubJob = supervisorJob
+    hubScope!!.launch { observePaired() }
   }
 
   fun stop() {
     _devices.value.values.forEach(PeerConnection::closeQuietly)
     _devices.value = emptyMap()
-    val j = job
-    job = null
-    j?.cancel()
-    runBlocking { j?.join() }
+    val j = hubJob
+    hubScope = null
+    hubJob = null
+    runBlocking { j?.cancelAndJoin() }
   }
 
   companion object {

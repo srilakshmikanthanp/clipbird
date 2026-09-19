@@ -14,6 +14,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.time.Duration.Companion.seconds
 
 open class ClipbirdProtocolClient<P : PairedDevice>(
@@ -86,9 +87,11 @@ open class ClipbirdProtocolClient<P : PairedDevice>(
   }
 
   fun stop() {
-    jobs.values.forEach { it.cancel() }
+    val j = job
+    job = null
     jobs.clear()
-    job?.cancel()
+    j?.cancel()
+    runBlocking { j?.join() }
   }
 
   companion object {

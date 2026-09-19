@@ -80,6 +80,7 @@ actual class BleDiscoverer actual constructor(
       awaitClose {
         cleaningJob.cancel()
         processingJob.cancel()
+        runCatching { nativeDiscoverer.stop() }
       }
     }
   }

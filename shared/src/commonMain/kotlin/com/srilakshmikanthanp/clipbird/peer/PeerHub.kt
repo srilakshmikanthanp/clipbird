@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.IOException
@@ -150,7 +151,10 @@ open class PeerHub<P: PairedDevice>(
   fun stop() {
     _devices.value.values.forEach(PeerConnection::closeQuietly)
     _devices.value = emptyMap()
-    job?.cancel()
+    val j = job
+    job = null
+    j?.cancel()
+    runBlocking { j?.join() }
   }
 
   companion object {

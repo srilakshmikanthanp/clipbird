@@ -10,10 +10,8 @@ import com.srilakshmikanthanp.clipbird.peer.PeerHub
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.cancellation.CancellationException
 
 open class ClipbirdProtocolServer<P: PairedDevice>(
@@ -56,7 +54,10 @@ open class ClipbirdProtocolServer<P: PairedDevice>(
   }
 
   fun stop() {
-    job?.cancel()
+    val j = job
+    job = null
+    j?.cancel()
+    runBlocking { j?.join() }
   }
 
   companion object {

@@ -5,6 +5,7 @@ import com.srilakshmikanthanp.clipbird.io.Channel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.use
 
 open class PairingChannelCollector<PC: PairingCandidate, P: PairedDevice, C: Channel>(
@@ -30,6 +31,9 @@ open class PairingChannelCollector<PC: PairingCandidate, P: PairedDevice, C: Cha
   }
 
   fun stop() {
-    job?.cancel()
+    val j = job
+    job = null
+    j?.cancel()
+    runBlocking { j?.join() }
   }
 }

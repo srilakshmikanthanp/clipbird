@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 open class ClipboardReplicator<P: PairedDevice>(
   private val peerHub: PeerHub<P>,
@@ -46,6 +47,9 @@ open class ClipboardReplicator<P: PairedDevice>(
   }
 
   fun stop() {
-    job?.cancel()
+    val j = job
+    job = null
+    j?.cancel()
+    runBlocking { j?.join() }
   }
 }

@@ -141,6 +141,10 @@ void LinuxBleDiscoverer::startDiscovery() {
       onAdapterPropertiesChanged(ifaceName, changedProps, invalidated);
     });
 
+  try {
+    adapterProxy->callMethodAsync("StopDiscovery").onInterface(kAdapterInterface).getResultAsFuture().get();
+  } catch (...) {}
+
   std::map<std::string, sdbus::Variant> filter;
 
   filter["DuplicateData"] = sdbus::Variant(true);

@@ -48,11 +48,11 @@ actual class BleDiscoverer actual constructor(
       }
 
       override fun onDiscoveryFailed(code: Int, reason: String) {
-        channel.close(DiscoveryException("BLE discovery failed (code=$code): $reason"))
+        close(DiscoveryException("BLE discovery failed (code=$code): $reason"))
       }
 
       override fun onDiscoveryStopped() {
-        channel.close(DiscoveryException("BLE discovery stopped unexpectedly"))
+        close(DiscoveryException("BLE discovery stopped unexpectedly"))
       }
 
       override fun onDiscoveryStarted() {}

@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include <spdlog/spdlog.h>
+
 #include "discoverer/ble/ble_discoverer_code.h"
 #include "utility/utility.hpp"
 
@@ -94,7 +96,8 @@ void LinuxBleDiscoverer::onAdapterPropertiesChanged(
 
   const bool wasDiscovering = discovering.exchange(false);
 
-  stopDiscovery();
+  adapterProxy.reset();
+  deviceMatchSlot.reset();
 
   if (wasDiscovering) {
     listener.onDiscoveryStopped();
@@ -168,18 +171,14 @@ void LinuxBleDiscoverer::startDiscovery() {
 void LinuxBleDiscoverer::stopDiscovery() {
   const bool wasDiscovering = discovering.exchange(false);
 
-  if (wasDiscovering) {
-    adapterProxy->callMethodAsync("StopDiscovery")
-      .onInterface(kAdapterInterface)
-      .getResultAsFuture()
-      .get();
-  }
-
   deviceMatchSlot.reset();
 
-  if (wasDiscovering) {
+  if (wasDiscovering && adapterProxy) {
+    adapterProxy->callMethod("StopDiscovery").onInterface(kAdapterInterface).storeResultsTo();
     listener.onDiscoveryStopped();
   }
+
+  adapterProxy.reset();
 }
 
 LinuxBleDiscoverer::~LinuxBleDiscoverer() {

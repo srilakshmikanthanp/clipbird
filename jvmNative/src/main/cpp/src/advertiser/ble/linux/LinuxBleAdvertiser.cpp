@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <spdlog/spdlog.h>
+
 #include "advertiser/ble/ble_advertiser_code.h"
 #include "utility/utility.hpp"
 
@@ -117,11 +119,10 @@ void LinuxBleAdvertiser::stopAdvertising() {
 
   if (!advertisingManagerProxy) return;
 
-  advertisingManagerProxy->callMethodAsync("UnregisterAdvertisement")
+  advertisingManagerProxy->callMethod("UnregisterAdvertisement")
     .onInterface(kAdvertisingManagerInterface)
     .withArguments(data->getObjectPath())
-    .getResultAsFuture()
-    .get();
+    .storeResultsTo();
 
   listener.onAdvertisingStopped();
 }

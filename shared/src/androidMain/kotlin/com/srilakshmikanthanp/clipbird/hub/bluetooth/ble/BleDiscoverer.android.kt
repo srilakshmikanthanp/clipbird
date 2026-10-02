@@ -1,5 +1,6 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
+import co.touchlab.kermit.Logger
 import com.juul.kable.Advertisement
 import com.juul.kable.Scanner
 import com.srilakshmikanthanp.clipbird.hub.Discoverer
@@ -33,6 +34,7 @@ actual class BleDiscoverer actual constructor(
     val channel = Channel<Message>(64)
 
     val handleDeviceFound = suspend { device: BleHubDevice ->
+      Logger.i (tag = TAG) { "Found device via Discovery: $device" }
       val now = System.currentTimeMillis()
       if (device.id !in devices) send(Found(device))
       devices[device.id] = SeenDevice(device, now)
@@ -43,6 +45,7 @@ actual class BleDiscoverer actual constructor(
       val lost = devices.values.filter { it.lastSeen < cutoff }.map { it.device }
 
       lost.forEach { device ->
+        Logger.i (tag = TAG) { "Device lost via Discovery: $device" }
         devices.remove(device.id)
         send(Lost(device))
       }
@@ -104,5 +107,9 @@ actual class BleDiscoverer actual constructor(
   internal sealed interface Message {
     data class DeviceFound(val device: BleHubDevice) : Message
     data object CleanUp : Message
+  }
+
+  companion object {
+    private const val TAG = "BleDiscoverer.android"
   }
 }

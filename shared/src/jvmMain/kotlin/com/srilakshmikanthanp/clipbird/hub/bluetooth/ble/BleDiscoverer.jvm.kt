@@ -19,11 +19,11 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-actual class BleDiscoverer actual constructor(
+actual class BleDiscoverer(
   private val serviceUuid: Uuid,
   private val deviceTimeout: Duration,
 ) : Discoverer<BleHubDevice> {
-  override val events: Flow<DiscoveryEvent<BleHubDevice>> = channelFlow {
+  actual override val events: Flow<DiscoveryEvent<BleHubDevice>> = channelFlow {
     val devices = mutableMapOf<ULong, SeenDevice>()
     val channel = Channel<Message>(64)
 

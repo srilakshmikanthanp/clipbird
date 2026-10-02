@@ -25,7 +25,6 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 
-@OptIn(ExperimentalUuidApi::class)
 actual class BleAdvertiser(
   private val context: Context,
   private val serviceUuid: Uuid,
@@ -65,30 +64,6 @@ actual class BleAdvertiser(
       .setIncludeTxPowerLevel(false)
       .build()
 
-    val callback = suspendCancellableCoroutine<AdvertiseCallback> { continuation ->
-      val callback = object : AdvertiseCallback() {
-        override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-          if (continuation.isActive) {
-            continuation.resume(this)
-          }
-        }
-
-        override fun onStartFailure(errorCode: Int) {
-          if (continuation.isActive) {
-            continuation.resumeWithException(
-              AdvertisingException("Failed to start advertising. errorCode=$errorCode")
-            )
-          }
-        }
-      }
-
-      bleAdvertiser.startAdvertising(settings, advertiseData, callback)
-
-      continuation.invokeOnCancellation {
-        bleAdvertiser.stopAdvertising(callback)
-      }
-    }
-
     val deferred = CompletableDeferred<Unit>()
 
     val bluetoothStateReceiver = object : BroadcastReceiver() {
@@ -105,6 +80,35 @@ actual class BleAdvertiser(
       bluetoothStateReceiver,
       IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
     )
+
+    val callback = try {
+      suspendCancellableCoroutine<AdvertiseCallback> { continuation ->
+        val callback = object : AdvertiseCallback() {
+          override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
+            if (continuation.isActive) {
+              continuation.resume(this)
+            }
+          }
+
+          override fun onStartFailure(errorCode: Int) {
+            if (continuation.isActive) {
+              continuation.resumeWithException(
+                AdvertisingException("Failed to start advertising. errorCode=$errorCode")
+              )
+            }
+          }
+        }
+
+        bleAdvertiser.startAdvertising(settings, advertiseData, callback)
+
+        continuation.invokeOnCancellation {
+          bleAdvertiser.stopAdvertising(callback)
+        }
+      }
+    } catch (e: Exception) {
+      context.unregisterReceiver(bluetoothStateReceiver)
+      throw e
+    }
 
     try {
       deferred.await()

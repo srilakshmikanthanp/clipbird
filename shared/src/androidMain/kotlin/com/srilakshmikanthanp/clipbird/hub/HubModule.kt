@@ -25,7 +25,8 @@ class HubModule {
 
   @OptIn(ExperimentalUuidApi::class)
   @Single
-  fun bleDiscoverer(): BleDiscoverer = BleDiscoverer(
+  fun bleDiscoverer(context: Context): BleDiscoverer = BleDiscoverer(
+    context = context,
     serviceUuid = BluetoothConstants.clipbirdServiceUuid,
     deviceTimeout = 30.seconds,
   )

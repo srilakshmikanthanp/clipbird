@@ -1,8 +1,19 @@
 package com.srilakshmikanthanp.clipbird.hub.bluetooth.ble
 
+import android.Manifest.permission
+import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanFilter
+import android.bluetooth.le.ScanResult
+import android.bluetooth.le.ScanSettings
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.annotation.RequiresPermission
 import co.touchlab.kermit.Logger
-import com.juul.kable.Advertisement
-import com.juul.kable.Scanner
 import com.srilakshmikanthanp.clipbird.hub.Discoverer
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent
 import com.srilakshmikanthanp.clipbird.hub.DiscoveryEvent.Found
@@ -14,7 +25,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
@@ -25,11 +35,16 @@ import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 
 @OptIn(ExperimentalUuidApi::class)
-actual class BleDiscoverer actual constructor(
+@SuppressLint("MissingPermission")
+actual class BleDiscoverer(
+  private val context: Context,
   private val serviceUuid: Uuid,
   private val deviceTimeout: Duration,
 ) : Discoverer<BleHubDevice> {
-  override val events: Flow<DiscoveryEvent<BleHubDevice>> = channelFlow {
+  private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
+
+  @RequiresPermission(permission.BLUETOOTH_SCAN)
+  actual override val events: Flow<DiscoveryEvent<BleHubDevice>> = channelFlow {
     val devices = mutableMapOf<ULong, SeenDevice>()
     val channel = Channel<Message>(64)
 
@@ -51,16 +66,66 @@ actual class BleDiscoverer actual constructor(
       }
     }
 
-    val scanner = Scanner {}
+    val adapter = bluetoothManager.adapter ?: throw DiscoveryException("BLE adapter not available")
 
-    val discoveringJob = launch {
-      scanner.advertisements.catch { e ->
-        throw DiscoveryException("BLE discovery failed", e)
-      }.collect { advertisement ->
-        advertisement.toDevice()?.let { device ->
-          channel.trySend(DeviceFound(device))
+    if (!adapter.isEnabled) {
+      throw DiscoveryException("Bluetooth is disabled")
+    }
+
+    val scanner = adapter.bluetoothLeScanner ?: throw DiscoveryException("BLE scanner not available")
+
+    val javaUuid = serviceUuid.toJavaUuid()
+
+    val uuidPrefix = ByteBuffer.allocate(24)
+      .putLong(javaUuid.mostSignificantBits)
+      .putLong(javaUuid.leastSignificantBits)
+      .putLong(0L)
+      .array()
+
+    val uuidMask = ByteBuffer.allocate(24)
+      .putLong(-1L)
+      .putLong(-1L)
+      .putLong(0L)
+      .array()
+
+    val scanFilter = ScanFilter.Builder()
+      .setManufacturerData(0xFFFF, uuidPrefix, uuidMask)
+      .build()
+
+    val scanSettings = ScanSettings.Builder()
+      .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+      .build()
+
+    val scanCallback = object : ScanCallback() {
+      override fun onScanResult(callbackType: Int, result: ScanResult) {
+        result.toDevice()?.let { channel.trySend(DeviceFound(it)) }
+      }
+
+      override fun onScanFailed(errorCode: Int) {
+        close(DiscoveryException("BLE discovery failed (errorCode=$errorCode)"))
+      }
+    }
+
+    val bluetoothStateReceiver = object : BroadcastReceiver() {
+      override fun onReceive(ctx: Context, intent: Intent) {
+        if (intent.action != BluetoothAdapter.ACTION_STATE_CHANGED) return
+        val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
+        if (state == BluetoothAdapter.STATE_TURNING_OFF || state == BluetoothAdapter.STATE_OFF) {
+          close(DiscoveryException("Bluetooth was turned off during discovery"))
         }
       }
+    }
+
+    context.registerReceiver(
+      bluetoothStateReceiver,
+      IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+    )
+
+    try {
+      scanner.startScan(listOf(scanFilter), scanSettings, scanCallback)
+    } catch (e: Exception) {
+      context.unregisterReceiver(bluetoothStateReceiver)
+      throw DiscoveryException("Failed to start BLE discovery: ${e.message}", e)
     }
 
     val cleaningJob = launch {
@@ -80,14 +145,15 @@ actual class BleDiscoverer actual constructor(
     }
 
     awaitClose {
-      discoveringJob.cancel()
+      context.unregisterReceiver(bluetoothStateReceiver)
+      runCatching { scanner.stopScan(scanCallback) }
       cleaningJob.cancel()
       processingJob.cancel()
     }
   }
 
-  private fun Advertisement.toDevice(): BleHubDevice? {
-    val data = this.manufacturerData(0xFFFF) ?: return null
+  private fun ScanResult.toDevice(): BleHubDevice? {
+    val data = this.scanRecord?.getManufacturerSpecificData(0xFFFF) ?: return null
     val uuid = serviceUuid.toJavaUuid()
 
     if (data.size != 24) return null

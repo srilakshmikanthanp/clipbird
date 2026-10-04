@@ -37,9 +37,14 @@ jobs:
         run: |
           cp $(find dist -name "*.deb") "clipbird-${TAG}-linux-amd64.deb"
           cp $(find dist -name "*.apk") "clipbird-${TAG}.apk"
+          if [ "$(git cat-file -t "refs/tags/${TAG}")" = "tag" ]; then
+            TAG_MESSAGE="$(git tag -l --format='%(contents)' "${TAG}")"
+          else
+            TAG_MESSAGE=""
+          fi
           gh release create "${TAG}" \
             "clipbird-${TAG}-linux-amd64.deb" \
             "clipbird-${TAG}.apk" \
             --verify-tag \
             --title "${TAG}" \
-            --generate-notes
+            --notes "${TAG_MESSAGE}"

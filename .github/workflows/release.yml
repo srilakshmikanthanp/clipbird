@@ -49,5 +49,4 @@ jobs:
             "clipbird-${TAG}.apk" \
             --verify-tag \
             --title "${TAG}" \
-            --notes "${TAG_MESSAGE}" \
-            --generate-notes
+            --notes "${TAG_MESSAGE}"

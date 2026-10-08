@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="shared/src/commonMain/composeResources/drawable/logo.png" width="120" alt="Clipbird Logo">
+</p>
+
 # Clipbird
 
 Share your clipboard between devices.

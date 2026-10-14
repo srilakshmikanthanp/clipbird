@@ -63,7 +63,7 @@ nucleus.application {
     description = providers.gradleProperty("app.description").get()
     vendor = providers.gradleProperty("app.maintainerName").get()
     linux {
-      iconFile.set(project.file("src/main/resources/logo.png"))
+      iconFile.set(rootProject.file("shared/src/commonMain/composeResources/drawable/logo.png"))
       debMaintainer = providers.gradleProperty("app.maintainerEmail").get()
       appCategory = "Utility"
       menuGroup = "Utility"

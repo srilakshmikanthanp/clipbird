@@ -17,13 +17,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.ui.history.CompactHistoryScreen
 import com.srilakshmikanthanp.clipbird.ui.theme.ClipbirdTheme
+import com.srilakshmikanthanp.clipbird.ui.theme.appLogoPainter
 import dev.nucleusframework.application.DecoratedWindow
 import dev.nucleusframework.application.NucleusApplicationScope
 import dev.nucleusframework.application.NucleusBackend
@@ -41,7 +40,6 @@ import dev.nucleusframework.composenativetray.menu.api.TrayMenuBuilder
 import io.github.vinceglb.autolaunch.AutoLaunch
 import kotlinx.coroutines.launch
 import java.awt.Toolkit
-import javax.imageio.ImageIO
 
 @Composable
 fun NucleusApplicationScope.ClipbirdApplication() {
@@ -70,9 +68,7 @@ fun NucleusApplicationScope.ClipbirdApplication() {
     )
   )
 
-  val appLogo = remember {
-    BitmapPainter(ImageIO.read(Thread.currentThread().contextClassLoader.getResource("logo.png")).toComposeImageBitmap())
-  }
+  val appLogo = appLogoPainter()
 
   fun onAutoLaunchChange(enabled: Boolean) {
     coroutineScope.launch {

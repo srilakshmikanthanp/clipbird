@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
   private fun resolveInitialRoute(intent: Intent?): DrawerRoute {
     return when (intent?.getStringExtra(EXTRA_INITIAL_ROUTE)) {
       ROUTE_HISTORY -> HistoryRoute
+      ROUTE_DEVICES -> DevicesRoute
       else -> DevicesRoute
     }
   }
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
   companion object {
     const val EXTRA_INITIAL_ROUTE = "com.srilakshmikanthanp.clipbird.MainActivity.InitialRoute"
     const val ROUTE_HISTORY = "history"
+    const val ROUTE_DEVICES = "devices"
   }
 }
 

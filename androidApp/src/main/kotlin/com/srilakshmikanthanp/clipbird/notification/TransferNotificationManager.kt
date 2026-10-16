@@ -23,9 +23,9 @@ class TransferNotificationManager(
 
   private var job: Job? = null
 
-  private fun historyPendingIntent(): PendingIntent {
+  private fun devicesPendingIntent(): PendingIntent {
     val intent = Intent(context, MainActivity::class.java).apply {
-      putExtra(MainActivity.EXTRA_INITIAL_ROUTE, MainActivity.ROUTE_HISTORY)
+      putExtra(MainActivity.EXTRA_INITIAL_ROUTE, MainActivity.ROUTE_DEVICES)
       flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
     }
     return PendingIntent.getActivity(
@@ -65,7 +65,7 @@ class TransferNotificationManager(
   }
 
   private fun showSending() {
-    notify(contentIntent = historyPendingIntent()) {
+    notify(contentIntent = devicesPendingIntent()) {
       setProgress(0, 0, true)
       setContentText("Sending clipboard…")
     }

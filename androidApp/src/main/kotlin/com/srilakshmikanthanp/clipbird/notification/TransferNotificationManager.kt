@@ -10,12 +10,9 @@ import com.srilakshmikanthanp.clipbird.MainActivity
 import com.srilakshmikanthanp.clipbird.R
 import com.srilakshmikanthanp.clipbird.handlers.SendHandler
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
-import com.srilakshmikanthanp.clipbird.peer.TransferState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 class TransferNotificationManager(
   private val context: Context,
@@ -67,50 +64,28 @@ class TransferNotificationManager(
     )
   }
 
-  private fun showProgress(current: Int, total: Int) {
+  private fun showSending() {
     notify(contentIntent = historyPendingIntent()) {
-      if (total > 0) {
-        val percent = (current * 100L / total).toInt()
-        setProgress(100, percent, false)
-        setContentText("Sending… $percent%")
-      } else {
-        setProgress(0, 0, true)
-        setContentText("Sending…")
-      }
+      setProgress(0, 0, true)
+      setContentText("Sending clipboard…")
     }
   }
 
-  private fun showDone(success: Boolean) {
+  private fun showDone() {
     notify(contentIntent = sendPendingIntent()) {
-      setContentText(
-        if (success) {
-          "Sent! Tap to send again"
-        } else {
-          "Send failed. Tap to retry"
-        },
-      )
+      setContentText("Tap to send clipboard")
     }
   }
 
   fun start() {
     job = scope.launch {
-      peerHub.transferState.collect { state ->
-        when (state) {
-          is TransferState.Progress -> showProgress(state.current, state.total)
-          is TransferState.Success -> showDone(true)
-          is TransferState.Failure -> showDone(false)
-        }
-
-        delay(THROTTLE_MS.milliseconds)
+      peerHub.isSending.collect { isSending ->
+        if (isSending) showSending() else showDone()
       }
     }
   }
 
   fun stop() {
     job?.cancel()
-  }
-
-  companion object {
-    private const val THROTTLE_MS = 200L
   }
 }

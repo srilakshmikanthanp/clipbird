@@ -5,3 +5,4 @@ sealed interface TransferState {
   data object Success : TransferState
   data class Failure(val error: Throwable? = null) : TransferState
 }
+

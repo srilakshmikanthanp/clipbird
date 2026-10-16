@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.srilakshmikanthanp.clipbird.io.Channel
 import com.srilakshmikanthanp.clipbird.pairing.*
 import com.srilakshmikanthanp.clipbird.peer.PeerHub
+import com.srilakshmikanthanp.clipbird.peer.TransferState
 import com.srilakshmikanthanp.clipbird.ui.device.DeviceViewModel.PairingEvent.*
 import kotlinx.coroutines.channels.Channel as KChannel
 import kotlinx.coroutines.flow.*
@@ -29,7 +30,8 @@ open class DeviceViewModel<PC : PairingCandidate, D : PairedDevice, C: Channel>(
 
   data class Device<D: PairedDevice>(
     val pairedDevice: D,
-    val connected: Boolean
+    val connected: Boolean,
+    val transfer: TransferState? = null,
   )
 
   data class DeviceState<C: PairingCandidate, D: PairedDevice>(
@@ -42,13 +44,12 @@ open class DeviceViewModel<PC : PairingCandidate, D : PairedDevice, C: Channel>(
     coordinator.devices,
     coordinator.pairing,
     peerHub.devices,
-  ) { paired, devices, pairing, connected ->
+    peerHub.deviceTransfers,
+  ) { paired, devices, pairing, connected, transfers ->
     val connectedIds = connected.asSequence().map { it.id }.toHashSet()
-
-    DeviceState(
-      discovered = devices.map { DiscoveredDevice(it, isPairing = it in pairing) },
-      devices = paired.map { Device(pairedDevice = it, connected = it.id in connectedIds ) }
-    )
+    val discovered = devices.map { DiscoveredDevice(it, isPairing = it in pairing) }
+    val devices = paired.map { Device(pairedDevice = it, connected = it.id in connectedIds, transfer = transfers[it.id]?.state) }
+    DeviceState(discovered = discovered, devices = devices)
   }.stateIn(
     viewModelScope,
     SharingStarted.WhileSubscribed(5_000),

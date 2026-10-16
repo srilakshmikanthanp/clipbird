@@ -3,7 +3,6 @@ package com.srilakshmikanthanp.clipbird.peer
 import co.touchlab.kermit.Logger
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardContent
 import com.srilakshmikanthanp.clipbird.common.closeQuietly
-import com.srilakshmikanthanp.clipbird.io.ProgressListener
 import com.srilakshmikanthanp.clipbird.packet.*
 import com.srilakshmikanthanp.clipbird.packet.ErrorPacket.ErrorCode
 import com.srilakshmikanthanp.clipbird.packet.interceptor.PacketDeduplicator
@@ -42,8 +41,16 @@ open class PeerHub<P: PairedDevice>(
   private val devicesMutex = Mutex()
   private val sendMutex = Mutex()
 
-  private val _transferState = MutableStateFlow<TransferState>(TransferState.Success)
-  val transferState: StateFlow<TransferState> = _transferState.asStateFlow()
+  private val _deviceTransfers = MutableStateFlow<Map<ULong, DeviceTransfer>>(emptyMap())
+  val deviceTransfers: StateFlow<Map<ULong, DeviceTransfer>> = _deviceTransfers.asStateFlow()
+
+  val isSending: StateFlow<Boolean> = _deviceTransfers.map { transfers ->
+    transfers.values.any { it.state is TransferState.Progress }
+  }.stateIn(
+    scope,
+    SharingStarted.Eagerly,
+    false
+  )
 
   private val packetInterceptor: PacketInterceptor = PacketInterceptors(
     PacketExpiry(),
@@ -108,20 +115,43 @@ open class PeerHub<P: PairedDevice>(
     }
   }
 
-  suspend fun sendClipboard(clipboardContent: ClipboardContent): Unit = sendMutex.withLock {
+  private suspend fun sendTo(connection: PeerConnection, packet: Packet) {
+    val setDeviceTransfer = { device: PairedDevice, state: TransferState ->
+      _deviceTransfers.update { it + (device.id to DeviceTransfer(device, state)) }
+    }
     try {
-      if (clipboardContent == ClipboardContent.Empty) return
-      val listener = ProgressListener { p, t -> _transferState.value = TransferState.Progress(p, t) }
-      _transferState.value = TransferState.Progress(0, 0)
-      val connections = devicesMutex.withLock { _devices.value.values.toList() }
-      val packet = ClipboardSyncingPacket.create(clipboardContent)
-      connections.forEach { it.channel.sendPacket(packet, listener) }
-      _transferState.value = TransferState.Success
+      connection.channel.sendPacket(packet) { p, t -> setDeviceTransfer(connection.device, TransferState.Progress(p, t)) }
+      setDeviceTransfer(connection.device, TransferState.Success)
     } catch (e: CancellationException) {
-      _transferState.value = TransferState.Failure(e)
       throw e
     } catch (e: Exception) {
-      _transferState.value = TransferState.Failure(e)
+      Logger.w("Failed to send clipboard to ${connection.device.name}: ${e.message}", e, TAG)
+      setDeviceTransfer(connection.device, TransferState.Failure(e))
+    }
+  }
+
+  suspend fun sendClipboard(clipboardContent: ClipboardContent): Unit = sendMutex.withLock {
+    if (clipboardContent == ClipboardContent.Empty) return
+
+    val connections = devicesMutex.withLock { _devices.value.values.toList() }
+
+    _deviceTransfers.value = connections.associate {
+      it.device.id to DeviceTransfer(it.device, TransferState.Progress(0, 0))
+    }
+
+    try {
+      val packet = ClipboardSyncingPacket.create(clipboardContent)
+      connections.forEach { sendTo(it, packet) }
+    } catch (e: CancellationException) {
+      throw e
+    } catch (e: Exception) {
+      Logger.e("Failed to send clipboard: ${e.message}", e, TAG)
+    } finally {
+      _deviceTransfers.update { transfers ->
+        transfers.mapValues { (_, transfer) ->
+          if (transfer.state is TransferState.Progress) transfer.copy(state = TransferState.Failure()) else transfer
+        }
+      }
     }
   }
 

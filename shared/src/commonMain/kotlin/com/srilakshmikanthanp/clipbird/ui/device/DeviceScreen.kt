@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.srilakshmikanthanp.clipbird.pairing.PairedDevice
 import com.srilakshmikanthanp.clipbird.pairing.PairingCandidate
+import com.srilakshmikanthanp.clipbird.peer.TransferState
 import com.srilakshmikanthanp.clipbird.peer.client.ConnectionInitiationDecider
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -114,37 +116,85 @@ private fun <C: PairingCandidate> AvailableDevices(
 }
 
 @Composable
+private fun <Device: PairedDevice> activeColor(remoteDevice: Device): Color {
+  val decider = koinInject<ConnectionInitiationDecider>()
+  val isInitiatedByMe by produceState(initialValue = false, remoteDevice.id) { value = decider.shouldInitiateConnection(remoteDevice) }
+  return if (isInitiatedByMe) MaterialTheme.colorScheme.primary else Color(0xFF4CAF50)
+}
+
+@Composable
+private fun StatusLine(text: String, color: Color) {
+  Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+    Box(Modifier.size(8.dp).background(color, CircleShape))
+    Text(text, style = MaterialTheme.typography.bodySmall, color = color)
+  }
+}
+
+@Composable
+private fun <D: PairedDevice> DeviceStatus(device: DeviceViewModel.Device<D>, color: Color) {
+  when {
+    device.transfer is TransferState.Progress -> StatusLine(text = "Sending clipboard…", color = color)
+    device.transfer is TransferState.Failure -> StatusLine("Failed to send clipboard", MaterialTheme.colorScheme.error)
+    device.connected -> StatusLine("Active", color)
+  }
+}
+
+@Composable
+fun <Device: PairedDevice> RemoveDevice(device: Device, onRemove: (ULong) -> Unit) {
+  IconButton(onClick = { onRemove(device.id) }) {
+    Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.name}")
+  }
+}
+
+@Composable
+private fun TransferProgress(transfer: TransferState.Progress, color: Color, modifier: Modifier = Modifier) {
+  if (transfer.total > 0) {
+    LinearProgressIndicator(progress = { transfer.current.toFloat() / transfer.total }, modifier = modifier, color = color)
+  } else {
+    LinearProgressIndicator(modifier = modifier, color = color)
+  }
+}
+
+@Composable
+fun ProgressPercentage(transfer: TransferState.Progress, color: Color) {
+  Text(
+    text = if (transfer.total > 0) "${transfer.current * 100L / transfer.total}%" else "",
+    style = MaterialTheme.typography.labelLarge,
+    color = color,
+  )
+}
+
+@Composable
 private fun <D: PairedDevice> PairedDevices(
   devices: List<DeviceViewModel.Device<D>>,
   onRemove: (ULong) -> Unit,
 ) {
-  @Composable
-  fun RemoveDevice(device: D) {
-    IconButton(onClick = { onRemove(device.id) }) {
-      Icon(Icons.Outlined.Delete, contentDescription = "Remove ${device.name}")
-    }
-  }
-
-  @Composable
-  fun ActiveStatus(remoteDevice: D) {
-    val decider = koinInject<ConnectionInitiationDecider>()
-    val isInitiatedByMe by produceState(initialValue = false, remoteDevice.id) { value = decider.shouldInitiateConnection(remoteDevice) }
-    val color = if (isInitiatedByMe) MaterialTheme.colorScheme.primary else Color(0xFF4CAF50)
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-      Box(Modifier.size(8.dp).background(color, CircleShape))
-      Text("Active", style = MaterialTheme.typography.bodySmall, color = color)
-    }
-  }
-
   devices.forEachIndexed { index, device ->
+    val progress = device.transfer as? TransferState.Progress
+    val color = activeColor(device.pairedDevice)
     if (index > 0) HorizontalDivider()
-    ListItem(
-      headlineContent = { Text(device.pairedDevice.name) },
-      leadingContent = { DeviceAvatar(device.pairedDevice.name) },
-      colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-      supportingContent = { if (device.connected) ActiveStatus(device.pairedDevice) },
-      trailingContent = { RemoveDevice(device.pairedDevice) },
-    )
+    Column {
+      ListItem(
+        headlineContent = { Text(device.pairedDevice.name) },
+        leadingContent = { DeviceAvatar(device.pairedDevice.name) },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        supportingContent = { DeviceStatus(device, color) },
+        trailingContent = {
+          if (progress != null) {
+            ProgressPercentage(progress, color)
+          } else {
+            RemoveDevice(device.pairedDevice, onRemove)
+          }
+        },
+      )
+      if (progress != null) {
+        TransferProgress(
+          progress,
+          color,
+          Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+        )
+      }
+    }
   }
 }
 

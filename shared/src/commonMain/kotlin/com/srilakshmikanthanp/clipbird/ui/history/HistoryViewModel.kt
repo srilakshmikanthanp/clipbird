@@ -6,7 +6,6 @@ import com.srilakshmikanthanp.clipbird.clipboard.Clipboard
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardContent
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardHistory
 import com.srilakshmikanthanp.clipbird.peer.BluetoothPeerHub
-import com.srilakshmikanthanp.clipbird.peer.TransferState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -23,7 +22,7 @@ class HistoryViewModel(
     emptyList(),
   )
 
-  val transferState: StateFlow<TransferState> = peerHub.transferState
+  val isSending: StateFlow<Boolean> = peerHub.isSending
 
   fun sendClipboard() = viewModelScope.launch {
     runCatching { peerHub.sendClipboard(clipboard.get()) }

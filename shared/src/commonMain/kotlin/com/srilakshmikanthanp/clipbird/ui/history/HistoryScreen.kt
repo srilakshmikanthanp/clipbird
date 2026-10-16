@@ -1,10 +1,5 @@
 package com.srilakshmikanthanp.clipbird.ui.history
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,21 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +39,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardContent
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardItem
 import com.srilakshmikanthanp.clipbird.clipboard.ClipboardMimeType
-import com.srilakshmikanthanp.clipbird.peer.TransferState
 import org.koin.compose.viewmodel.koinViewModel
 
 internal expect fun decodeImageBitmap(data: ByteArray): ImageBitmap
@@ -95,106 +85,20 @@ private fun HistoryItemContent(items: List<ClipboardItem>) {
 }
 
 @Composable
-private fun SendCard(state: TransferState, onSend: () -> Unit) {
-  val isSending = state is TransferState.Progress
-
+private fun SendCard(isSending: Boolean, onSend: () -> Unit) {
   Card(modifier = Modifier.fillMaxWidth()) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-          text = "Send clipboard to your devices",
-          style = MaterialTheme.typography.bodyMedium,
-          modifier = Modifier.weight(1f),
-        )
-        Spacer(
-          Modifier.width(12.dp)
-        )
-
-        when (state) {
-          is TransferState.Progress -> {
-            Text(
-              text = if (state.total > 0) "${(state.current.toFloat() / state.total * 100).toInt()}%" else "Sending…",
-              style = MaterialTheme.typography.labelMedium,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-          }
-          is TransferState.Success -> {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-              Icon(
-                Icons.Outlined.CheckCircle,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(18.dp),
-              )
-              Text(
-                text = "Sent",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-              )
-              Spacer(
-                Modifier.width(4.dp)
-              )
-              Button(
-                onClick = onSend,
-                shape = CircleShape
-              ) {
-                Text("Send")
-              }
-            }
-          }
-          is TransferState.Failure -> {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-              Icon(
-                Icons.Outlined.Error,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(18.dp),
-              )
-              Text(
-                text = "Failed",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.error,
-              )
-              Spacer(
-                Modifier.width(4.dp)
-              )
-              Button(
-                onClick = onSend,
-                shape = CircleShape
-              ) {
-                Text("Retry")
-              }
-            }
-          }
-        }
-      }
-
-      AnimatedVisibility(
-        visible = isSending,
-        enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically(),
-        modifier = Modifier.padding(top = 16.dp)
-      ) {
-        when (state) {
-          is TransferState.Progress -> {
-            LinearProgressIndicator(
-              progress = { state.current.toFloat() / state.total },
-              modifier = Modifier.fillMaxWidth()
-            )
-          }
-
-          else -> {
-            LinearProgressIndicator(
-              modifier = Modifier.fillMaxWidth()
-            )
-          }
-        }
+    Row(
+      modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Text(
+        text = "Send clipboard to your devices",
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.weight(1f),
+      )
+      Spacer(Modifier.width(12.dp))
+      Button(onClick = onSend, enabled = !isSending, shape = CircleShape) {
+        Text("Send")
       }
     }
   }
@@ -246,13 +150,13 @@ private fun HistoryItem(
 
 @Composable
 fun HistoryScreen(viewModel: HistoryViewModel = koinViewModel()) {
-  val transferState by viewModel.transferState.collectAsStateWithLifecycle()
+  val isSending by viewModel.isSending.collectAsStateWithLifecycle()
   val history by viewModel.history.collectAsStateWithLifecycle()
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Column(modifier = Modifier.widthIn(max = 600.dp).fillMaxSize()) {
       Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-        SendCard(state = transferState, onSend = viewModel::sendClipboard)
+        SendCard(isSending = isSending, onSend = viewModel::sendClipboard)
       }
 
       LazyColumn(

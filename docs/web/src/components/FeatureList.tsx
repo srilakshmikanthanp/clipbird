@@ -31,8 +31,8 @@ const features: Feature[] = [
   },
   {
     icon: <LuMonitorSmartphone />,
-    title: 'Android & Linux',
-    text: 'Windows support is coming soon.'
+    title: 'Cross-platform',
+    text: 'Android and Linux. Windows coming soon.'
   },
   {
     icon: <LuHistory />,

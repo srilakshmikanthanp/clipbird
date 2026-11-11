@@ -20,6 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import clipbird.desktopapp.generated.resources.Res
+import clipbird.desktopapp.generated.resources.app_name
+import clipbird.desktopapp.generated.resources.noexec_tmpdir_message
+import com.srilakshmikanthanp.clipbird.ffi.fs.DirectoryInfoHandle
+import com.srilakshmikanthanp.clipbird.ffi.loader.NativeClipbirdLoader
+import com.srilakshmikanthanp.clipbird.ui.Dialog
 import com.srilakshmikanthanp.clipbird.ui.history.CompactHistoryScreen
 import com.srilakshmikanthanp.clipbird.ui.theme.ClipbirdTheme
 import com.srilakshmikanthanp.clipbird.ui.theme.appLogoPainter
@@ -39,7 +45,11 @@ import dev.nucleusframework.window.styling.TitleBarStyle
 import dev.nucleusframework.composenativetray.menu.api.TrayMenuBuilder
 import io.github.vinceglb.autolaunch.AutoLaunch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.getString
 import java.awt.Toolkit
+import java.nio.file.Path
+import kotlin.system.exitProcess
 
 @Composable
 fun NucleusApplicationScope.ClipbirdApplication() {
@@ -159,6 +169,17 @@ fun main() {
   Logger.i { "Toolkit       : ${Toolkit.getDefaultToolkit().javaClass.name}" }
   Logger.i { "Session       : ${System.getenv("XDG_SESSION_TYPE")}" }
   Logger.i { "Desktop       : ${System.getenv("XDG_CURRENT_DESKTOP")}" }
+
+  val tmpDir = Path.of(System.getProperty("java.io.tmpdir"))
+
+  NativeClipbirdLoader.load()
+
+  if (DirectoryInfoHandle.isNoexec(tmpDir)) {
+    val title = runBlocking { getString(Res.string.app_name) }
+    val text = runBlocking { getString(Res.string.noexec_tmpdir_message, tmpDir.toString()) }
+    Dialog.showError(title, text)
+    exitProcess(1)
+  }
 
   initKoin()
 

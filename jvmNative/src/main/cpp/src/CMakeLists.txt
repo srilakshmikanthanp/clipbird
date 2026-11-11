@@ -24,6 +24,8 @@ target_sources(
   io/bluetooth/bluetooth_server.cxx
   error/Error.cpp
   error/error.cxx
+  fs/DirectoryInfoFactory.cpp
+  fs/directory_info.cxx
   power/PowerHandlerFactory.cpp
   power/power_handler.cxx
 )
@@ -66,6 +68,7 @@ if(UNIX)
     io/bluetooth/linux/LinuxRfcommServer.cpp
     io/bluetooth/linux/LinuxRfcommServerProfile.cpp
     power/linux/LinuxPowerHandler.cpp
+    fs/linux/LinuxDirectoryInfo.cpp
   )
 
   target_include_directories(clipbird PRIVATE ${BLUEZ_INCLUDE_DIRS})

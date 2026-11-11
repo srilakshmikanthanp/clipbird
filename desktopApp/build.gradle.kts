@@ -22,6 +22,8 @@ kotlin {
 
 dependencies {
   implementation(projects.shared)
+  implementation(projects.jvmNative)
+  implementation(libs.compose.components.resources)
   implementation(libs.koin.core)
   implementation(compose.desktop.currentOs)
   implementation(libs.compose.material3)
@@ -39,7 +41,6 @@ dependencies {
 
 tasks.withType<JavaExec>().configureEach {
   if (System.getProperty("os.name").startsWith("Linux", ignoreCase = true)) {
-    System.getenv("XDG_RUNTIME_DIR")?.let { jvmArgs("-Djava.io.tmpdir=$it") }
     jvmArgs("-Dawt.toolkit.name=sun.awt.X11.XToolkit")
   }
 }
@@ -51,7 +52,6 @@ nucleus.application {
     add("--enable-native-access=ALL-UNNAMED")
     if (System.getProperty("os.name").startsWith("Linux", ignoreCase = true)) {
       add("-Dawt.toolkit.name=sun.awt.X11.XToolkit")
-      add($$"-Djava.io.tmpdir=$XDG_RUNTIME_DIR")
     }
   }
   nativeDistributions {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "error/error.h"
+#include "fs/directory_info.h"
 #include "advertiser/advertiser.h"
 #include "advertiser/ble/ble_advertiser_factory.h"
 #include "discoverer/discoverer.h"

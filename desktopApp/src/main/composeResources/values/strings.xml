@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Clipbird</string>
+  <string name="noexec_tmpdir_message">Clipbird cannot start because the temporary directory (%1$s) is mounted with the noexec option. This prevents Java from loading native libraries extracted into that directory.\n\nHow to fix it:\n\nConfigure Java to use a temporary directory that allows file execution.\n\nAdd the following line to ~/.profile:\n\nexport JAVA_TOOL_OPTIONS="-Djava.io.tmpdir=$XDG_RUNTIME_DIR"\n\nAfter updating the configuration, log out and log back in, then start Clipbird again.</string>
+</resources>

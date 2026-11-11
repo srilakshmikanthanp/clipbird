@@ -6,7 +6,7 @@
 #include <memory>
 #include <mutex>
 
-namespace clipbird::log {
+namespace com::srilakshmikanthanp::clipbird::log {
 
 namespace {
   std::shared_ptr<LogCallbackBackend> callbackBackend = std::make_shared<LogCallbackBackend>();
@@ -30,4 +30,4 @@ void clearCallback() {
   callbackBackend->clearCallback();
 }
 
-}  // namespace clipbird::log
+}  // namespace com::srilakshmikanthanp::clipbird::log

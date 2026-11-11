@@ -11,12 +11,12 @@
 #include <string>
 #include <vector>
 
-namespace ble = clipbird::advertiser::ble;
-namespace error = clipbird::error;
+namespace ble = com::srilakshmikanthanp::clipbird::advertiser::ble;
+namespace error = com::srilakshmikanthanp::clipbird::error;
 
 namespace {
 
-struct CAdvertiserListener : clipbird::AdvertiserListener {
+struct CAdvertiserListener : com::srilakshmikanthanp::clipbird::AdvertiserListener {
   clipbird_advertiser_ble_listener_t cbs;
 
   explicit CAdvertiserListener(const clipbird_advertiser_ble_listener_t& cbs) : cbs(cbs) {}

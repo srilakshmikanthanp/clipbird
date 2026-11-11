@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace clipbird::log {
+namespace com::srilakshmikanthanp::clipbird::log {
 
 clipbird_log_level_t LogCallbackBackend::toLevel(const spdlog::level::level_enum level) {
   switch (level) {
@@ -48,4 +48,4 @@ void LogCallbackBackend::sink_it_(const spdlog::details::log_msg& msg) {
 
 void LogCallbackBackend::flush_() {}
 
-}  // namespace clipbird::log
+}  // namespace com::srilakshmikanthanp::clipbird::log

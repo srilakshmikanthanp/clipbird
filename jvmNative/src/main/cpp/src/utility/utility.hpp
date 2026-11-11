@@ -5,7 +5,7 @@
 #include <exception>
 #include <type_traits>
 
-namespace clipbird::utility {
+namespace com::srilakshmikanthanp::clipbird::utility {
 template <typename F>
 void logOnThrow(const char* context, F&& fn) noexcept {
   try {

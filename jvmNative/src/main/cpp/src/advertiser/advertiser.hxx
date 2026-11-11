@@ -7,6 +7,6 @@
 #include "advertiser/advertiser.h"
 
 struct clipbird_advertiser {
-  std::unique_ptr<clipbird::AdvertiserListener> listener;
-  std::unique_ptr<clipbird::Advertiser> impl;
+  std::unique_ptr<com::srilakshmikanthanp::clipbird::AdvertiserListener> listener;
+  std::unique_ptr<com::srilakshmikanthanp::clipbird::Advertiser> impl;
 };

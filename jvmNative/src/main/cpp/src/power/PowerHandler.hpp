@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace clipbird::power {
+namespace com::srilakshmikanthanp::clipbird::power {
 
 class PowerHandler {
  protected:
@@ -14,4 +14,4 @@ class PowerHandler {
   virtual ~PowerHandler() = default;
 };
 
-}  // namespace clipbird::power
+}  // namespace com::srilakshmikanthanp::clipbird::power

@@ -15,9 +15,9 @@
 #include <string>
 #include <system_error>
 
-namespace error = clipbird::error;
-namespace bt = clipbird::io::bluetooth;
-namespace io = clipbird::io;
+namespace error = com::srilakshmikanthanp::clipbird::error;
+namespace bt = com::srilakshmikanthanp::clipbird::io::bluetooth;
+namespace io = com::srilakshmikanthanp::clipbird::io;
 
 extern "C" {
 

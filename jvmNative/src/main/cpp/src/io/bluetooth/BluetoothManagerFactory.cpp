@@ -8,10 +8,10 @@
   #error "Bluetooth manager is not implemented on this platform."
 #endif
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 std::unique_ptr<BluetoothManager> createBluetoothManager() {
   return std::make_unique<LinuxBluetoothManager>();
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

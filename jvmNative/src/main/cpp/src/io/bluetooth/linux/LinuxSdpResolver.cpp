@@ -42,7 +42,7 @@ using SdpRecordList   = std::unique_ptr<sdp_list_t, SdpRecordListDeleter>;
 
 }  // namespace
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 std::optional<uint8_t> LinuxSdpResolver::rfcommChannel(const bdaddr_t& remote, const boost::uuids::uuid& serviceUuid) {
   bdaddr_t local = {{0, 0, 0, 0, 0, 0}};
@@ -80,4 +80,4 @@ std::optional<uint8_t> LinuxSdpResolver::rfcommChannel(const bdaddr_t& remote, c
   return std::nullopt;
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

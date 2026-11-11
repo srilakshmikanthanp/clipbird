@@ -7,5 +7,5 @@
 #include "power/PowerHandlerFactory.hpp"
 
 struct clipbird_power_handler {
-  std::unique_ptr<clipbird::power::PowerHandler> impl;
+  std::unique_ptr<com::srilakshmikanthanp::clipbird::power::PowerHandler> impl;
 };

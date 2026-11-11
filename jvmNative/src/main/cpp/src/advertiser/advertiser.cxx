@@ -5,7 +5,7 @@
 #include "advertiser/advertiser.hxx"
 #include "error/Error.hpp"
 
-namespace error = clipbird::error;
+namespace error = com::srilakshmikanthanp::clipbird::error;
 
 extern "C" {
 

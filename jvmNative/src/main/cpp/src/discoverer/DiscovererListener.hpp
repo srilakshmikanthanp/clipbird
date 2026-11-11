@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-namespace clipbird {
+namespace com::srilakshmikanthanp::clipbird {
 
 struct DiscovererListener {
   virtual ~DiscovererListener() = default;
@@ -13,4 +13,4 @@ struct DiscovererListener {
   virtual void onDiscoveryStopped() = 0;
 };
 
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

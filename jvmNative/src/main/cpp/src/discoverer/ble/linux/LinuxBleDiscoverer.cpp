@@ -11,7 +11,7 @@
 #include "discoverer/ble/ble_discoverer_code.h"
 #include "utility/utility.hpp"
 
-namespace clipbird::discoverer::ble {
+namespace com::srilakshmikanthanp::clipbird::discoverer::ble {
 
 std::optional<std::int64_t> LinuxBleDiscoverer::extractDeviceId(const std::map<std::string, sdbus::Variant>& properties) {
   auto mfgDataVariant = properties.find("ManufacturerData");
@@ -186,4 +186,4 @@ LinuxBleDiscoverer::~LinuxBleDiscoverer() {
   utility::logOnThrow("Failed to leave BLE discoverer event loop", [this] { connection->leaveEventLoop(); });
 }
 
-}  // namespace clipbird::discoverer::ble
+}  // namespace com::srilakshmikanthanp::clipbird::discoverer::ble

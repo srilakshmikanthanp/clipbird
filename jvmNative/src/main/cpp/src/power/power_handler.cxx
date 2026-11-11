@@ -4,7 +4,7 @@
 
 #include <exception>
 
-namespace error = clipbird::error;
+namespace error = com::srilakshmikanthanp::clipbird::error;
 
 extern "C" {
 
@@ -22,7 +22,7 @@ clipbird_power_handler_t* clipbird_power_handler_create(
   auto on_wake_wrapper = [on_wake, context]() { on_wake(context); };
 
   try {
-    auto impl = clipbird::power::createPowerHandler(std::move(on_sleep_wrapper), std::move(on_wake_wrapper));
+    auto impl = com::srilakshmikanthanp::clipbird::power::createPowerHandler(std::move(on_sleep_wrapper), std::move(on_wake_wrapper));
     error::clearLastError();
     return new clipbird_power_handler{std::move(impl)};
   } catch (const std::exception& e) {

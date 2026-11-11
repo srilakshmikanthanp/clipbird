@@ -2,7 +2,7 @@
 
 #include "advertiser/AdvertiserListener.hpp"
 
-namespace clipbird {
+namespace com::srilakshmikanthanp::clipbird {
 
 class Advertiser {
  public:
@@ -15,4 +15,4 @@ class Advertiser {
   AdvertiserListener& listener;
 };
 
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

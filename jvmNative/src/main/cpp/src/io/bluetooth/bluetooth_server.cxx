@@ -7,8 +7,8 @@
 #include <memory>
 #include <system_error>
 
-namespace error = clipbird::error;
-namespace io = clipbird::io;
+namespace error = com::srilakshmikanthanp::clipbird::error;
+namespace io = com::srilakshmikanthanp::clipbird::io;
 
 extern "C" {
 

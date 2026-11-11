@@ -4,7 +4,7 @@
 
 #include "utility/utility.hpp"
 
-namespace clipbird::power {
+namespace com::srilakshmikanthanp::clipbird::power {
 
 LinuxPowerHandler::LinuxPowerHandler(std::function<void()> onSleep, std::function<void()> onWake)
   : PowerHandler(std::move(onSleep), std::move(onWake)),
@@ -54,4 +54,4 @@ LinuxPowerHandler::~LinuxPowerHandler() {
   utility::logOnThrow("Failed to release inhibit lock", [this] { releaseInhibitLock(); });
 }
 
-}  // namespace clipbird::power
+}  // namespace com::srilakshmikanthanp::clipbird::power

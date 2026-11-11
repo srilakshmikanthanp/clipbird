@@ -9,5 +9,5 @@
 #include "io/bluetooth/bluetooth_server.hxx"
 
 struct clipbird_bluetooth_device_list {
-  std::vector<clipbird::io::bluetooth::BluetoothDevice> devices;
+  std::vector<com::srilakshmikanthanp::clipbird::io::bluetooth::BluetoothDevice> devices;
 };

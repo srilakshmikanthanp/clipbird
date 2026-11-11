@@ -2,7 +2,7 @@
 
 #include "discoverer/DiscovererListener.hpp"
 
-namespace clipbird {
+namespace com::srilakshmikanthanp::clipbird {
 
 class Discoverer {
  public:
@@ -15,4 +15,4 @@ class Discoverer {
   DiscovererListener& listener;
 };
 
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

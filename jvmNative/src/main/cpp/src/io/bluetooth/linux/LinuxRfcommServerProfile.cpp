@@ -11,7 +11,7 @@
 #include "io/IOException.hpp"
 #include "utility/utility.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 LinuxRfcommServerProfile::LinuxRfcommServerProfile(
   sdbus::IConnection& connection,
@@ -104,4 +104,4 @@ LinuxRfcommServerProfile::~LinuxRfcommServerProfile() {
   utility::logOnThrow("Failed to close BlueZ RFCOMM server profile", [this] { this->close(); });
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

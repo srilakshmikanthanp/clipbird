@@ -8,7 +8,7 @@
   #error "BLE advertiser is not implemented on this platform."
 #endif
 
-namespace clipbird::advertiser::ble {
+namespace com::srilakshmikanthanp::clipbird::advertiser::ble {
 
 std::unique_ptr<Advertiser> createBleAdvertiser(
   const boost::uuids::uuid& serviceUuid,
@@ -18,4 +18,4 @@ std::unique_ptr<Advertiser> createBleAdvertiser(
   return std::make_unique<LinuxBleAdvertiser>(serviceUuid, serviceData, events);
 }
 
-}  // namespace clipbird::advertiser::ble
+}  // namespace com::srilakshmikanthanp::clipbird::advertiser::ble

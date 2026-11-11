@@ -13,7 +13,7 @@
 #include "discoverer/Discoverer.hpp"
 #include "discoverer/DiscovererListener.hpp"
 
-namespace clipbird::discoverer::ble {
+namespace com::srilakshmikanthanp::clipbird::discoverer::ble {
 
 class LinuxBleDiscoverer final : public Discoverer {
  public:
@@ -63,4 +63,4 @@ class LinuxBleDiscoverer final : public Discoverer {
   inline static constexpr std::size_t kUuidSize = 16;
 };
 
-}  // namespace clipbird::discoverer::ble
+}  // namespace com::srilakshmikanthanp::clipbird::discoverer::ble

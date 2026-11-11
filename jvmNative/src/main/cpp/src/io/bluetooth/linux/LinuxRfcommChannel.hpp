@@ -5,7 +5,7 @@
 
 #include "io/bluetooth/BluetoothChannel.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 class LinuxRfcommChannel final : public BluetoothChannel {
  public:
@@ -23,4 +23,4 @@ class LinuxRfcommChannel final : public BluetoothChannel {
   std::atomic<bool> shutdown_done{false};
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

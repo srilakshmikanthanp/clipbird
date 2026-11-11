@@ -6,7 +6,7 @@
 #include <bluetooth/bluetooth.h>
 #include <boost/uuid/uuid.hpp>
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 class LinuxSdpResolver final {
  public:
@@ -18,4 +18,4 @@ class LinuxSdpResolver final {
   std::optional<uint8_t> rfcommChannel(const bdaddr_t& remote, const boost::uuids::uuid& serviceUuid);
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

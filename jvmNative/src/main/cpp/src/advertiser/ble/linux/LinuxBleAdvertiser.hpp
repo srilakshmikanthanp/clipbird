@@ -12,7 +12,7 @@
 #include "advertiser/Advertiser.hpp"
 #include "advertiser/AdvertiserListener.hpp"
 
-namespace clipbird::advertiser::ble {
+namespace com::srilakshmikanthanp::clipbird::advertiser::ble {
 
 class LinuxBleAdvertiser final : public Advertiser {
  public:
@@ -45,4 +45,4 @@ class LinuxBleAdvertiser final : public Advertiser {
   inline static constexpr const char* kAdvertisementPath = "/com/srilakshmikanthanp/clipbird/advertisement";
 };
 
-}  // namespace clipbird::advertiser::ble
+}  // namespace com::srilakshmikanthanp::clipbird::advertiser::ble

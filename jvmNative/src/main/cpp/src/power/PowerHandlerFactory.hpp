@@ -5,8 +5,8 @@
 
 #include "power/PowerHandler.hpp"
 
-namespace clipbird::power {
+namespace com::srilakshmikanthanp::clipbird::power {
 
 std::unique_ptr<PowerHandler> createPowerHandler(std::function<void()> onSleep, std::function<void()> onWake);
 
-}  // namespace clipbird::power
+}  // namespace com::srilakshmikanthanp::clipbird::power

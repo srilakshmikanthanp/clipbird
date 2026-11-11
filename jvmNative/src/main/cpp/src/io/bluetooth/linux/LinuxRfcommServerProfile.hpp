@@ -11,7 +11,7 @@
 
 #include "io/Channel.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 class LinuxRfcommServerProfile final {
  public:
@@ -33,4 +33,4 @@ class LinuxRfcommServerProfile final {
   std::atomic<bool> registered{false};
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

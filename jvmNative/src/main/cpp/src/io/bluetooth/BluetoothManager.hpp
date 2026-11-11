@@ -12,7 +12,7 @@
 #include "io/Channel.hpp"
 #include "io/Server.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 class BluetoothManager {
  public:
@@ -27,4 +27,4 @@ class BluetoothManager {
   virtual std::unique_ptr<io::Server> startRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid) = 0;
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

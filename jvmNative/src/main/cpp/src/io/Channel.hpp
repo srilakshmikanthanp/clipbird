@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace clipbird::io {
+namespace com::srilakshmikanthanp::clipbird::io {
 
 class Channel {
  public:
@@ -15,4 +15,4 @@ class Channel {
   virtual ~Channel() = default;
 };
 
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

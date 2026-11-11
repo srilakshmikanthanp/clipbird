@@ -3,11 +3,11 @@
 extern "C" {
 
 const char* clipbird_error_last_error_message() {
-  return clipbird::error::getLastError().message.data();
+  return com::srilakshmikanthanp::clipbird::error::getLastError().message.data();
 }
 
 int clipbird_error_last_error_code() {
-  return clipbird::error::getLastError().code;
+  return com::srilakshmikanthanp::clipbird::error::getLastError().code;
 }
 
 }

@@ -4,7 +4,7 @@ namespace {
 
 __attribute__((constructor))
 void clipbird_log_configure_on_load() {
-  clipbird::log::initialize();
+  com::srilakshmikanthanp::clipbird::log::initialize();
 }
 
 }  // namespace
@@ -12,11 +12,11 @@ void clipbird_log_configure_on_load() {
 extern "C" {
 
 void clipbird_log_set_callback(clipbird_log_callback_t callback, void* context) {
-  clipbird::log::setCallback(callback, context);
+  com::srilakshmikanthanp::clipbird::log::setCallback(callback, context);
 }
 
 void clipbird_log_clear_callback() {
-  clipbird::log::clearCallback();
+  com::srilakshmikanthanp::clipbird::log::clearCallback();
 }
 
 }

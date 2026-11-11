@@ -8,7 +8,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 LinuxRfcommConnector::LinuxRfcommConnector(
   const std::string& address,
@@ -55,4 +55,4 @@ int LinuxRfcommConnector::getFd() {
   return socket;
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

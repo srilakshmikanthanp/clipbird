@@ -2,7 +2,7 @@
 #include "LinuxRfcommServerProfile.hpp"
 #include "utility/utility.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 LinuxRfcommServer::LinuxRfcommServer(const std::string& serviceName, const boost::uuids::uuid& serviceUuid)
   : connection(sdbus::createSystemBusConnection()) {
@@ -25,4 +25,4 @@ LinuxRfcommServer::~LinuxRfcommServer() {
 	utility::logOnThrow("Failed to release RFCOMM server profile", [this] { profileRegistration.reset(); });
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

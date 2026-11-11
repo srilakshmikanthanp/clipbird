@@ -9,7 +9,7 @@
 #include "advertiser/Advertiser.hpp"
 #include "advertiser/AdvertiserListener.hpp"
 
-namespace clipbird::advertiser::ble {
+namespace com::srilakshmikanthanp::clipbird::advertiser::ble {
 
 std::unique_ptr<Advertiser> createBleAdvertiser(
   const boost::uuids::uuid& serviceUuid,
@@ -17,4 +17,4 @@ std::unique_ptr<Advertiser> createBleAdvertiser(
   AdvertiserListener& listener
 );
 
-}  // namespace clipbird::advertiser::ble
+}  // namespace com::srilakshmikanthanp::clipbird::advertiser::ble

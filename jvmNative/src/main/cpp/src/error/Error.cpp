@@ -3,10 +3,10 @@
 #include <string>
 
 namespace {
-thread_local clipbird::error::Error g_last_error = {};
+thread_local com::srilakshmikanthanp::clipbird::error::Error g_last_error = {};
 }
 
-namespace clipbird::error {
+namespace com::srilakshmikanthanp::clipbird::error {
 void setLastError(int code, std::string_view error) {
   g_last_error.code = code;
   g_last_error.message = error;
@@ -24,4 +24,4 @@ void clearLastError() {
 Error& getLastError() {
   return g_last_error;
 }
-}  // namespace clipbird::ffi
+}  // namespace com::srilakshmikanthanp::clipbird::ffi

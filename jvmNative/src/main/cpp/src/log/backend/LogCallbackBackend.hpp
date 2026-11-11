@@ -7,7 +7,7 @@
 #include <atomic>
 #include <mutex>
 
-namespace clipbird::log {
+namespace com::srilakshmikanthanp::clipbird::log {
 
 class LogCallbackBackend : public spdlog::sinks::base_sink<std::mutex> {
  private:
@@ -29,4 +29,4 @@ class LogCallbackBackend : public spdlog::sinks::base_sink<std::mutex> {
   void clearCallback();
 };
 
-}  // namespace clipbird::log
+}  // namespace com::srilakshmikanthanp::clipbird::log

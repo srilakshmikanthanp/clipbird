@@ -8,7 +8,7 @@
   #error "Power handler is not implemented on this platform."
 #endif
 
-namespace clipbird::power {
+namespace com::srilakshmikanthanp::clipbird::power {
 
 std::unique_ptr<PowerHandler> createPowerHandler(
   std::function<void()> onSleep,
@@ -17,4 +17,4 @@ std::unique_ptr<PowerHandler> createPowerHandler(
   return std::make_unique<LinuxPowerHandler>(std::move(onSleep), std::move(onWake));
 }
 
-}  // namespace clipbird::power
+}  // namespace com::srilakshmikanthanp::clipbird::power

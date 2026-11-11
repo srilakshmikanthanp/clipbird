@@ -13,7 +13,7 @@
 #include "LinuxRfcommServer.hpp"
 #include "LinuxRfcommChannel.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 class LinuxBluetoothManager final : public BluetoothManager {
  public:
@@ -46,4 +46,4 @@ class LinuxBluetoothManager final : public BluetoothManager {
   const char* kObjectManagerInterface = "org.freedesktop.DBus.ObjectManager";
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

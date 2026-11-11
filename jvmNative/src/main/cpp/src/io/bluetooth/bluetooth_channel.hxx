@@ -6,10 +6,10 @@
 #include "io/bluetooth/bluetooth_channel.h"
 
 struct clipbird_io_bluetooth_channel {
-  std::unique_ptr<clipbird::io::bluetooth::BluetoothChannel> impl;
+  std::unique_ptr<com::srilakshmikanthanp::clipbird::io::bluetooth::BluetoothChannel> impl;
 };
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 /**
  * Takes ownership of [channel] and wraps it in a C-API channel handle. Returns
@@ -27,4 +27,4 @@ inline clipbird_io_bluetooth_channel* makeBluetoothChannelHandle(std::unique_ptr
   return new clipbird_io_bluetooth_channel{std::unique_ptr<BluetoothChannel>(bluetoothChannel)};
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

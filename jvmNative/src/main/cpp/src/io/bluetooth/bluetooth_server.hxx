@@ -7,5 +7,5 @@
 #include "io/bluetooth/bluetooth_server.h"
 
 struct clipbird_io_bluetooth_server {
-  std::unique_ptr<clipbird::io::Server> impl;
+  std::unique_ptr<com::srilakshmikanthanp::clipbird::io::Server> impl;
 };

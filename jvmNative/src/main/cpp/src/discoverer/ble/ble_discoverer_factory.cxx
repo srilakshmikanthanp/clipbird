@@ -9,12 +9,12 @@
 #include <memory>
 #include <string>
 
-namespace ble = clipbird::discoverer::ble;
-namespace error = clipbird::error;
+namespace ble = com::srilakshmikanthanp::clipbird::discoverer::ble;
+namespace error = com::srilakshmikanthanp::clipbird::error;
 
 namespace {
 
-struct CDiscovererListener : clipbird::DiscovererListener {
+struct CDiscovererListener : com::srilakshmikanthanp::clipbird::DiscovererListener {
   clipbird_discoverer_ble_listener_t cbs;
 
   explicit CDiscovererListener(const clipbird_discoverer_ble_listener_t& cbs) : cbs(cbs) {}

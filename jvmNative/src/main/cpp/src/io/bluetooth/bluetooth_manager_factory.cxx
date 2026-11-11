@@ -2,7 +2,7 @@
 
 #include "io/bluetooth/BluetoothManagerFactory.hpp"
 
-namespace bluetooth = clipbird::io::bluetooth;
+namespace bluetooth = com::srilakshmikanthanp::clipbird::io::bluetooth;
 
 extern "C" {
 

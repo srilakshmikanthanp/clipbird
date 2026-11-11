@@ -4,7 +4,7 @@
 
 #include "Channel.hpp"
 
-namespace clipbird::io {
+namespace com::srilakshmikanthanp::clipbird::io {
 
 class Server {
  public:
@@ -14,4 +14,4 @@ class Server {
   virtual ~Server() = default;
 };
 
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

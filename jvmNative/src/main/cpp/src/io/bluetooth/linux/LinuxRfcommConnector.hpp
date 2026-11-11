@@ -7,7 +7,7 @@
 
 #include "LinuxSdpResolver.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 class LinuxRfcommConnector final {
  public:
@@ -24,4 +24,4 @@ class LinuxRfcommConnector final {
   LinuxSdpResolver resolver;
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

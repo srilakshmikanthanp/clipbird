@@ -6,7 +6,7 @@
 #include "linux/LinuxBleDiscoverer.hpp"
 #endif
 
-namespace clipbird::discoverer::ble {
+namespace com::srilakshmikanthanp::clipbird::discoverer::ble {
 
 std::unique_ptr<Discoverer> createBleDiscoverer(
   const boost::uuids::uuid& serviceUuid,
@@ -21,4 +21,4 @@ std::unique_ptr<Discoverer> createBleDiscoverer(
 #endif
 }
 
-}  // namespace clipbird::discoverer::ble
+}  // namespace com::srilakshmikanthanp::clipbird::discoverer::ble

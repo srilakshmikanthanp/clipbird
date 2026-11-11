@@ -5,11 +5,11 @@
 
 #include <boost/uuid/uuid.hpp>
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 struct BluetoothDevice {
   std::string address;
   std::string name;
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

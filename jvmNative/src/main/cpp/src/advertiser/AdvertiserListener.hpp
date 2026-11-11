@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace clipbird {
+namespace com::srilakshmikanthanp::clipbird {
 
 struct AdvertiserListener {
   virtual ~AdvertiserListener() = default;
@@ -11,4 +11,4 @@ struct AdvertiserListener {
   virtual void onAdvertisingStopped() = 0;
 };
 
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

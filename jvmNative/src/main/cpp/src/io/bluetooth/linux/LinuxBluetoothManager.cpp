@@ -12,7 +12,7 @@
 #include <mutex>
 #include <vector>
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 LinuxBluetoothManager::LinuxBluetoothManager()
   : objectManager(sdbus::createProxy(*connection, sdbus::ServiceName("org.bluez"), sdbus::ObjectPath("/"))) {
@@ -172,4 +172,4 @@ std::unique_ptr<io::Server> LinuxBluetoothManager::startRfcommServer(const std::
   return std::make_unique<LinuxRfcommServer>(serviceName, serviceUuid);
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

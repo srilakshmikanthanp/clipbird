@@ -2,7 +2,7 @@
 
 #include <map>
 
-namespace clipbird::advertiser::ble {
+namespace com::srilakshmikanthanp::clipbird::advertiser::ble {
 LinuxBleAdvertisementData::LinuxBleAdvertisementData(sdbus::IConnection& connection,
                                                      sdbus::ObjectPath objectPath,
                                                      boost::uuids::uuid serviceUuid,
@@ -46,4 +46,4 @@ const boost::uuids::uuid& LinuxBleAdvertisementData::getServiceUuid() const {
 const std::vector<std::uint8_t>& LinuxBleAdvertisementData::getServiceData() const {
   return serviceData;
 }
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

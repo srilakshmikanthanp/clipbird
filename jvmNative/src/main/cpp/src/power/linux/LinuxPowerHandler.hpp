@@ -7,7 +7,7 @@
 
 #include "power/PowerHandler.hpp"
 
-namespace clipbird::power {
+namespace com::srilakshmikanthanp::clipbird::power {
 
 class LinuxPowerHandler final : public PowerHandler {
  public:
@@ -28,4 +28,4 @@ class LinuxPowerHandler final : public PowerHandler {
   static constexpr const char* kInterface = "org.freedesktop.login1.Manager";
 };
 
-}  // namespace clipbird::power
+}  // namespace com::srilakshmikanthanp::clipbird::power

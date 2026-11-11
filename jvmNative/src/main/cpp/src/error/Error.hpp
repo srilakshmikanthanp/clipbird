@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-namespace clipbird::error {
+namespace com::srilakshmikanthanp::clipbird::error {
 
 struct Error {
   int code;
@@ -15,4 +15,4 @@ void setLastError(Error error);
 void clearLastError();
 Error& getLastError();
 
-}  // namespace clipbird::error
+}  // namespace com::srilakshmikanthanp::clipbird::error

@@ -8,7 +8,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <sdbus-c++/sdbus-c++.h>
 
-namespace clipbird::advertiser::ble {
+namespace com::srilakshmikanthanp::clipbird::advertiser::ble {
 class LinuxBleAdvertisementData final {
  public:
   LinuxBleAdvertisementData(sdbus::IConnection& connection, sdbus::ObjectPath objectPath,
@@ -27,4 +27,4 @@ class LinuxBleAdvertisementData final {
   std::function<void()> onRelease;
   std::unique_ptr<sdbus::IObject> object;
 };
-}  // namespace clipbird
+}  // namespace com::srilakshmikanthanp::clipbird

@@ -4,7 +4,7 @@
 
 #include "io/Channel.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 class BluetoothChannel : public io::Channel {
  public:
@@ -12,4 +12,4 @@ class BluetoothChannel : public io::Channel {
   ~BluetoothChannel() override = default;
 };
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

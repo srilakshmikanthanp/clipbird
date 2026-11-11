@@ -14,7 +14,7 @@
 #include "io/EOFException.hpp"
 #include "utility/utility.hpp"
 
-namespace clipbird::io::bluetooth {
+namespace com::srilakshmikanthanp::clipbird::io::bluetooth {
 
 LinuxRfcommChannel::LinuxRfcommChannel(int socket_fd, std::string remoteAddress)
   : socket_fd(socket_fd), remote_address(std::move(remoteAddress)) {
@@ -92,4 +92,4 @@ LinuxRfcommChannel::~LinuxRfcommChannel() {
   });
 }
 
-}  // namespace clipbird::io::bluetooth
+}  // namespace com::srilakshmikanthanp::clipbird::io::bluetooth

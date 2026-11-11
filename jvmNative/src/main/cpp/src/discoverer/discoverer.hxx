@@ -7,6 +7,6 @@
 #include "discoverer/discoverer.h"
 
 struct clipbird_discoverer {
-  std::unique_ptr<clipbird::DiscovererListener> listener;
-  std::unique_ptr<clipbird::Discoverer> impl;
+  std::unique_ptr<com::srilakshmikanthanp::clipbird::DiscovererListener> listener;
+  std::unique_ptr<com::srilakshmikanthanp::clipbird::Discoverer> impl;
 };

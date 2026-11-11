@@ -9,7 +9,7 @@
 #include "advertiser/ble/ble_advertiser_code.h"
 #include "utility/utility.hpp"
 
-namespace clipbird::advertiser::ble {
+namespace com::srilakshmikanthanp::clipbird::advertiser::ble {
 
 sdbus::ObjectPath LinuxBleAdvertiser::getAdvertisingManagerAdapterPath() {
   using Properties = std::map<sdbus::PropertyName, sdbus::Variant>;
@@ -132,4 +132,4 @@ LinuxBleAdvertiser::~LinuxBleAdvertiser() {
   utility::logOnThrow("Failed to leave BLE advertiser event loop", [this] { connection->leaveEventLoop(); });
 }
 
-}  // namespace clipbird::advertiser::ble
+}  // namespace com::srilakshmikanthanp::clipbird::advertiser::ble

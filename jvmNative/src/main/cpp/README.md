@@ -9,35 +9,26 @@ bindings that jextract generates from `include/clipbird.h`.
 
 Each file extension marks which side of the C/C++ boundary a file belongs to.
 
-| Extension | Location   | Language | Purpose                                                                                     |
-|-----------|------------|----------|---------------------------------------------------------------------------------------------|
-| `.h`      | `include/` | C        | Public C API: opaque handle types, error code enums and function declarations.              |
-| `.hxx`    | `src/`     | C++      | Bridge header: defines the C handle structs, which own the C++ objects behind them.         |
-| `.cxx`    | `src/`     | C++      | Bridge source: implements the C API in `extern "C"` and converts C++ exceptions to errors.  |
-| `.hpp`    | `src/`     | C++      | Internal C++ headers: interfaces, factories and platform classes.                           |
-| `.cpp`    | `src/`     | C++      | Internal C++ sources.                                                                       |
-
-- `.h` headers must stay valid C: no C++ types, no namespaces, and declarations wrapped in
-  `extern "C"` when compiled as C++. They are what jextract reads.
-- `.hxx`/`.cxx` files are where C handles and C++ objects meet. They use snake_case names that
-  match the `.h` file they implement. A `.hxx` may also declare C++ helpers that other bridge
-  files need to create a handle (see `io/bluetooth/bluetooth_channel.hxx`).
-- `.hpp`/`.cpp` files are C++ in the `com::srilakshmikanthanp::clipbird` namespace. They use
-  PascalCase names that match the class they declare. They may include a public `.h` to reuse a
-  C type such as an error code enum or a callback typedef, but never a `.hxx`.
+| Extension | Location   | Language | Naming       | Purpose                                                                                                       |
+|-----------|------------|----------|--------------|---------------------------------------------------------------------------------------------------------------|
+| `.h`      | `include/` | C        | `snake_case` | Public C API read by jextract: opaque handle types, error code enums and functions. Must stay plain C.        |
+| `.hxx`    | `src/`     | C++      | `snake_case` | Bridge header: defines the C handle structs, which own the C++ objects behind them.                           |
+| `.cxx`    | `src/`     | C++      | `snake_case` | Bridge source: implements the C API in `extern "C"` and converts C++ exceptions to errors.                    |
+| `.hpp`    | `src/`     | C++      | `PascalCase` | Internal C++ headers in `com::srilakshmikanthanp::clipbird`: interfaces, factories, platform classes.         |
+| `.cpp`    | `src/`     | C++      | `PascalCase` | Internal C++ sources. Like `.hpp`, may include a `.h` for shared C types but never a `.hxx`.                   |
 
 ## Module layout
 
 Every module follows the same structure. `fs` is the smallest example:
 
-```
-include/fs/directory_info.h            C API
-src/fs/directory_info.hxx              bridge header
-src/fs/directory_info.cxx              bridge implementation (extern "C")
-src/fs/DirectoryInfo.hpp               C++ interface
-src/fs/DirectoryInfoFactory.hpp/.cpp   picks the implementation for the current platform
-src/fs/linux/LinuxDirectoryInfo.hpp/.cpp   Linux implementation
-```
+| File                                          | Role                                                |
+|-----------------------------------------------|-----------------------------------------------------|
+| `include/fs/directory_info.h`                 | C API                                               |
+| `src/fs/directory_info.hxx`                   | Bridge header                                       |
+| `src/fs/directory_info.cxx`                   | Bridge implementation (`extern "C"`)                |
+| `src/fs/DirectoryInfo.hpp`                    | C++ interface                                       |
+| `src/fs/DirectoryInfoFactory.hpp` / `.cpp`    | Picks the implementation for the current platform   |
+| `src/fs/linux/LinuxDirectoryInfo.hpp` / `.cpp`| Linux implementation                                |
 
 Platform implementations live in a subdirectory named after the platform (`linux/`, later
 `macos/` or `windows/`). The factory selects one with `#if defined(...)` and fails the build with
